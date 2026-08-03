@@ -1,0 +1,117 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --grain-opacity: 0.035;
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-grape-950 text-cream font-body antialiased;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    @apply bg-gold-400 text-grape-950;
+  }
+
+  /* The whole site is motion-heavy; honour the OS switch properly. */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  .container-page {
+    @apply mx-auto w-full max-w-[1240px] px-5 sm:px-8 lg:px-12;
+  }
+
+  .eyebrow {
+    @apply text-[11px] font-medium uppercase tracking-[0.28em] text-gold-400;
+  }
+
+  .display-xl {
+    @apply font-display font-semibold leading-[0.88] tracking-tightest;
+    font-size: clamp(3.2rem, 11vw, 9.5rem);
+  }
+
+  .display-lg {
+    @apply font-display font-semibold leading-[0.92] tracking-tightest;
+    font-size: clamp(2.4rem, 6.4vw, 5rem);
+  }
+
+  .display-md {
+    @apply font-display font-semibold leading-[1.02] tracking-tightest;
+    font-size: clamp(1.8rem, 3.6vw, 3rem);
+  }
+
+  .body-lg {
+    @apply text-[17px] leading-[1.65] text-cream/70 sm:text-lg;
+  }
+
+  /* Frosted panel used for cards, the customiser and the sticky header. */
+  .glass {
+    @apply border border-white/10 bg-white/[0.045] backdrop-blur-xl;
+  }
+
+  .btn {
+    @apply relative inline-flex items-center justify-center gap-2 rounded-full px-7 py-3.5
+           text-sm font-semibold tracking-wide transition-all duration-300
+           focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4
+           focus-visible:outline-gold-400;
+  }
+
+  .btn-primary {
+    @apply btn bg-gold-400 text-grape-950 hover:bg-gold-300
+           hover:shadow-[0_10px_40px_-10px_rgba(232,188,90,0.7)];
+  }
+
+  .btn-ghost {
+    @apply btn border border-white/20 text-cream hover:border-white/45 hover:bg-white/5;
+  }
+
+  .rule {
+    @apply h-px w-full bg-gradient-to-r from-transparent via-white/15 to-transparent;
+  }
+}
+
+@layer utilities {
+  /* Film grain over the dark purple stops the big gradients from banding. */
+  .grain::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: var(--grain-opacity);
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .mask-fade-x {
+    mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
