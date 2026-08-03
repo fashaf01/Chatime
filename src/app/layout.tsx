@@ -9,6 +9,7 @@ import './globals.css';
 import { Footer } from '@/components/site/Footer';
 import { Header } from '@/components/site/Header';
 import { LocaleProvider } from '@/lib/i18n/LocaleProvider';
+import { PRICES_ARE_PLACEHOLDER } from '@/lib/menu';
 import { outlets } from '@/lib/outlets';
 
 const display = Outfit({
@@ -68,7 +69,14 @@ export const metadata: Metadata = {
     title: 'Chatime Sri Lanka · Cups of Joy',
     description: 'Authentic Taiwanese bubble tea, brewed fresh in Colombo.',
   },
-  robots: { index: true, follow: true },
+  // Search engines are kept out while the menu prices are placeholders — an
+  // indexed page quoting invented prices under the Chatime name would send real
+  // customers to the store expecting the wrong figure. Flipping
+  // PRICES_ARE_PLACEHOLDER to false in lib/menu.ts opens indexing and removes
+  // the on-page notice together, so the two can never disagree.
+  robots: PRICES_ARE_PLACEHOLDER
+    ? { index: false, follow: false }
+    : { index: true, follow: true },
 };
 
 export const viewport: Viewport = {
