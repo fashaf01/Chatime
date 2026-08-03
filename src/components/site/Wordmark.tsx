@@ -1,23 +1,45 @@
-export function Wordmark({ className = '' }: { className?: string }) {
+import Image from 'next/image';
+
+type Props = {
+  /** `white` is the badge for purple backgrounds; `purple` for white ones. */
+  variant?: 'purple' | 'white';
+  className?: string;
+  showCountry?: boolean;
+};
+
+/**
+ * The official Chatime stacked mark, taken from the asset the global sites
+ * serve (chatime.com and chatime.com.au ship the identical file). The purple
+ * variant is the same artwork with the circle and lettering swapped so it reads
+ * on a white background.
+ */
+export function Wordmark({
+  variant = 'purple',
+  className = '',
+  showCountry = true,
+}: Props) {
+  const onPurple = variant === 'white';
+
   return (
     <span className={`inline-flex items-center gap-2.5 ${className}`}>
-      <span
-        className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-gold-400
-                   font-display text-[11px] font-bold leading-[0.95] tracking-tight text-grape-950"
-        aria-hidden
-      >
-        <span className="block text-center">
-          Cha
+      <Image
+        src={onPurple ? '/chatime-stacked-white.svg' : '/chatime-stacked-purple.svg'}
+        alt="Chatime"
+        width={101}
+        height={92}
+        priority
+        className="h-11 w-auto"
+      />
+      {showCountry && (
+        <span
+          className={`font-display text-[11px] font-extrabold uppercase leading-none tracking-[0.2em]
+                      ${onPurple ? 'text-white/80' : 'text-purple-800'}`}
+        >
+          Sri
           <br />
-          time
+          Lanka
         </span>
-      </span>
-      <span className="font-display text-lg font-semibold tracking-tightest">
-        Chatime
-        <span className="ml-1.5 text-[10px] font-medium uppercase tracking-[0.2em] text-gold-400">
-          Sri Lanka
-        </span>
-      </span>
+      )}
     </span>
   );
 }

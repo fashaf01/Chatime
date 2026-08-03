@@ -4,18 +4,24 @@ import { motion } from 'framer-motion';
 import { Clock, ExternalLink, Instagram, MapPin, Phone, Star } from 'lucide-react';
 import { Reveal, RevealWords } from '@/components/motion/Reveal';
 import { MagneticButton } from '@/components/motion/MagneticButton';
-import { useLocale } from '@/lib/i18n/LocaleProvider';
-import { INSTAGRAM_URL, formatTime, openState, outlets, type Outlet } from '@/lib/outlets';
-import { formatOpenState } from '@/lib/i18n/formatOutlet';
+import { copy as t } from '@/lib/copy';
+import {
+  DAY_NAMES,
+  INSTAGRAM_URL,
+  formatOpenState,
+  formatTime,
+  openState,
+  outlets,
+  type Outlet,
+} from '@/lib/outlets';
 
 export function LocationsView() {
-  const { t } = useLocale();
 
   return (
     <div>
       <section className="relative pt-[130px]">
         <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
-          <div className="absolute -top-[8%] right-[5%] h-[42vw] w-[42vw] rounded-full bg-grape-600/25 blur-[130px]" />
+          <div className="absolute -top-[8%] right-[5%] h-[42vw] w-[42vw] rounded-full bg-purple-300/30 blur-[130px]" />
         </div>
 
         <div className="container-page relative">
@@ -40,15 +46,15 @@ export function LocationsView() {
           {/* Open-call card — mirrors the campaign running on Instagram */}
           <Reveal delay={0.15}>
             <article
-              className="glass relative flex h-full flex-col justify-between overflow-hidden
+              className="card relative flex h-full flex-col justify-between overflow-hidden
                          rounded-[28px] border-dashed p-8"
             >
               <div>
                 <span className="eyebrow">{t.locations.comingSoon}</span>
-                <h2 className="mt-5 font-display text-2xl font-semibold leading-tight tracking-tightest">
+                <h2 className="mt-5 font-display text-2xl font-bold leading-tight tracking-tightest">
                   {t.locations.nextTitle}
                 </h2>
-                <p className="mt-4 text-sm leading-relaxed text-cream/55">
+                <p className="mt-4 text-sm leading-relaxed text-ink/70">
                   {t.locations.nextBody}
                 </p>
               </div>
@@ -57,7 +63,7 @@ export function LocationsView() {
                 href={INSTAGRAM_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn-ghost mt-8 self-start !px-6 !py-3 !text-[13px]"
+                className="btn-outline mt-8 self-start !px-6 !py-3 !text-[13px]"
               >
                 <Instagram size={15} />
                 {t.locations.nextCta}
@@ -87,12 +93,11 @@ export function LocationsView() {
 }
 
 function OutletCard({ outlet, index }: { outlet: Outlet; index: number }) {
-  const { t } = useLocale();
   const state = openState(outlet);
 
   return (
     <Reveal delay={index * 0.08}>
-      <article className="glass relative h-full overflow-hidden rounded-[28px] p-8">
+      <article className="card relative h-full overflow-hidden rounded-[28px] p-8">
         <svg
           aria-hidden
           viewBox="0 0 400 300"
@@ -127,44 +132,44 @@ function OutletCard({ outlet, index }: { outlet: Outlet; index: number }) {
           <div className="flex flex-wrap items-center gap-3">
             <span
               className={`inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-[11px]
-                          font-semibold uppercase tracking-[0.14em] ${
+                          font-bold uppercase tracking-[0.14em] ${
                             state.isOpen
-                              ? 'bg-emerald-400/15 text-emerald-300'
-                              : 'bg-white/10 text-cream/60'
+                              ? 'bg-jade/15 text-jade-deep'
+                              : 'bg-purple-100 text-ink/70'
                           }`}
             >
               <motion.span
                 className={`h-1.5 w-1.5 rounded-full ${
-                  state.isOpen ? 'bg-emerald-400' : 'bg-cream/50'
+                  state.isOpen ? 'bg-jade' : 'bg-ink/40'
                 }`}
                 animate={state.isOpen ? { opacity: [1, 0.3, 1] } : undefined}
                 transition={{ duration: 2, repeat: Infinity }}
               />
               {state.isOpen ? t.locations.openNow : t.locations.closed}
             </span>
-            <span className="text-xs text-cream/45">{formatOpenState(state, t)}</span>
+            <span className="text-xs text-ink/65">{formatOpenState(state)}</span>
           </div>
 
-          <h2 className="mt-6 font-display text-[28px] font-semibold leading-tight tracking-tightest">
+          <h2 className="mt-6 font-display text-[28px] font-bold leading-tight tracking-tightest">
             {outlet.name}
           </h2>
 
           {outlet.rating && (
-            <p className="mt-2 inline-flex items-center gap-1.5 text-xs text-cream/55">
-              <Star size={13} className="fill-gold-400 text-gold-400" />
+            <p className="mt-2 inline-flex items-center gap-1.5 text-xs text-ink/70">
+              <Star size={13} className="fill-tangerine text-purple-800" />
               {outlet.rating.score} · {outlet.rating.count} Google reviews
             </p>
           )}
 
-          <dl className="mt-6 space-y-4 text-sm text-cream/65">
+          <dl className="mt-6 space-y-4 text-sm text-ink/65">
             <div className="flex gap-3">
-              <MapPin size={16} className="mt-0.5 shrink-0 text-gold-400" />
+              <MapPin size={16} className="mt-0.5 shrink-0 text-purple-800" />
               <dd>
                 {outlet.address}
                 {outlet.floor && (
                   <>
                     <br />
-                    <span className="text-cream/45">{outlet.floor}</span>
+                    <span className="text-ink/65">{outlet.floor}</span>
                   </>
                 )}
               </dd>
@@ -172,9 +177,9 @@ function OutletCard({ outlet, index }: { outlet: Outlet; index: number }) {
 
             {outlet.phone && (
               <div className="flex gap-3">
-                <Phone size={16} className="mt-0.5 shrink-0 text-gold-400" />
+                <Phone size={16} className="mt-0.5 shrink-0 text-purple-800" />
                 <dd>
-                  <a href={`tel:${outlet.phone}`} className="hover:text-gold-400">
+                  <a href={`tel:${outlet.phone}`} className="hover:text-purple-800">
                     {outlet.phone}
                   </a>
                 </dd>
@@ -182,15 +187,15 @@ function OutletCard({ outlet, index }: { outlet: Outlet; index: number }) {
             )}
 
             <div className="flex gap-3">
-              <Clock size={16} className="mt-0.5 shrink-0 text-gold-400" />
+              <Clock size={16} className="mt-0.5 shrink-0 text-purple-800" />
               <dd className="w-full">
-                <span className="mb-2 block text-[11px] uppercase tracking-[0.18em] text-cream/40">
+                <span className="mb-2 block text-[11px] uppercase tracking-[0.18em] text-ink/65">
                   {t.locations.hours}
                 </span>
                 <ul className="space-y-1">
                   {outlet.hours.map((h, i) => (
                     <li key={i} className="flex justify-between gap-6 text-[13px]">
-                      <span className="text-cream/50">{t.days[i]}</span>
+                      <span className="text-ink/70">{DAY_NAMES[i]}</span>
                       <span className="tabular-nums">
                         {formatTime(h.open)} – {formatTime(h.close)}
                       </span>
@@ -213,7 +218,7 @@ function OutletCard({ outlet, index }: { outlet: Outlet; index: number }) {
                 href={outlet.deliveryUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn-ghost !px-6 !py-3 !text-[13px]"
+                className="btn-outline !px-6 !py-3 !text-[13px]"
               >
                 {t.locations.delivery}
                 <ExternalLink size={14} />

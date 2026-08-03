@@ -5,10 +5,39 @@ Marketing site for Chatime Sri Lanka — Havelock City Mall, Level 2, Colombo 05
 Next.js 15 · React 19 · Tailwind · Framer Motion. Static output, no database, no
 backend. `npm run dev`, `npm run build`.
 
+**Live:** https://chatime-sri-lanka.vercel.app
+
+## Brand
+
+Colours and assets were sampled from the official sites rather than invented.
+chatime.com and chatime.com.au run the same global design system and ship the
+identical logo file, so these are the real brand values:
+
+| Role | Hex |
+|---|---|
+| Primary purple | `#500778` |
+| Secondary purple / magenta | `#5C2D91` · `#812990` |
+| Lilac / section tint | `#B296C8` · `#F0EAF4` |
+| Accents | `#19BECF` cyan · `#00A664` green · `#F47929` orange · `#F16776` coral |
+| Logo leaf | `#75B743` |
+
+The logo in `public/` is the official stacked mark taken from the asset the
+global sites serve. `chatime-stacked-white.svg` is the original (white badge, for
+purple backgrounds); `chatime-stacked-purple.svg` is the same artwork with the
+circle and lettering swapped so it reads on white.
+
+Chatime's own typeface is **Lasiver**, which is commercially licensed. The site
+uses **Figtree** — the closest free geometric-humanist match, same tall x-height
+and circular bowls — so it reads as Chatime without licensing the original.
+
+The site is white-first with purple as the brand act, matching how the official
+sites are laid out: purple full-bleed panels for the hero and mobile menu, white
+everywhere else.
+
 ## What makes this different from the other Chatime sites
 
-Every other Chatime country site was reviewed before this was built. All 17 of
-them share the same four gaps, and this site closes them:
+Every other Chatime country site was reviewed before this was built. All 17 share
+the same four gaps, and this site closes them:
 
 | | Elsewhere | Here |
 |---|---|---|
@@ -23,8 +52,6 @@ suspends, mousse caps the top, the liquid pales as you drop the sugar.
 
 ## ⚠️ Before this goes live
 
-Three things must be corrected. They are all in two files.
-
 ### 1. Prices — `src/lib/menu.ts`
 
 **Every price in this file is a placeholder.** They are plausible Colombo
@@ -32,30 +59,21 @@ bubble-tea prices, not Chatime Sri Lanka's real ones. No price list is published
 anywhere online — the Uber Eats listing sits behind a bot check.
 
 Replace every `prices` value with the real figures from the in-store menu board,
-then set `PRICES_ARE_PLACEHOLDER = false` to remove the amber "indicative
-pricing" notice from the menu page. The notice is deliberately hard to miss so
-this cannot ship by accident.
+then set `PRICES_ARE_PLACEHOLDER = false`. That one flag does three things at
+once: removes the amber "indicative pricing" notice from the menu page, and opens
+the site to search engines (see `app/layout.tsx`). Until it is flipped the site
+sends `noindex` — an indexed page quoting invented prices under the Chatime name
+would send real customers to the store expecting the wrong figure.
 
-While you are in there: drink names marked `// ✅ confirmed` were seen on
-@chatimesrilanka. The rest are standard Chatime range items — delete any the
-Havelock store does not carry, and add the ones it does.
+Drink names marked `// ✅ confirmed` were seen on @chatimesrilanka. The rest are
+standard Chatime range items — delete any the Havelock store does not carry.
 
-### 2. Sinhala and Tamil copy — `src/lib/i18n/dictionaries.ts`
-
-A first pass, marked `// review`. **It needs a native speaker before launch.**
-A bad Sinhala menu reads worse to the people it is meant to serve than English
-would. The English is final; the other two are not.
-
-Drink names stay in English in all three languages, deliberately — that is how
-they are ordered in store and printed on the board. Category names, navigation
-and all UI copy do translate.
-
-### 3. Outlet details — `src/lib/outlets.ts`
+### 2. Outlet details — `src/lib/outlets.ts`
 
 - `phone` is empty. Google lists no number for the store; add one when it exists.
 - `rating` is set to 4.2 from 247 reviews. The Google listing was given as
-  "4.247 Google reviews", which is ambiguous — confirm on Google Maps, or
-  delete the `rating` field to stop showing it.
+  "4.247 Google reviews", which is ambiguous — confirm on Google Maps, or delete
+  the `rating` field to stop showing it.
 - `WHATSAPP_NUMBER` is empty. Set it to e.g. `'94771234567'` and the customiser
   gains a "Send order on WhatsApp" button that arrives pre-filled with the exact
   build and price. Until then it promotes the Uber Eats link instead — there is
@@ -64,6 +82,7 @@ and all UI copy do translate.
 ## Structure
 
 ```
+public/                   official Chatime logo, both variants
 src/
   app/                    home, /menu, /locations, /about
   components/
@@ -72,38 +91,36 @@ src/
     menu/DrinkCard        tilting card, one per drink
     motion/               Reveal, RevealWords, Marquee, MagneticButton
     home/                 Hero, Stats, Featured, BuildTeaser, Story, LocationTeaser
-    site/                 Header, Footer, LanguageSwitcher, LocationsView, AboutView
+    site/                 Header, Footer, Wordmark, LocationsView, AboutView
   lib/
     menu.ts               ← the menu. Prices live here.
     outlets.ts            ← stores, hours, open-now logic
-    i18n/                 dictionaries, provider, outlet formatters
+    copy.ts               ← all site copy, English
 ```
 
 ## Notes for whoever picks this up
 
-- **Language choice persists to `localStorage`,** and is read after mount so the
-  server and first client render agree. Do not move it into the initial render
-  or React will throw a hydration mismatch.
 - **Open/closed is computed in Asia/Colombo explicitly** (`colomboNow`), not from
   the visitor's clock — someone browsing from London sees whether the store is
   open *in Colombo*.
-- **`openState` returns a structured descriptor, not a sentence.** Wording comes
-  from the dictionary at render time via `lib/i18n/formatOutlet`. Do not move
-  English prose back into `outlets.ts`.
-- **Sinhala and Tamil fonts are fallbacks in the Tailwind font stack,** not a
-  per-locale class. Outfit has no Sinhala glyphs, so the browser falls through to
-  Noto for exactly those characters and keeps the brand face for Latin. This is
-  what lets an English drink name sit inside a Sinhala sentence and look right.
 - **Above-the-fold headings pass `immediate` to `RevealWords`.** They must not
   depend on IntersectionObserver: the words start translated outside a clipping
-  wrapper, and an observer that never fires would leave the heading permanently
+  wrapper, so an observer that never fires would leave the heading permanently
   invisible.
+- **`RevealWords` puts the inter-word space between the clipped wrappers, not
+  inside them.** Inside, it collapses and the heading reads "Cupsof Joy" to
+  screen readers and search engines.
+- **`CupVisual` takes an `onPurple` prop.** The cup is drawn in translucent
+  white, which vanishes on a white page; the prop switches the outline to a tint
+  of the brand purple.
+- **Muted text is never lighter than `ink/65`.** Over white that is the point
+  where it clears 4.5:1 for WCAG AA. `ink/40`, which looked fine, measured 2.5:1.
 - The locator map is decorative SVG, not a real map. A real one needs a Google
-  Maps API key and a billing account; the "Get directions" button already opens
-  the real thing.
+  Maps API key and a billing account; "Get directions" already opens the real
+  thing.
 
 ## Not built (out of scope for v1)
 
-Franchise page, careers, loyalty/rewards, and online checkout. The customiser
-was built to hand off rather than take payment, so adding real checkout later
-does not require redesigning it.
+Franchise page, careers, loyalty/rewards, online checkout, and non-English
+languages. The customiser was built to hand off rather than take payment, so
+adding real checkout later does not require redesigning it.

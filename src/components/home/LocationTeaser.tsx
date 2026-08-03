@@ -4,12 +4,16 @@ import { motion } from 'framer-motion';
 import { Clock, Instagram, MapPin, Star } from 'lucide-react';
 import { Reveal, RevealWords } from '@/components/motion/Reveal';
 import { MagneticButton } from '@/components/motion/MagneticButton';
-import { useLocale } from '@/lib/i18n/LocaleProvider';
-import { INSTAGRAM_URL, openState, outlets } from '@/lib/outlets';
-import { formatHoursSummary, formatOpenState } from '@/lib/i18n/formatOutlet';
+import { copy as t } from '@/lib/copy';
+import {
+  INSTAGRAM_URL,
+  formatOpenState,
+  hoursSummary,
+  openState,
+  outlets,
+} from '@/lib/outlets';
 
 export function LocationTeaser() {
-  const { t } = useLocale();
   const outlet = outlets[0];
   const state = openState(outlet);
 
@@ -30,7 +34,7 @@ export function LocationTeaser() {
           </div>
 
           <Reveal delay={0.1}>
-            <article className="glass relative overflow-hidden rounded-[28px] p-7 sm:p-9">
+            <article className="card relative overflow-hidden rounded-[28px] p-7 sm:p-9">
               {/* Abstract street grid — a real map needs an API key, this doesn't */}
               <svg
                 aria-hidden
@@ -65,15 +69,15 @@ export function LocationTeaser() {
                 <div className="flex flex-wrap items-center gap-3">
                   <span
                     className={`inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-[11px]
-                                font-semibold uppercase tracking-[0.14em] ${
+                                font-bold uppercase tracking-[0.14em] ${
                                   state.isOpen
-                                    ? 'bg-emerald-400/15 text-emerald-300'
-                                    : 'bg-white/10 text-cream/60'
+                                    ? 'bg-jade/15 text-jade-deep'
+                                    : 'bg-purple-100 text-ink/70'
                                 }`}
                   >
                     <motion.span
                       className={`h-1.5 w-1.5 rounded-full ${
-                        state.isOpen ? 'bg-emerald-400' : 'bg-cream/50'
+                        state.isOpen ? 'bg-jade' : 'bg-ink/40'
                       }`}
                       animate={state.isOpen ? { opacity: [1, 0.3, 1] } : undefined}
                       transition={{ duration: 2, repeat: Infinity }}
@@ -82,32 +86,32 @@ export function LocationTeaser() {
                   </span>
 
                   {outlet.rating && (
-                    <span className="inline-flex items-center gap-1.5 text-xs text-cream/55">
-                      <Star size={13} className="fill-gold-400 text-gold-400" />
+                    <span className="inline-flex items-center gap-1.5 text-xs text-ink/70">
+                      <Star size={13} className="fill-tangerine text-purple-800" />
                       {outlet.rating.score} · {outlet.rating.count} Google reviews
                     </span>
                   )}
                 </div>
 
-                <h3 className="mt-6 font-display text-3xl font-semibold tracking-tightest">
+                <h3 className="mt-6 font-display text-3xl font-bold tracking-tightest">
                   {outlet.name}
                 </h3>
 
-                <dl className="mt-6 space-y-3.5 text-sm text-cream/65">
+                <dl className="mt-6 space-y-3.5 text-sm text-ink/65">
                   <div className="flex gap-3">
-                    <MapPin size={16} className="mt-0.5 shrink-0 text-gold-400" />
+                    <MapPin size={16} className="mt-0.5 shrink-0 text-purple-800" />
                     <dd>
                       {outlet.address}
                       <br />
-                      <span className="text-cream/45">{outlet.floor}</span>
+                      <span className="text-ink/65">{outlet.floor}</span>
                     </dd>
                   </div>
                   <div className="flex gap-3">
-                    <Clock size={16} className="mt-0.5 shrink-0 text-gold-400" />
+                    <Clock size={16} className="mt-0.5 shrink-0 text-purple-800" />
                     <dd>
-                      {formatHoursSummary(outlet, t)}
+                      {hoursSummary(outlet)}
                       <br />
-                      <span className="text-cream/45">{formatOpenState(state, t)}</span>
+                      <span className="text-ink/65">{formatOpenState(state)}</span>
                     </dd>
                   </div>
                 </dl>
@@ -123,7 +127,7 @@ export function LocationTeaser() {
                     href={INSTAGRAM_URL}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="btn-ghost !px-6 !py-3 !text-[13px]"
+                    className="btn-outline !px-6 !py-3 !text-[13px]"
                   >
                     <Instagram size={15} />
                     @chatimesrilanka

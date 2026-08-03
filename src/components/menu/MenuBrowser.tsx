@@ -5,7 +5,7 @@ import { useMemo, useState } from 'react';
 import { Customiser } from './Customiser';
 import { DrinkCard } from './DrinkCard';
 import { Reveal, RevealWords } from '@/components/motion/Reveal';
-import { useLocale } from '@/lib/i18n/LocaleProvider';
+import { copy as t } from '@/lib/copy';
 import {
   PRICES_ARE_PLACEHOLDER,
   categories,
@@ -17,7 +17,6 @@ import {
 type Filter = 'caffeineFree' | 'dairyFree';
 
 export function MenuBrowser() {
-  const { t } = useLocale();
   const [category, setCategory] = useState<CategoryId | 'all'>('all');
   const [filters, setFilters] = useState<Filter[]>([]);
   const [selected, setSelected] = useState<Drink | null>(null);
@@ -43,7 +42,7 @@ export function MenuBrowser() {
     <>
       <section className="relative pt-[130px]">
         <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
-          <div className="absolute -top-[10%] left-1/2 h-[45vw] w-[45vw] -translate-x-1/2 rounded-full bg-grape-600/28 blur-[130px]" />
+          <div className="absolute -top-[10%] left-1/2 h-[45vw] w-[45vw] -translate-x-1/2 rounded-full bg-purple-300/35 blur-[130px]" />
         </div>
 
         <div className="container-page relative">
@@ -60,8 +59,8 @@ export function MenuBrowser() {
           {PRICES_ARE_PLACEHOLDER && (
             <Reveal delay={0.2}>
               <p
-                className="mt-6 inline-flex items-start gap-2 rounded-2xl border border-gold-400/30
-                           bg-gold-400/[0.07] px-4 py-3 text-[13px] leading-relaxed text-gold-300"
+                className="mt-6 inline-flex items-start gap-2 rounded-2xl border border-purple-200
+                           bg-purple-800/[0.07] px-4 py-3 text-[13px] leading-relaxed text-purple-800"
               >
                 <span aria-hidden>⚠</span>
                 {t.menu.placeholderNotice}
@@ -82,7 +81,7 @@ export function MenuBrowser() {
                   key={cat.id}
                   active={category === cat.id}
                   onClick={() => setCategory(cat.id)}
-                  label={t.categories[cat.id] ?? cat.name}
+                  label={cat.name}
                 />
               ))}
             </div>
@@ -91,7 +90,7 @@ export function MenuBrowser() {
           {/* Dietary filters */}
           <Reveal delay={0.3}>
             <div className="mt-4 flex flex-wrap items-center gap-2">
-              <span className="mr-1 text-[11px] uppercase tracking-[0.2em] text-cream/35">
+              <span className="mr-1 text-[11px] uppercase tracking-[0.2em] text-ink/65">
                 {t.menu.filters}
               </span>
               <FilterChip
@@ -115,7 +114,7 @@ export function MenuBrowser() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -8 }}
                 transition={{ duration: 0.3 }}
-                className="mt-7 font-serif text-lg italic text-cream/45"
+                className="mt-7 text-base font-semibold uppercase tracking-[0.14em] text-purple-500"
               >
                 {activeCategory.tagline}
               </motion.p>
@@ -141,7 +140,7 @@ export function MenuBrowser() {
         </AnimatePresence>
 
         {visible.length === 0 && (
-          <p className="py-20 text-center text-cream/45">{t.menu.empty}</p>
+          <p className="py-20 text-center text-ink/65">{t.menu.empty}</p>
         )}
       </section>
 
@@ -166,13 +165,13 @@ function CategoryPill({
       aria-pressed={active}
       className={`relative shrink-0 whitespace-nowrap rounded-full px-5 py-2.5 text-sm font-medium
                   transition-colors duration-300 ${
-                    active ? 'text-grape-950' : 'text-cream/60 hover:text-cream'
+                    active ? 'text-white' : 'text-ink/70 hover:text-ink'
                   }`}
     >
       {active && (
         <motion.span
           layoutId="category-pill"
-          className="absolute inset-0 rounded-full bg-gold-400"
+          className="absolute inset-0 rounded-full bg-purple-800"
           transition={{ type: 'spring', stiffness: 340, damping: 32 }}
         />
       )}
@@ -197,8 +196,8 @@ function FilterChip({
       aria-pressed={active}
       className={`rounded-full border px-3.5 py-1.5 text-xs transition-colors duration-300 ${
         active
-          ? 'border-gold-400 bg-gold-400/12 text-gold-300'
-          : 'border-white/12 text-cream/50 hover:border-white/30 hover:text-cream/80'
+          ? 'border-purple-800 bg-purple-100 text-purple-800'
+          : 'border-purple-100 text-ink/70 hover:border-white/30 hover:text-ink/80'
       }`}
     >
       {label}

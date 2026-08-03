@@ -6,8 +6,16 @@ import { Reveal, RevealWords } from '@/components/motion/Reveal';
 import { CupVisual } from '@/components/menu/CupVisual';
 import { Customiser } from '@/components/menu/Customiser';
 import { MagneticButton } from '@/components/motion/MagneticButton';
-import { useLocale } from '@/lib/i18n/LocaleProvider';
-import { drinkBySlug, formatLKR, priceOf, type Drink, type IceLevelId, type SugarLevel } from '@/lib/menu';
+import { copy as t } from '@/lib/copy';
+import {
+  drinkBySlug,
+  formatLKR,
+  iceLevels,
+  priceOf,
+  type Drink,
+  type IceLevelId,
+  type SugarLevel,
+} from '@/lib/menu';
 
 /**
  * A self-playing demo of the customiser — it cycles through combinations so the
@@ -21,7 +29,6 @@ const SEQUENCE: { sugar: SugarLevel; ice: IceLevelId; toppings: string[] }[] = [
 ];
 
 export function BuildTeaser() {
-  const { t } = useLocale();
   const [step, setStep] = useState(0);
   const [open, setOpen] = useState<Drink | null>(null);
 
@@ -31,14 +38,6 @@ export function BuildTeaser() {
     const id = setInterval(() => setStep((s) => (s + 1) % SEQUENCE.length), 2600);
     return () => clearInterval(id);
   }, []);
-
-  const iceLabel = (id: IceLevelId) =>
-    ({
-      none: t.build.noIce,
-      less: t.build.lessIce,
-      regular: t.build.regularIce,
-      extra: t.build.extraIce,
-    })[id];
 
   if (!drink) return null;
 
@@ -53,9 +52,9 @@ export function BuildTeaser() {
   });
 
   return (
-    <section className="relative overflow-hidden border-y border-white/8 py-24 sm:py-32">
+    <section className="relative overflow-hidden border-y border-purple-100 py-24 sm:py-32">
       <div aria-hidden className="pointer-events-none absolute inset-0">
-        <div className="absolute left-1/2 top-1/2 h-[60vw] w-[60vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-grape-600/22 blur-[140px]" />
+        <div className="absolute left-1/2 top-1/2 h-[60vw] w-[60vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-purple-300/30 blur-[140px]" />
       </div>
 
       <div className="container-page relative grid gap-14 lg:grid-cols-2 lg:items-center">
@@ -74,11 +73,11 @@ export function BuildTeaser() {
             <dl className="mt-9 grid max-w-md grid-cols-3 gap-3">
               {[
                 { label: t.build.sugar, value: `${current.sugar}%` },
-                { label: t.build.ice, value: iceLabel(current.ice) },
+                { label: t.build.ice, value: iceLevels.find((l) => l.id === current.ice)?.name ?? current.ice },
                 { label: t.build.toppings, value: String(current.toppings.length) },
               ].map((item) => (
-                <div key={item.label} className="glass rounded-2xl px-4 py-3.5">
-                  <dt className="text-[10px] uppercase tracking-[0.18em] text-cream/40">
+                <div key={item.label} className="card rounded-2xl px-4 py-3.5">
+                  <dt className="text-[10px] uppercase tracking-[0.18em] text-ink/65">
                     {item.label}
                   </dt>
                   <motion.dd
@@ -86,7 +85,7 @@ export function BuildTeaser() {
                     initial={{ opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.4 }}
-                    className="mt-1 font-display text-lg font-semibold tracking-tight"
+                    className="mt-1 font-display text-lg font-bold tracking-tight"
                   >
                     {item.value}
                   </motion.dd>
@@ -101,7 +100,7 @@ export function BuildTeaser() {
                 {t.build.cta}
               </MagneticButton>
               <div className="flex items-baseline gap-2">
-                <span className="text-[11px] uppercase tracking-[0.18em] text-cream/40">
+                <span className="text-[11px] uppercase tracking-[0.18em] text-ink/65">
                   {t.build.total}
                 </span>
                 <motion.span
@@ -109,7 +108,7 @@ export function BuildTeaser() {
                   initial={{ opacity: 0, y: -6 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4 }}
-                  className="font-display text-2xl font-semibold tracking-tight text-gold-400"
+                  className="font-display text-2xl font-bold tracking-tight text-purple-800"
                 >
                   {formatLKR(price)}
                 </motion.span>
@@ -124,9 +123,9 @@ export function BuildTeaser() {
             onClick={() => setOpen(drink)}
             aria-label={t.build.cta}
             className="relative rounded-3xl focus-visible:outline focus-visible:outline-2
-                       focus-visible:outline-offset-8 focus-visible:outline-gold-400"
+                       focus-visible:outline-offset-8 focus-visible:outline-purple-800"
           >
-            <div aria-hidden className="absolute inset-0 rounded-full bg-gold-400/10 blur-[80px]" />
+            <div aria-hidden className="absolute inset-0 rounded-full bg-purple-100 blur-[80px]" />
             <CupVisual
               drink={drink}
               size="regular"

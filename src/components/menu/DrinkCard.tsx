@@ -3,7 +3,7 @@
 import { motion, useReducedMotion } from 'framer-motion';
 import { useRef, useState } from 'react';
 import { CupVisual } from './CupVisual';
-import { useLocale } from '@/lib/i18n/LocaleProvider';
+import { copy as t } from '@/lib/copy';
 import { formatLKR, type Drink } from '@/lib/menu';
 
 type Props = {
@@ -12,9 +12,15 @@ type Props = {
   index?: number;
 };
 
+/** Badge colours come from the brand's bright accent set, one per meaning. */
+const BADGE = {
+  new: 'bg-cyan text-purple-900',
+  bestseller: 'bg-leaf text-purple-900',
+  hot: 'bg-tangerine text-white',
+} as const;
+
 /** Card with a 3D tilt that follows the cursor and a cup that lifts on hover. */
 export function DrinkCard({ drink, onSelect, index = 0 }: Props) {
-  const { t } = useLocale();
   const reduced = useReducedMotion();
   const ref = useRef<HTMLButtonElement>(null);
   const [tilt, setTilt] = useState({ rx: 0, ry: 0 });
@@ -25,15 +31,15 @@ export function DrinkCard({ drink, onSelect, index = 0 }: Props) {
     const rect = ref.current.getBoundingClientRect();
     const px = (e.clientX - rect.left) / rect.width - 0.5;
     const py = (e.clientY - rect.top) / rect.height - 0.5;
-    setTilt({ rx: -py * 9, ry: px * 11 });
+    setTilt({ rx: -py * 8, ry: px * 10 });
   }
 
   const badge = drink.isNew
-    ? t.menu.isNew
+    ? { label: t.menu.isNew, tone: BADGE.new }
     : drink.bestseller
-      ? t.menu.bestseller
+      ? { label: t.menu.bestseller, tone: BADGE.bestseller }
       : drink.servedHot
-        ? t.menu.hot
+        ? { label: t.menu.hot, tone: BADGE.hot }
         : null;
 
   return (
@@ -52,28 +58,26 @@ export function DrinkCard({ drink, onSelect, index = 0 }: Props) {
         onMouseLeave={() => setTilt({ rx: 0, ry: 0 })}
         animate={{ rotateX: tilt.rx, rotateY: tilt.ry }}
         transition={{ type: 'spring', stiffness: 200, damping: 20 }}
-        className="glass group relative flex w-full flex-col items-center overflow-hidden
-                   rounded-3xl px-5 pb-6 pt-7 text-center transition-colors duration-500
-                   hover:border-white/25 focus-visible:outline focus-visible:outline-2
-                   focus-visible:outline-offset-4 focus-visible:outline-gold-400"
+        className="card group relative flex w-full flex-col items-center overflow-hidden px-5 pb-6 pt-7
+                   text-center transition-shadow duration-500 hover:shadow-lift
+                   focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4
+                   focus-visible:outline-purple-800"
         style={{ transformStyle: 'preserve-3d' }}
       >
-        {/* Colour wash bleeding up from the drink itself */}
+        {/* Lilac wash rising behind the cup on hover */}
         <span
           aria-hidden
-          className="pointer-events-none absolute inset-x-0 bottom-0 h-2/3 opacity-0
-                     transition-opacity duration-700 group-hover:opacity-30"
-          style={{
-            background: `radial-gradient(ellipse at 50% 100%, ${drink.colour[0]}, transparent 70%)`,
-          }}
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t
+                     from-purple-100 to-transparent opacity-0 transition-opacity duration-700
+                     group-hover:opacity-100"
         />
 
         {badge && (
           <span
-            className="absolute left-4 top-4 rounded-full border border-gold-400/40 bg-gold-400/10
-                       px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-gold-300"
+            className={`absolute left-4 top-4 z-10 rounded-full px-2.5 py-1 text-[10px]
+                        font-extrabold uppercase tracking-[0.14em] ${badge.tone}`}
           >
-            {badge}
+            {badge.label}
           </span>
         )}
 
@@ -94,29 +98,29 @@ export function DrinkCard({ drink, onSelect, index = 0 }: Props) {
         </motion.div>
 
         <h3
-          className="relative mt-5 font-display text-lg font-semibold leading-tight tracking-tight"
+          className="relative mt-5 font-display text-lg font-extrabold leading-tight tracking-tight text-purple-900"
           style={{ transform: 'translateZ(28px)' }}
         >
           {drink.name}
         </h3>
 
-        <p className="relative mt-2 line-clamp-2 text-[13px] leading-relaxed text-cream/50">
+        <p className="relative mt-2 line-clamp-2 text-[13px] leading-relaxed text-ink/70">
           {drink.description}
         </p>
 
-        <div className="relative mt-4 flex items-center gap-2">
-          <span className="text-[11px] uppercase tracking-[0.18em] text-cream/40">
+        <div className="relative mt-4 flex items-baseline gap-2">
+          <span className="text-[11px] font-bold uppercase tracking-[0.16em] text-ink/65">
             {t.menu.from}
           </span>
-          <span className="font-display text-xl font-semibold tracking-tight text-gold-400">
+          <span className="font-display text-xl font-extrabold tracking-tight text-purple-800">
             {formatLKR(drink.prices.regular)}
           </span>
         </div>
 
         <span
-          className="mt-4 inline-flex items-center gap-1.5 rounded-full border border-white/15 px-4 py-2
-                     text-xs font-medium tracking-wide text-cream/70 transition-all duration-300
-                     group-hover:border-gold-400 group-hover:bg-gold-400 group-hover:text-grape-950"
+          className="relative mt-4 inline-flex items-center gap-1.5 rounded-full border-2 border-purple-800
+                     px-4 py-2 text-xs font-bold tracking-wide text-purple-800 transition-all duration-300
+                     group-hover:bg-purple-800 group-hover:text-white"
         >
           {t.build.customise}
           <span aria-hidden className="transition-transform duration-300 group-hover:translate-x-0.5">

@@ -3,10 +3,9 @@
 import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
 import { useRef } from 'react';
 import { Reveal, RevealWords } from '@/components/motion/Reveal';
-import { useLocale } from '@/lib/i18n/LocaleProvider';
+import { copy as t } from '@/lib/copy';
 
 export function Story() {
-  const { t } = useLocale();
   const reduced = useReducedMotion();
   const ref = useRef<HTMLElement>(null);
 
@@ -19,9 +18,9 @@ export function Story() {
   const rotate = useTransform(scrollYProgress, [0, 1], [reduced ? 0 : -12, reduced ? 0 : 12]);
 
   return (
-    <section ref={ref} className="grain relative overflow-hidden py-24 sm:py-32">
+    <section ref={ref} className="relative overflow-hidden py-24 sm:py-32">
       <div aria-hidden className="pointer-events-none absolute inset-0">
-        <div className="absolute right-[-10%] top-1/4 h-[38vw] w-[38vw] rounded-full bg-grape-600/25 blur-[130px]" />
+        <div className="absolute right-[-10%] top-1/4 h-[38vw] w-[38vw] rounded-full bg-purple-300/30 blur-[130px]" />
       </div>
 
       <div className="container-page relative grid gap-14 lg:grid-cols-2 lg:items-center">
@@ -45,7 +44,7 @@ export function Story() {
           {[0, 1, 2].map((ring) => (
             <motion.div
               key={ring}
-              className="absolute left-1/2 top-1/2 rounded-full border border-white/10"
+              className="absolute left-1/2 top-1/2 rounded-full border border-purple-100"
               style={{
                 width: `${55 + ring * 22}%`,
                 height: `${55 + ring * 22}%`,

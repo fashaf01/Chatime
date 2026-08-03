@@ -5,15 +5,13 @@ import { Menu, X } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
-import { LanguageSwitcher } from './LanguageSwitcher';
 import { Wordmark } from './Wordmark';
-import { useLocale } from '@/lib/i18n/LocaleProvider';
+import { copy as t } from '@/lib/copy';
 import { outlets } from '@/lib/outlets';
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
 export function Header() {
-  const { t } = useLocale();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -35,16 +33,16 @@ export function Header() {
         className="fixed inset-x-0 top-0 z-40"
         initial={{ y: -80, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.9, ease: EASE, delay: 0.15 }}
+        transition={{ duration: 0.9, ease: EASE, delay: 0.1 }}
       >
         <div
           className={`transition-all duration-500 ${
             scrolled
-              ? 'border-b border-white/8 bg-grape-950/75 backdrop-blur-xl'
-              : 'border-b border-transparent'
+              ? 'border-b border-purple-100 bg-white/90 shadow-[0_2px_20px_-12px_rgba(80,7,120,0.4)] backdrop-blur-xl'
+              : 'border-b border-transparent bg-white'
           }`}
         >
-          <div className="container-page flex h-[74px] items-center justify-between gap-4">
+          <div className="container-page flex h-[78px] items-center justify-between gap-4">
             <Link href="/" aria-label="Chatime Sri Lanka, home">
               <Wordmark />
             </Link>
@@ -56,14 +54,16 @@ export function Header() {
                   <Link
                     key={link.href}
                     href={link.href}
-                    className={`relative rounded-full px-4 py-2 text-sm font-medium transition-colors
-                                ${active ? 'text-cream' : 'text-cream/60 hover:text-cream'}`}
+                    className={`relative rounded-full px-4 py-2 text-[13px] font-bold uppercase
+                                tracking-[0.12em] transition-colors ${
+                                  active ? 'text-purple-800' : 'text-ink/70 hover:text-purple-800'
+                                }`}
                   >
                     {link.label}
                     {active && (
                       <motion.span
                         layoutId="nav-underline"
-                        className="absolute inset-x-4 -bottom-0.5 h-px bg-gold-400"
+                        className="absolute inset-x-4 bottom-0 h-[3px] rounded-full bg-purple-800"
                         transition={{ type: 'spring', stiffness: 340, damping: 32 }}
                       />
                     )}
@@ -73,12 +73,11 @@ export function Header() {
             </nav>
 
             <div className="flex items-center gap-3">
-              <LanguageSwitcher className="hidden sm:inline-flex" />
               <a
                 href={orderUrl}
                 target={orderUrl.startsWith('http') ? '_blank' : undefined}
                 rel={orderUrl.startsWith('http') ? 'noopener noreferrer' : undefined}
-                className="btn-primary hidden !px-5 !py-2.5 !text-[13px] md:inline-flex"
+                className="btn-primary hidden !px-6 !py-2.5 !text-[12px] !uppercase !tracking-[0.12em] md:inline-flex"
               >
                 {t.nav.order}
               </a>
@@ -86,8 +85,8 @@ export function Header() {
                 type="button"
                 onClick={() => setOpen(true)}
                 aria-label="Open menu"
-                className="grid h-10 w-10 place-items-center rounded-full border border-white/15
-                           text-cream/80 transition hover:bg-white/10 lg:hidden"
+                className="grid h-11 w-11 place-items-center rounded-full border-2 border-purple-800
+                           text-purple-800 transition hover:bg-purple-800 hover:text-white lg:hidden"
               >
                 <Menu size={18} />
               </button>
@@ -96,23 +95,23 @@ export function Header() {
         </div>
       </motion.header>
 
-      {/* Mobile sheet */}
+      {/* Mobile sheet — full-bleed purple, the way the brand treats panels */}
       <AnimatePresence>
         {open && (
           <motion.div
-            className="fixed inset-0 z-50 flex flex-col bg-grape-950 px-6 pb-10 pt-6"
+            className="fixed inset-0 z-50 flex flex-col bg-purple-800 px-6 pb-10 pt-6"
             initial={{ opacity: 0, y: -18 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -18 }}
             transition={{ duration: 0.4, ease: EASE }}
           >
             <div className="flex items-center justify-between">
-              <Wordmark />
+              <Wordmark variant="white" />
               <button
                 type="button"
                 onClick={() => setOpen(false)}
                 aria-label="Close menu"
-                className="grid h-10 w-10 place-items-center rounded-full border border-white/15 text-cream/80"
+                className="grid h-11 w-11 place-items-center rounded-full border-2 border-white/50 text-white"
               >
                 <X size={18} />
               </button>
@@ -129,8 +128,8 @@ export function Header() {
                   <Link
                     href={link.href}
                     onClick={() => setOpen(false)}
-                    className="block border-b border-white/8 py-5 font-display text-4xl
-                               font-semibold tracking-tightest text-cream"
+                    className="block border-b border-white/20 py-5 font-display text-4xl
+                               font-extrabold tracking-tightest text-white"
                   >
                     {link.label}
                   </Link>
@@ -138,13 +137,12 @@ export function Header() {
               ))}
             </nav>
 
-            <div className="mt-auto flex flex-col gap-5">
-              <LanguageSwitcher />
+            <div className="mt-auto">
               <a
                 href={orderUrl}
                 target={orderUrl.startsWith('http') ? '_blank' : undefined}
                 rel={orderUrl.startsWith('http') ? 'noopener noreferrer' : undefined}
-                className="btn-primary w-full"
+                className="btn-invert w-full"
               >
                 {t.nav.order}
               </a>

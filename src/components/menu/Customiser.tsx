@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { X } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { CupVisual } from './CupVisual';
-import { useLocale } from '@/lib/i18n/LocaleProvider';
+import { copy as t } from '@/lib/copy';
 import { outlets, WHATSAPP_NUMBER } from '@/lib/outlets';
 import {
   formatLKR,
@@ -26,7 +26,6 @@ type Props = {
 const EASE = [0.16, 1, 0.3, 1] as const;
 
 export function Customiser({ drink, onClose }: Props) {
-  const { t } = useLocale();
 
   const [size, setSize] = useState<'regular' | 'large'>('regular');
   const [sugar, setSugar] = useState<SugarLevel>(100);
@@ -105,7 +104,7 @@ export function Customiser({ drink, onClose }: Props) {
       {drink && (
         <>
           <motion.div
-            className="fixed inset-0 z-50 bg-grape-950/80 backdrop-blur-sm"
+            className="fixed inset-0 z-50 bg-purple-900/50 backdrop-blur-sm"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -118,7 +117,7 @@ export function Customiser({ drink, onClose }: Props) {
             aria-modal="true"
             aria-label={`Customise ${drink.name}`}
             className="fixed inset-x-0 bottom-0 z-50 flex max-h-[92vh] flex-col overflow-hidden
-                       rounded-t-[28px] border-t border-white/12 bg-grape-900
+                       rounded-t-[28px] border-t border-purple-100 bg-white
                        sm:inset-y-0 sm:left-auto sm:right-0 sm:max-h-none sm:w-[min(560px,100vw)]
                        sm:rounded-l-[32px] sm:rounded-tr-none sm:border-l sm:border-t-0"
             initial={{ y: '100%' }}
@@ -127,13 +126,13 @@ export function Customiser({ drink, onClose }: Props) {
             transition={{ duration: 0.6, ease: EASE }}
           >
             {/* Cup panel */}
-            <div className="relative shrink-0 overflow-hidden bg-gradient-to-b from-grape-800 to-grape-900 px-6 pb-4 pt-5">
+            <div className="relative shrink-0 overflow-hidden bg-purple-800 px-6 pb-4 pt-5">
               <button
                 type="button"
                 onClick={onClose}
                 aria-label={t.build.close}
                 className="absolute right-5 top-5 z-10 grid h-10 w-10 place-items-center rounded-full
-                           border border-white/15 text-cream/70 transition hover:bg-white/10 hover:text-cream"
+                           border border-white/30 text-white/80 transition hover:bg-white/15 hover:text-white"
               >
                 <X size={17} />
               </button>
@@ -145,14 +144,15 @@ export function Customiser({ drink, onClose }: Props) {
                   sugar={sugar}
                   ice={ice}
                   toppings={chosen}
+                  onPurple
                   className="h-[210px] w-[140px] shrink-0"
                 />
                 <div className="min-w-0 pb-4">
-                  <p className="eyebrow">{t.build.eyebrow}</p>
-                  <h2 className="mt-2 font-display text-[26px] font-semibold leading-[1.05] tracking-tightest">
+                  <p className="eyebrow-on-purple">{t.build.eyebrow}</p>
+                  <h2 className="mt-2 font-display text-[26px] font-extrabold leading-[1.05] tracking-tightest text-white">
                     {drink.name}
                   </h2>
-                  <p className="mt-2 text-sm leading-relaxed text-cream/55">
+                  <p className="mt-2 text-sm leading-relaxed text-white/70">
                     {drink.description}
                   </p>
                 </div>
@@ -227,9 +227,9 @@ export function Customiser({ drink, onClose }: Props) {
             </div>
 
             {/* Total + handoff */}
-            <div className="shrink-0 border-t border-white/10 bg-grape-950/70 px-6 py-4 backdrop-blur-xl">
+            <div className="shrink-0 border-t border-purple-100 bg-white/95 px-6 py-4 backdrop-blur-xl">
               <div className="flex items-baseline justify-between">
-                <span className="text-xs uppercase tracking-[0.22em] text-cream/45">
+                <span className="text-xs font-bold uppercase tracking-[0.2em] text-ink/65">
                   {t.build.total}
                 </span>
                 <motion.span
@@ -237,7 +237,7 @@ export function Customiser({ drink, onClose }: Props) {
                   initial={{ y: -8, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ duration: 0.35, ease: EASE }}
-                  className="font-display text-3xl font-semibold tracking-tightest text-gold-400"
+                  className="font-display text-3xl font-extrabold tracking-tightest text-purple-800"
                 >
                   {formatLKR(total)}
                 </motion.span>
@@ -272,7 +272,7 @@ export function Customiser({ drink, onClose }: Props) {
                     href={deliveryHref}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="btn-ghost flex-1"
+                    className="btn-outline flex-1"
                   >
                     {t.build.orderDelivery}
                   </a>
@@ -288,8 +288,8 @@ export function Customiser({ drink, onClose }: Props) {
 
 function Group({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <section className="border-b border-white/8 py-5 last:border-b-0">
-      <h3 className="mb-3 text-[11px] font-medium uppercase tracking-[0.24em] text-cream/45">
+    <section className="border-b border-purple-100 py-5 last:border-b-0">
+      <h3 className="mb-3 text-[11px] font-bold uppercase tracking-[0.22em] text-ink/65">
         {label}
       </h3>
       <div className="flex flex-wrap gap-2">{children}</div>
@@ -318,14 +318,14 @@ function Choice({
       className={`relative inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm
                   transition-colors duration-200 ${
                     active
-                      ? 'border-gold-400 text-grape-950'
-                      : 'border-white/15 text-cream/75 hover:border-white/35 hover:text-cream'
+                      ? 'border-purple-800 text-white'
+                      : 'border-purple-200 text-ink/70 hover:border-purple-800 hover:text-purple-800'
                   }`}
     >
       {active && (
         <motion.span
           layoutId={undefined}
-          className="absolute inset-0 rounded-full bg-gold-400"
+          className="absolute inset-0 rounded-full bg-purple-800"
           initial={{ scale: 0.85, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ duration: 0.25, ease: EASE }}
@@ -339,7 +339,7 @@ function Choice({
       )}
       <span className="relative z-10">{label}</span>
       {suffix && (
-        <span className={`relative z-10 text-xs ${active ? 'text-grape-950/70' : 'text-cream/40'}`}>
+        <span className={`relative z-10 text-xs ${active ? 'text-white/70' : 'text-ink/65'}`}>
           {suffix}
         </span>
       )}

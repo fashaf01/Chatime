@@ -1,44 +1,29 @@
 import type { Metadata, Viewport } from 'next';
-import {
-  Noto_Sans_Sinhala,
-  Noto_Sans_Tamil,
-  Outfit,
-  Plus_Jakarta_Sans,
-} from 'next/font/google';
+import { Figtree } from 'next/font/google';
 import './globals.css';
 import { Footer } from '@/components/site/Footer';
 import { Header } from '@/components/site/Header';
-import { LocaleProvider } from '@/lib/i18n/LocaleProvider';
 import { PRICES_ARE_PLACEHOLDER } from '@/lib/menu';
 import { outlets } from '@/lib/outlets';
 
-const display = Outfit({
+/**
+ * Chatime's own typeface is Lasiver, which is commercially licensed. Figtree is
+ * the closest free geometric-humanist match and carries the same friendly,
+ * round-bowled character across both display and body sizes.
+ */
+const figtree = Figtree({
   subsets: ['latin'],
   variable: '--font-display',
   display: 'swap',
 });
 
-const body = Plus_Jakarta_Sans({
+const figtreeBody = Figtree({
   subsets: ['latin'],
   variable: '--font-body',
   display: 'swap',
 });
 
-const sinhala = Noto_Sans_Sinhala({
-  subsets: ['sinhala'],
-  weight: ['400', '500', '600', '700'],
-  variable: '--font-sinhala',
-  display: 'swap',
-});
-
-const tamil = Noto_Sans_Tamil({
-  subsets: ['tamil'],
-  weight: ['400', '500', '600', '700'],
-  variable: '--font-tamil',
-  display: 'swap',
-});
-
-const SITE_URL = 'https://chatime.lk';
+const SITE_URL = 'https://chatime-sri-lanka.vercel.app';
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -69,6 +54,7 @@ export const metadata: Metadata = {
     title: 'Chatime Sri Lanka · Cups of Joy',
     description: 'Authentic Taiwanese bubble tea, brewed fresh in Colombo.',
   },
+  icons: { icon: '/chatime-stacked-purple.svg' },
   // Search engines are kept out while the menu prices are placeholders — an
   // indexed page quoting invented prices under the Chatime name would send real
   // customers to the store expecting the wrong figure. Flipping
@@ -80,7 +66,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: '#150720',
+  themeColor: '#500778',
 };
 
 /** Google understands this; it is what puts hours and the map pin in search. */
@@ -129,20 +115,15 @@ function structuredData() {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html
-      lang="en"
-      className={`${display.variable} ${body.variable} ${sinhala.variable} ${tamil.variable}`}
-    >
+    <html lang="en" className={`${figtree.variable} ${figtreeBody.variable}`}>
       <body>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData()) }}
         />
-        <LocaleProvider>
-          <Header />
-          <main>{children}</main>
-          <Footer />
-        </LocaleProvider>
+        <Header />
+        <main>{children}</main>
+        <Footer />
       </body>
     </html>
   );

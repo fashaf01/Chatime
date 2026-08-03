@@ -21,10 +21,10 @@ export function Marquee({ items, className, reverse = false }: Props) {
       >
         {doubled.map((item, i) => (
           <span key={i} className="flex items-center gap-10">
-            <span className="font-display text-2xl font-medium tracking-tight text-cream/45 sm:text-3xl">
+            <span className="font-display text-2xl font-medium tracking-tight text-ink/65 sm:text-3xl">
               {item}
             </span>
-            <span aria-hidden className="text-gold-400/70">
+            <span aria-hidden className="text-purple-800/70">
               ✦
             </span>
           </span>

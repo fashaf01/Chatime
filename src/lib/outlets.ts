@@ -70,12 +70,16 @@ export function colomboNow(now: Date = new Date()): { day: number; minutes: numb
   return { day: colombo.getDay(), minutes: colombo.getHours() * 60 + colombo.getMinutes() };
 }
 
-/**
- * Deliberately returns a *structured* descriptor rather than a finished
- * sentence. The site runs in English, Sinhala and Tamil, so the wording has to
- * come from the dictionary at render time — building "Closes 10 PM" here would
- * hard-code English into a trilingual page. Use `formatOpenState` to render it.
- */
+export const DAY_NAMES = [
+  'Sunday',
+  'Monday',
+  'Tuesday',
+  'Wednesday',
+  'Thursday',
+  'Friday',
+  'Saturday',
+] as const;
+
 export type OpenState =
   | { kind: 'coming-soon'; isOpen: false }
   | { kind: 'closes-in'; isOpen: true; minutes: number }
@@ -116,8 +120,30 @@ export function formatTime(time: string): string {
   return m === 0 ? `${hour12} ${period}` : `${hour12}:${String(m).padStart(2, '0')} ${period}`;
 }
 
-/** True when every day of the week keeps the same hours. */
-export function hasUniformHours(outlet: Outlet): boolean {
+/** "Open now · Closes 10 PM", the short line under the status pill. */
+export function formatOpenState(state: OpenState): string {
+  switch (state.kind) {
+    case 'coming-soon':
+      return 'Watch this space';
+    case 'closes-in':
+      return `Closes in ${state.minutes} min`;
+    case 'closes-at':
+      return `Closes ${formatTime(state.time)}`;
+    case 'opens-at':
+      return `Opens ${formatTime(state.time)}`;
+    case 'opens-on':
+      return `Opens ${formatTime(state.time)} ${DAY_NAMES[state.day]}`;
+  }
+}
+
+/** Collapses the week into "Every day · 10 AM – 10 PM" when the hours are uniform. */
+export function hoursSummary(outlet: Outlet): string {
   const first = outlet.hours[0];
-  return outlet.hours.every((h) => h.open === first.open && h.close === first.close);
+  const uniform = outlet.hours.every(
+    (h) => h.open === first.open && h.close === first.close,
+  );
+  if (uniform) return `Every day · ${formatTime(first.open)} – ${formatTime(first.close)}`;
+  return outlet.hours
+    .map((h, i) => `${DAY_NAMES[i].slice(0, 3)} ${formatTime(h.open)}–${formatTime(h.close)}`)
+    .join(' · ');
 }

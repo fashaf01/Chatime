@@ -5,11 +5,10 @@ import { useState } from 'react';
 import { Reveal, RevealWords } from '@/components/motion/Reveal';
 import { DrinkCard } from '@/components/menu/DrinkCard';
 import { Customiser } from '@/components/menu/Customiser';
-import { useLocale } from '@/lib/i18n/LocaleProvider';
+import { copy as t } from '@/lib/copy';
 import { drinks, type Drink } from '@/lib/menu';
 
 export function Featured() {
-  const { t } = useLocale();
   const [selected, setSelected] = useState<Drink | null>(null);
 
   const featured = drinks.filter((d) => d.bestseller).slice(0, 4);
@@ -33,8 +32,8 @@ export function Featured() {
           <Reveal delay={0.2}>
             <Link
               href="/menu"
-              className="group inline-flex items-center gap-2 text-sm font-medium text-cream/70
-                         transition-colors hover:text-gold-400"
+              className="group inline-flex items-center gap-2 text-sm font-medium text-ink/70
+                         transition-colors hover:text-purple-800"
             >
               {t.featured.viewAll}
               <span

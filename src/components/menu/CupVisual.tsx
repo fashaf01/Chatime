@@ -11,6 +11,8 @@ type Props = {
   ice: IceLevelId;
   toppings: string[];
   className?: string;
+  /** Draw the cup outline for a purple background instead of a white one. */
+  onPurple?: boolean;
 };
 
 /**
@@ -41,7 +43,21 @@ function widthAt(y: number) {
   return { left, right, centre: (left + right) / 2 };
 }
 
-export function CupVisual({ drink, size, sugar, ice, toppings, className }: Props) {
+export function CupVisual({
+  drink,
+  size,
+  sugar,
+  ice,
+  toppings,
+  className,
+  onPurple = false,
+}: Props) {
+  // The cup is drawn in translucent white, which vanishes on a white page.
+  // On light backgrounds the outline switches to a tint of the brand purple.
+  const line = onPurple ? "rgba(255,255,255,0.30)" : "rgba(80,7,120,0.22)";
+  const lineSoft = onPurple ? "rgba(255,255,255,0.22)" : "rgba(80,7,120,0.14)";
+  const shellFill = onPurple ? "rgba(255,255,255,0.16)" : "rgba(80,7,120,0.07)";
+  const rimFill = onPurple ? "rgba(255,255,255,0.12)" : "rgba(80,7,120,0.05)";
   const reduced = useReducedMotion();
 
   const chosen = useMemo(
@@ -105,8 +121,8 @@ export function CupVisual({ drink, size, sugar, ice, toppings, className }: Prop
           </linearGradient>
 
           <radialGradient id="shadow" cx="0.5" cy="0.5" r="0.5">
-            <stop offset="0%" stopColor="#000" stopOpacity="0.5" />
-            <stop offset="100%" stopColor="#000" stopOpacity="0" />
+            <stop offset="0%" stopColor="#500778" stopOpacity={onPurple ? 0.45 : 0.22} />
+            <stop offset="100%" stopColor="#500778" stopOpacity="0" />
           </radialGradient>
         </defs>
 
@@ -121,8 +137,8 @@ export function CupVisual({ drink, size, sugar, ice, toppings, className }: Prop
             width="13"
             height="80"
             rx="6"
-            fill="#F2E7D9"
-            opacity="0.9"
+            fill={onPurple ? "#F0EAF4" : "#DCCEE8"}
+            opacity="0.95"
             transform="rotate(9 118 52)"
           />
           <rect
@@ -180,7 +196,7 @@ export function CupVisual({ drink, size, sugar, ice, toppings, className }: Prop
                 rx="5"
                 fill="#FFFFFF"
                 initial={reduced ? false : { opacity: 0, scale: 0.4 }}
-                animate={{ opacity: 0.22, scale: 1 }}
+                animate={{ opacity: onPurple ? 0.22 : 0.42, scale: 1 }}
                 transition={{ ...spring, delay: reduced ? 0 : i * 0.04 }}
                 x={centre - 10 + jitter(i + 3, 46)}
                 y={y}
@@ -270,15 +286,15 @@ export function CupVisual({ drink, size, sugar, ice, toppings, className }: Prop
               Q ${CUP.rightBottom - 2} ${CUP.bottom} ${CUP.rightBottom} ${CUP.bottom - 8}
               L ${CUP.rightTop} ${CUP.top} Z`}
           fill="url(#gloss)"
-          stroke="rgba(255,255,255,0.28)"
+          stroke={line}
           strokeWidth="1.5"
         />
 
         {/* Domed lid */}
         <path
           d={`M 30 ${CUP.top} L 30 62 Q 30 50 46 48 L 154 48 Q 170 50 170 62 L 170 ${CUP.top} Z`}
-          fill="rgba(255,255,255,0.16)"
-          stroke="rgba(255,255,255,0.3)"
+          fill={shellFill}
+          stroke={line}
           strokeWidth="1.5"
         />
         <ellipse
@@ -286,8 +302,8 @@ export function CupVisual({ drink, size, sugar, ice, toppings, className }: Prop
           cy={CUP.top}
           rx="70"
           ry="6"
-          fill="rgba(255,255,255,0.12)"
-          stroke="rgba(255,255,255,0.22)"
+          fill={rimFill}
+          stroke={lineSoft}
         />
 
         {/* Sleeve band with the wordmark */}
