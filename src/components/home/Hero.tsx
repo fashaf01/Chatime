@@ -1,157 +1,287 @@
 'use client';
 
-import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
+import { AnimatePresence, motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
 import Image from 'next/image';
-import { useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { RevealWords } from '@/components/motion/Reveal';
-import { MagneticButton } from '@/components/motion/MagneticButton';
-import { copy as t } from '@/lib/copy';
-import { drinkBySlug } from '@/lib/menu';
+import { openState, outlets } from '@/lib/outlets';
+import { drinks, formatLKR, type Drink } from '@/lib/menu';
 
 const EASE = [0.16, 1, 0.3, 1] as const;
+const HOLD = 4200;
 
-/** Pearls drifting up through the hero. Fixed values so SSR and client agree. */
-const BUBBLES = [
-  { left: '8%', size: 14, delay: 0, duration: 11 },
-  { left: '17%', size: 8, delay: 2.4, duration: 9 },
-  { left: '29%', size: 18, delay: 5.1, duration: 13 },
-  { left: '41%', size: 10, delay: 1.2, duration: 10 },
-  { left: '58%', size: 16, delay: 3.7, duration: 12 },
-  { left: '69%', size: 9, delay: 6.3, duration: 9.5 },
-  { left: '78%', size: 20, delay: 0.8, duration: 14 },
-  { left: '89%', size: 12, delay: 4.5, duration: 10.5 },
+/** Deterministic so the server and client render the same pearls. */
+const PEARLS = [
+  { left: '6%', size: 10, delay: 0, dur: 12 },
+  { left: '15%', size: 16, delay: 3.2, dur: 15 },
+  { left: '26%', size: 7, delay: 6.1, dur: 11 },
+  { left: '38%', size: 13, delay: 1.4, dur: 13.5 },
+  { left: '52%', size: 9, delay: 4.8, dur: 12.5 },
+  { left: '64%', size: 18, delay: 2.1, dur: 16 },
+  { left: '75%', size: 11, delay: 7.3, dur: 12 },
+  { left: '86%', size: 8, delay: 5.2, dur: 14 },
+  { left: '94%', size: 14, delay: 0.9, dur: 13 },
 ];
 
+/**
+ * Mobile-first hero. The drink is the hero on every screen — the previous
+ * version hid it below `lg`, which left phones looking at a wall of purple.
+ * It cycles through the bestsellers; the glow behind the cup and the blobs
+ * take their colour from whichever drink is on screen.
+ */
 export function Hero({ onOrder }: { onOrder?: () => void }) {
   const reduced = useReducedMotion();
   const ref = useRef<HTMLElement>(null);
+  const [i, setI] = useState(0);
 
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ['start start', 'end start'],
-  });
-  const cupY = useTransform(scrollYProgress, [0, 1], [0, reduced ? 0 : 150]);
-  const textY = useTransform(scrollYProgress, [0, 1], [0, reduced ? 0 : -55]);
-  const fade = useTransform(scrollYProgress, [0, 0.75], [1, 0]);
+  const rotation = drinks.filter((d) => d.bestseller).slice(0, 4);
+  const drink: Drink = rotation[i] ?? drinks[0];
 
-  const heroDrink = drinkBySlug('brown-sugar-pearl-milk');
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] });
+  const artY = useTransform(scrollYProgress, [0, 1], [0, reduced ? 0 : 120]);
+  const textY = useTransform(scrollYProgress, [0, 1], [0, reduced ? 0 : -45]);
+  const fade = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
+
+  const next = useCallback(() => setI((v) => (v + 1) % rotation.length), [rotation.length]);
+
+  useEffect(() => {
+    if (reduced || rotation.length < 2) return;
+    const id = setTimeout(next, HOLD);
+    return () => clearTimeout(id);
+  }, [i, next, reduced, rotation.length]);
+
+  const outlet = outlets[0];
+  const state = openState(outlet);
 
   return (
     <section
       ref={ref}
-      className="relative flex min-h-[100svh] items-center overflow-hidden bg-purple-800 pt-[78px]"
+      className="relative flex min-h-[100svh] flex-col overflow-hidden bg-purple-800 pt-[78px]"
     >
+      {/* Colour field — recoloured by the drink on screen */}
       <div aria-hidden className="pointer-events-none absolute inset-0">
-        <div className="absolute -left-[12%] top-[6%] h-[52vw] w-[52vw] rounded-full bg-purple-600/50 blur-[130px]" />
-        <div className="absolute -right-[10%] bottom-[-10%] h-[46vw] w-[46vw] rounded-full bg-magenta/25 blur-[140px]" />
-        <div className="absolute inset-0 animate-swirl bg-[conic-gradient(from_0deg_at_50%_50%,transparent,rgba(178,150,200,0.14),transparent_45%)]" />
+        <div
+          className="absolute inset-0 transition-opacity duration-1000"
+          style={{
+            background: `radial-gradient(90% 60% at 50% 42%, ${drink.colour[1]}55 0%, transparent 70%)`,
+          }}
+        />
+        <motion.div
+          className="absolute -left-[22%] top-[4%] h-[62vw] w-[62vw] rounded-full bg-purple-600/55 blur-[110px]"
+          animate={reduced ? undefined : { x: [0, 30, 0], y: [0, -24, 0] }}
+          transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }}
+        />
+        <motion.div
+          className="absolute -right-[18%] bottom-[2%] h-[56vw] w-[56vw] rounded-full bg-magenta/35 blur-[120px]"
+          animate={reduced ? undefined : { x: [0, -26, 0], y: [0, 20, 0] }}
+          transition={{ duration: 22, repeat: Infinity, ease: 'easeInOut' }}
+        />
+        <div className="absolute inset-0 animate-swirl bg-[conic-gradient(from_0deg_at_50%_50%,transparent,rgba(178,150,200,0.16),transparent_45%)]" />
       </div>
 
+      {/* Rising pearls */}
       <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
-        {BUBBLES.map((b, i) => (
+        {PEARLS.map((p, n) => (
           <span
-            key={i}
+            key={n}
             className="absolute bottom-0 animate-rise rounded-full bg-white/25"
             style={{
-              left: b.left,
-              width: b.size,
-              height: b.size,
-              animationDelay: `${b.delay}s`,
-              animationDuration: `${b.duration}s`,
+              left: p.left,
+              width: p.size,
+              height: p.size,
+              animationDelay: `${p.delay}s`,
+              animationDuration: `${p.dur}s`,
             }}
           />
         ))}
       </div>
 
-      <div className="container-page relative grid items-center gap-10 py-16 lg:grid-cols-[1.1fr_0.9fr] lg:py-0">
-        <motion.div style={{ y: textY, opacity: fade }}>
-          <motion.p
-            className="eyebrow-on-purple"
-            initial={{ opacity: 0, y: 14 }}
+      <div className="container-page relative flex flex-1 flex-col justify-center py-4 lg:grid lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-10 lg:py-0">
+        {/* ── Copy ─────────────────────────────────────────────────────── */}
+        <motion.div style={{ y: textY, opacity: fade }} className="order-2 lg:order-1">
+          {/* Live open/closed pill */}
+          <motion.div
+            className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-3 py-1.5 backdrop-blur-sm"
+            initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.3, ease: EASE }}
+            transition={{ duration: 0.7, delay: 0.25, ease: EASE }}
           >
-            {t.hero.eyebrow}
-          </motion.p>
+            <span className="relative flex h-1.5 w-1.5">
+              {state.isOpen && !reduced && (
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-leaf opacity-75" />
+              )}
+              <span
+                className={`relative inline-flex h-1.5 w-1.5 rounded-full ${
+                  state.isOpen ? 'bg-leaf' : 'bg-white/60'
+                }`}
+              />
+            </span>
+            <span className="text-[10px] font-bold uppercase tracking-[0.16em] text-white/85">
+              {state.isOpen ? 'Open now' : 'Closed'} · Havelock City Mall
+            </span>
+          </motion.div>
 
-          <h1 className="display-xl mt-5 text-white">
-            <RevealWords text={t.hero.titleLead} delay={0.4} immediate />{' '}
+          <h1 className="display-xl mt-3 text-white">
+            <RevealWords text="Cups of" delay={0.35} immediate />{' '}
             <span className="relative inline-block">
-              <RevealWords text={t.hero.titleAccent} delay={0.55} immediate />
+              <RevealWords text="Joy" delay={0.5} immediate />
               <motion.span
                 aria-hidden
-                className="absolute -bottom-1 left-0 h-[6px] w-full origin-left rounded-full bg-leaf"
+                className="absolute -bottom-1 left-0 h-[6px] w-full origin-left rounded-full bg-leaf sm:h-[8px]"
                 initial={{ scaleX: 0 }}
                 animate={{ scaleX: 1 }}
-                transition={{ duration: 1, delay: 1.05, ease: EASE }}
+                transition={{ duration: 0.9, delay: 1, ease: EASE }}
               />
             </span>
           </h1>
 
           <motion.p
-            className="mt-7 max-w-xl text-balance text-[17px] leading-[1.65] text-white/75 sm:text-lg"
-            initial={{ opacity: 0, y: 18 }}
+            className="mt-4 max-w-md text-balance text-[14.5px] leading-[1.55] text-white/80 sm:text-lg"
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, delay: 0.9, ease: EASE }}
+            transition={{ duration: 0.8, delay: 0.85, ease: EASE }}
           >
-            {t.hero.body}
+            Taiwan’s original bubble tea, brewed fresh in Colombo. Real leaf tea, pearls
+            cooked through the day, and a cup built exactly the way you want it.
           </motion.p>
 
           <motion.div
-            className="mt-9 flex flex-wrap items-center gap-3"
-            initial={{ opacity: 0, y: 18 }}
+            className="mt-6 flex flex-col gap-2.5 sm:flex-row sm:items-center"
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, delay: 1.05, ease: EASE }}
+            transition={{ duration: 0.8, delay: 1, ease: EASE }}
           >
-            <MagneticButton onClick={onOrder} className="btn-invert">
+            <button type="button" onClick={onOrder} className="btn-invert w-full sm:w-auto">
               Start an order
-            </MagneticButton>
-            <MagneticButton href="#menu" className="btn-invert-outline">
+            </button>
+            <a href="#menu" className="btn-invert-outline w-full sm:w-auto">
               See the menu
-            </MagneticButton>
+            </a>
           </motion.div>
         </motion.div>
 
-        {/* Real product photography, not a drawing */}
+        {/* ── The drink ────────────────────────────────────────────────── */}
         <motion.div
-          style={{ y: cupY, opacity: fade }}
-          className="relative mx-auto hidden h-[520px] w-[440px] lg:block"
-          initial={reduced ? false : { opacity: 0, scale: 0.88, y: 40 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          transition={{ duration: 1.3, delay: 0.4, ease: EASE }}
+          style={{ y: artY, opacity: fade }}
+          className="relative order-1 mx-auto mb-1 flex w-full max-w-[420px] flex-col items-center lg:order-2 lg:mb-0"
         >
-          <div aria-hidden className="absolute inset-0 rounded-full bg-white/10 blur-[90px]" />
-          {heroDrink && (
-            <div className="animate-float relative h-full w-full">
-              <Image
-                src={heroDrink.image}
-                alt={heroDrink.name}
-                fill
-                sizes="440px"
-                priority
-                className="object-contain drop-shadow-[0_30px_40px_rgba(0,0,0,0.35)]"
-              />
+          <div className="relative aspect-square w-[56vw] max-w-[250px] sm:w-[340px] sm:max-w-[340px]">
+            {/* Glow keyed to the drink */}
+            <motion.div
+              aria-hidden
+              className="absolute inset-[12%] rounded-full opacity-65 blur-[52px]"
+              animate={{ backgroundColor: drink.colour[0] }}
+              transition={{ duration: 0.9 }}
+            />
+
+            {/* Halo ring */}
+            <motion.div
+              aria-hidden
+              className="absolute inset-[4%] rounded-full border border-white/20"
+              animate={reduced ? undefined : { scale: [1, 1.05, 1], opacity: [0.5, 0.85, 0.5] }}
+              transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
+            />
+
+            <AnimatePresence mode="wait">
+              <motion.button
+                key={drink.slug}
+                type="button"
+                onClick={onOrder}
+                aria-label={`${drink.name}, from ${formatLKR(drink.prices.regular)}. Start an order.`}
+                className="absolute inset-0 cursor-pointer"
+                initial={{ opacity: 0, y: 40, scale: 0.88, rotate: -5 }}
+                animate={{ opacity: 1, y: 0, scale: 1, rotate: 0 }}
+                exit={{ opacity: 0, y: -30, scale: 0.9, rotate: 4 }}
+                transition={{ duration: 0.8, ease: EASE }}
+              >
+                <div className={reduced ? 'relative h-full w-full' : 'animate-float relative h-full w-full'}>
+                  <Image
+                    src={drink.image}
+                    alt={drink.name}
+                    fill
+                    sizes="(max-width: 640px) 56vw, 340px"
+                    priority
+                    className="object-contain drop-shadow-[0_26px_34px_rgba(0,0,0,0.4)]"
+                  />
+                </div>
+              </motion.button>
+            </AnimatePresence>
+          </div>
+
+          {/* Name + price + progress dots */}
+          <div className="mt-2 flex w-full flex-col items-center gap-2">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={drink.slug}
+                className="flex items-baseline gap-2.5"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.4 }}
+              >
+                <span className="font-display text-sm font-extrabold text-white sm:text-base">
+                  {drink.name}
+                </span>
+                <span className="text-sm font-bold text-leaf">
+                  {formatLKR(drink.prices.regular)}
+                </span>
+              </motion.div>
+            </AnimatePresence>
+
+            <div className="flex gap-1.5">
+              {rotation.map((d, n) => (
+                <button
+                  key={d.slug}
+                  type="button"
+                  onClick={() => setI(n)}
+                  aria-label={`Show ${d.name}`}
+                  aria-current={n === i}
+                  className="h-1.5 overflow-hidden rounded-full bg-white/25 transition-all"
+                  style={{ width: n === i ? 26 : 10 }}
+                >
+                  {n === i && (
+                    <motion.span
+                      key={`p-${i}`}
+                      className="block h-full rounded-full bg-white"
+                      initial={{ width: '0%' }}
+                      animate={{ width: '100%' }}
+                      transition={{ duration: reduced ? 0.3 : HOLD / 1000, ease: 'linear' }}
+                    />
+                  )}
+                </button>
+              ))}
             </div>
-          )}
+          </div>
         </motion.div>
       </div>
 
-      <motion.div
-        className="absolute inset-x-0 bottom-7 flex flex-col items-center gap-2"
-        style={{ opacity: fade }}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.7, duration: 0.9 }}
+      {/* Ticker along the bottom edge */}
+      <div
+        aria-hidden
+        className="relative border-t border-white/12 bg-purple-900/40 py-2.5 backdrop-blur-sm"
       >
-        <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/70">
-          {t.hero.scroll}
-        </span>
-        <motion.span
-          className="h-9 w-px bg-gradient-to-b from-white/70 to-transparent"
-          animate={reduced ? undefined : { scaleY: [0.35, 1, 0.35], originY: 0 }}
-          transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut' }}
-        />
-      </motion.div>
+        <div className="mask-fade-x overflow-hidden">
+          <div className="flex w-max animate-marquee items-center gap-8">
+            {[...Array(2)].map((_, dup) =>
+              [
+                'Brewed fresh every 4 hours',
+                'Pearls cooked today',
+                '5 sugar levels',
+                '10 toppings',
+                'Pick up or dine in',
+                'Havelock City Mall · Level 2',
+              ].map((s) => (
+                <span key={`${dup}-${s}`} className="flex items-center gap-8 whitespace-nowrap">
+                  <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-white/70">
+                    {s}
+                  </span>
+                  <span className="text-leaf">✦</span>
+                </span>
+              )),
+            )}
+          </div>
+        </div>
+      </div>
     </section>
   );
 }

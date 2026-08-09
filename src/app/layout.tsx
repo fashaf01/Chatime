@@ -4,6 +4,8 @@ import './globals.css';
 import { Footer } from '@/components/site/Footer';
 import { CartDrawer } from '@/components/order/CartDrawer';
 import { CartProvider } from '@/lib/cart';
+import { MobileOrderBar } from '@/components/order/MobileOrderBar';
+import { ScrollProgress } from '@/components/site/ScrollProgress';
 import { Header } from '@/components/site/Header';
 import { PRICES_ARE_PLACEHOLDER } from '@/lib/menu';
 import { outlets } from '@/lib/outlets';
@@ -124,10 +126,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData()) }}
         />
         <CartProvider>
+          <ScrollProgress />
           <Header />
           <main>{children}</main>
           <Footer />
           <CartDrawer />
+          <MobileOrderBar />
         </CartProvider>
       </body>
     </html>

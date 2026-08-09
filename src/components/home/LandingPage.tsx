@@ -3,6 +3,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { useMemo, useState } from 'react';
 import { Hero } from './Hero';
+import { ProductMarquee } from './ProductMarquee';
 import { SignatureCarousel } from './SignatureCarousel';
 import { Stats } from './Stats';
 import { Story } from './Story';
@@ -53,6 +54,7 @@ export function LandingPage() {
       <Hero onOrder={() => setSelected(featured[0] ?? drinks[0])} />
       <Stats />
       <SignatureCarousel drinks={featured} onSelect={setSelected} />
+      <ProductMarquee onSelect={setSelected} />
 
       {/* ── Menu ─────────────────────────────────────────────────────────── */}
       <section id="menu" className="scroll-mt-24 bg-purple-50/60 py-20 sm:py-28">
@@ -141,7 +143,7 @@ export function LandingPage() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.25 }}
-              className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+              className="mt-10 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3 xl:grid-cols-4"
             >
               {visible.map((d, i) => (
                 <ProductCard
