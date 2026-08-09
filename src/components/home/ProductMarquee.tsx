@@ -12,13 +12,15 @@ import { drinks, type Drink } from '@/lib/menu';
 export function ProductMarquee({ onSelect }: { onSelect: (d: Drink) => void }) {
   const reduced = useReducedMotion();
 
-  const rowA = drinks.slice(0, 13);
-  const rowB = drinks.slice(13);
+  // One row of twelve. The row is duplicated for the seamless loop, so this is
+  // 24 <Image> elements — every extra one is another layer the phone composites
+  // on each frame of the marquee, and the full 26 (52 doubled) visibly janked.
+  const row = drinks.slice(0, 12);
 
   return (
     <section className="relative overflow-hidden bg-purple-800 py-10 sm:py-14">
       <div aria-hidden className="pointer-events-none absolute inset-0">
-        <div className="absolute left-1/2 top-1/2 h-[60vw] w-[60vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-magenta/25 blur-[120px]" />
+        <div className="absolute inset-0" style={{ background: 'radial-gradient(60% 60% at 50% 50%, rgba(129,41,144,0.35) 0%, transparent 70%)' }} />
       </div>
 
       <div className="container-page relative mb-6 text-center">
@@ -26,8 +28,7 @@ export function ProductMarquee({ onSelect }: { onSelect: (d: Drink) => void }) {
         <h2 className="display-md mt-2 text-white">Pick one. Then change everything.</h2>
       </div>
 
-      <Row items={rowA} reduced={reduced} onSelect={onSelect} duration={46} />
-      <Row items={rowB} reduced={reduced} onSelect={onSelect} duration={38} reverse />
+      <Row items={row} reduced={reduced} onSelect={onSelect} duration={52} />
     </section>
   );
 }

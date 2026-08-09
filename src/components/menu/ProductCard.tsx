@@ -65,16 +65,20 @@ export function ProductCard({ drink, onSelect, index = 0, priority = false }: Pr
             </span>
           )}
 
+          {/* The source PNGs are squares with generous transparent padding, so a
+              plain object-contain leaves the cup marooned in the middle of the
+              panel. Oversizing the image box past the panel edges — which clip
+              it — makes the drink fill the tile the way Gong Cha's do. */}
           <motion.div
-            className="absolute inset-x-[10%] bottom-[-4%] top-[6%]"
-            whileHover={reduced ? undefined : { y: -12, scale: 1.05 }}
+            className="absolute inset-x-[-8%] bottom-[-12%] top-[-6%]"
+            whileHover={reduced ? undefined : { y: -10, scale: 1.04 }}
             transition={{ type: 'spring', stiffness: 240, damping: 18 }}
           >
             <Image
               src={drink.image}
               alt={drink.name}
               fill
-              sizes="(max-width: 640px) 44vw, (max-width: 1024px) 30vw, 240px"
+              sizes="(max-width: 640px) 52vw, (max-width: 1024px) 34vw, 280px"
               priority={priority}
               className="object-contain object-bottom drop-shadow-[0_14px_18px_rgba(0,0,0,0.22)]"
             />

@@ -11,6 +11,7 @@ import {
   type OrderType,
 } from '@/lib/cart';
 import { describeSelection, formatLKR, priceOf } from '@/lib/menu';
+import { useScrollLock } from '@/lib/useScrollLock';
 import { outlets, openState } from '@/lib/outlets';
 
 const EASE = [0.16, 1, 0.3, 1] as const;
@@ -28,18 +29,15 @@ export function CartDrawer() {
   const outlet = outlets[0];
   const state = openState(outlet);
 
+  useScrollLock(open);
+
   useEffect(() => {
     if (!open) return;
     function onKey(e: KeyboardEvent) {
       if (e.key === 'Escape') setOpen(false);
     }
     window.addEventListener('keydown', onKey);
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-    return () => {
-      window.removeEventListener('keydown', onKey);
-      document.body.style.overflow = prev;
-    };
+    return () => window.removeEventListener('keydown', onKey);
   }, [open, setOpen]);
 
   useEffect(() => {
@@ -101,7 +99,7 @@ export function CartDrawer() {
               </button>
             </header>
 
-            <div className="min-h-0 flex-1 overflow-y-auto px-6 py-5">
+            <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 py-5 [-webkit-overflow-scrolling:touch]">
               {lines.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-20 text-center">
                   <ShoppingBag size={38} className="text-purple-300" />
@@ -272,7 +270,7 @@ export function CartDrawer() {
 
             {/* Footer */}
             {lines.length > 0 && (
-              <div className="shrink-0 border-t border-purple-100 bg-white px-6 py-4">
+              <div className="shrink-0 border-t border-purple-100 bg-white px-6 pt-4" style={{ paddingBottom: 'calc(1rem + env(safe-area-inset-bottom))' }}>
                 <div className="mb-3 flex items-baseline justify-between">
                   <span className="text-xs font-bold uppercase tracking-[0.2em] text-ink/65">
                     Total

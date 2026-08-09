@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { useEffect, useMemo, useState } from 'react';
 import { CupVisual } from './CupVisual';
 import { useCart } from '@/lib/cart';
+import { useScrollLock } from '@/lib/useScrollLock';
 import {
   formatLKR,
   iceLevels,
@@ -48,18 +49,15 @@ export function Customiser({ drink, onClose }: Props) {
     setPreview('photo');
   }, [drink]);
 
+  useScrollLock(!!drink);
+
   useEffect(() => {
     if (!drink) return;
     function onKey(e: KeyboardEvent) {
       if (e.key === 'Escape') onClose();
     }
     window.addEventListener('keydown', onKey);
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-    return () => {
-      window.removeEventListener('keydown', onKey);
-      document.body.style.overflow = prev;
-    };
+    return () => window.removeEventListener('keydown', onKey);
   }, [drink, onClose]);
 
   const unit = useMemo(() => {
@@ -123,14 +121,14 @@ export function Customiser({ drink, onClose }: Props) {
               </button>
 
               <div className="flex items-center gap-4">
-                <div className="relative h-[170px] w-[150px] shrink-0">
+                <div className="relative h-[188px] w-[150px] shrink-0 sm:h-[200px] sm:w-[165px]">
                   {preview === 'photo' ? (
                     <Image
                       src={drink.image}
                       alt={drink.name}
                       fill
-                      sizes="150px"
-                      className="object-contain drop-shadow-[0_16px_20px_rgba(80,7,120,0.2)]"
+                      sizes="165px"
+                      className="scale-[1.18] object-contain drop-shadow-[0_16px_20px_rgba(80,7,120,0.2)]"
                     />
                   ) : (
                     <CupVisual
@@ -175,7 +173,7 @@ export function Customiser({ drink, onClose }: Props) {
             </div>
 
             {/* Options */}
-            <div className="min-h-0 flex-1 overflow-y-auto px-6 pb-6">
+            <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 pb-6 [-webkit-overflow-scrolling:touch]">
               <Group label="Size">
                 <Choice active={size === 'regular'} onClick={() => setSize('regular')} label="Regular" />
                 <Choice active={size === 'large'} onClick={() => setSize('large')} label="Large" />

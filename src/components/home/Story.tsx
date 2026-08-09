@@ -20,7 +20,7 @@ export function Story() {
   return (
     <section id="about" ref={ref} className="scroll-mt-24 relative overflow-hidden py-24 sm:py-32">
       <div aria-hidden className="pointer-events-none absolute inset-0">
-        <div className="absolute right-[-10%] top-1/4 h-[38vw] w-[38vw] rounded-full bg-purple-300/30 blur-[130px]" />
+        <div className="absolute inset-0" style={{ background: 'radial-gradient(45% 45% at 92% 30%, rgba(178,150,200,0.30) 0%, transparent 70%)' }} />
       </div>
 
       <div className="container-page relative grid gap-14 lg:grid-cols-2 lg:items-center">

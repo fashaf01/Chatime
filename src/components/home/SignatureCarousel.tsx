@@ -109,7 +109,6 @@ export function SignatureCarousel({ drinks, onSelect }: Props) {
                   x: s * (typeof window !== 'undefined' && window.innerWidth < 640 ? 150 : 250),
                   scale: isActive ? 1 : 0.62,
                   opacity: isActive ? 1 : 0.45,
-                  filter: isActive ? 'blur(0px)' : 'blur(1.5px)',
                   zIndex: isActive ? 10 : 1,
                 }}
                 transition={{ duration: 0.7, ease: EASE }}
@@ -131,13 +130,12 @@ export function SignatureCarousel({ drinks, onSelect }: Props) {
                 >
                   {/* Soft halo behind the active cup */}
                   {isActive && (
-                    <motion.span
+                    <span
                       aria-hidden
-                      className="absolute inset-[8%] rounded-full blur-[46px]"
-                      style={{ background: d.colour[0] }}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 0.75 }}
-                      transition={{ duration: 0.8 }}
+                      className="absolute inset-0 rounded-full"
+                      style={{
+                        background: `radial-gradient(circle at 50% 48%, ${d.colour[0]}99 0%, ${d.colour[0]}33 44%, transparent 68%)`,
+                      }}
                     />
                   )}
                   <Image
