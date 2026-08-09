@@ -18,7 +18,7 @@ export function Story() {
   const rotate = useTransform(scrollYProgress, [0, 1], [reduced ? 0 : -12, reduced ? 0 : 12]);
 
   return (
-    <section ref={ref} className="relative overflow-hidden py-24 sm:py-32">
+    <section id="about" ref={ref} className="scroll-mt-24 relative overflow-hidden py-24 sm:py-32">
       <div aria-hidden className="pointer-events-none absolute inset-0">
         <div className="absolute right-[-10%] top-1/4 h-[38vw] w-[38vw] rounded-full bg-purple-300/30 blur-[130px]" />
       </div>

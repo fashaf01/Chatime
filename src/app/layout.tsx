@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from 'next';
 import { Figtree } from 'next/font/google';
 import './globals.css';
 import { Footer } from '@/components/site/Footer';
+import { CartDrawer } from '@/components/order/CartDrawer';
+import { CartProvider } from '@/lib/cart';
 import { Header } from '@/components/site/Header';
 import { PRICES_ARE_PLACEHOLDER } from '@/lib/menu';
 import { outlets } from '@/lib/outlets';
@@ -116,14 +118,17 @@ function structuredData() {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${figtree.variable} ${figtreeBody.variable}`}>
-      <body>
+      <body id="top">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData()) }}
         />
-        <Header />
-        <main>{children}</main>
-        <Footer />
+        <CartProvider>
+          <Header />
+          <main>{children}</main>
+          <Footer />
+          <CartDrawer />
+        </CartProvider>
       </body>
     </html>
   );

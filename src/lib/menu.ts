@@ -1,13 +1,19 @@
 /**
- * THE MENU FILE — this is the only file you need to edit to correct the menu.
+ * THE MENU FILE — the only file you need to edit to correct the menu.
  *
- * ⚠️  PRICES BELOW ARE PLACEHOLDERS. They are plausible Colombo bubble-tea prices,
- *     not Chatime Sri Lanka's real ones. Replace every `prices` value with the real
- *     LKR figures from the in-store menu board, then set PRICES_ARE_PLACEHOLDER to
- *     false to remove the "indicative pricing" notice from the menu page.
+ * ⚠️  PRICES BELOW ARE PLACEHOLDERS. Replace every `prices` value with the real
+ *     LKR figures from the in-store menu board, then set
+ *     PRICES_ARE_PLACEHOLDER to false. That one flag removes the on-page
+ *     notice AND opens the site to search engines (see app/layout.tsx).
  *
- * Drink names marked `// ✅ confirmed` were seen on @chatimesrilanka. The rest are
- * standard Chatime range items — delete any the Havelock City store doesn't carry.
+ * ℹ️  For reference, Bing Chun Sri Lanka — a direct Colombo competitor — prices
+ *     its bubble tea at Rs 200–650. The placeholders here sit at Rs 650–1,390
+ *     on the assumption Chatime is positioned above them. If that assumption is
+ *     wrong the whole range needs to come down, so check before launch.
+ *
+ * Images in `public/products/` are Chatime's own product photography, taken
+ * from the asset server the global sites use (portal.chatime.com.au). Every
+ * drink here has a real photo of that drink — no placeholders, no stand-ins.
  */
 
 export const PRICES_ARE_PLACEHOLDER = true;
@@ -18,21 +24,23 @@ export type CategoryId =
   | 'fruit-tea'
   | 'chocolate'
   | 'fresh-tea'
-  | 'slush';
+  | 'frozen';
 
 export type Category = {
   id: CategoryId;
   name: string;
   tagline: string;
+  /** Brand accent used for this category's chip and card wash. */
+  accent: string;
 };
 
 export const categories: Category[] = [
-  { id: 'signature', name: 'Signatures', tagline: 'The ones we are known for' },
-  { id: 'milk-tea', name: 'Milk Tea', tagline: 'Brewed, shaken, softened with milk' },
-  { id: 'fruit-tea', name: 'Fruit Tea', tagline: 'Real fruit, cold and bright' },
-  { id: 'chocolate', name: 'Chocolate', tagline: 'Rich, cocoa-forward, indulgent' },
-  { id: 'fresh-tea', name: 'Fresh Tea', tagline: 'Pure leaf, nothing hiding' },
-  { id: 'slush', name: 'Slush', tagline: 'Blended with ice, built for 30°C' },
+  { id: 'signature', name: 'Signatures', tagline: 'The ones we are known for', accent: '#500778' },
+  { id: 'milk-tea', name: 'Milk Tea', tagline: 'Brewed, shaken, softened with milk', accent: '#812990' },
+  { id: 'fruit-tea', name: 'Fruit Tea', tagline: 'Real fruit, cold and bright', accent: '#F47929' },
+  { id: 'chocolate', name: 'Chocolate', tagline: 'Rich, cocoa-forward, indulgent', accent: '#8B5E34' },
+  { id: 'fresh-tea', name: 'Fresh Tea', tagline: 'Pure leaf, nothing hiding', accent: '#00A664' },
+  { id: 'frozen', name: 'Frozen', tagline: 'Blended with ice, built for 30°C', accent: '#19BECF' },
 ];
 
 export type Drink = {
@@ -42,27 +50,29 @@ export type Drink = {
   description: string;
   /** LKR. `large` omitted = single size only. */
   prices: { regular: number; large?: number };
-  /** Drives the liquid gradient in the cup visual. */
+  /** Official Chatime product photograph in public/products/. */
+  image: string;
+  /** Tint behind the photo on cards. */
   colour: [string, string];
   bestseller?: boolean;
   isNew?: boolean;
   caffeineFree?: boolean;
   dairyFree?: boolean;
   servedHot?: boolean;
-  /** Toppings pre-selected when you open the customiser. */
   defaultToppings?: string[];
 };
 
 export const drinks: Drink[] = [
   // ── Signatures ───────────────────────────────────────────────────────────
   {
-    slug: 'chatime-signature-milk-tea',
+    slug: 'signature-milk-tea',
     name: 'Chatime Signature Milk Tea',
     category: 'signature',
     description:
       'The original. Black tea brewed fresh every four hours, shaken with milk until it turns silk.',
     prices: { regular: 890, large: 1090 },
-    colour: ['#C89B6A', '#9A6B3F'],
+    image: '/products/signature-milk-tea.png',
+    colour: ['#E8D5BC', '#B98A5E'],
     bestseller: true,
     defaultToppings: ['pearls'],
   },
@@ -70,10 +80,10 @@ export const drinks: Drink[] = [
     slug: 'brown-sugar-pearl-milk',
     name: 'Brown Sugar Pearl Fresh Milk',
     category: 'signature',
-    description:
-      'Pearls simmered in brown sugar syrup, striped down a cup of cold fresh milk.',
+    description: 'Pearls simmered in brown sugar syrup, striped down a cup of cold fresh milk.',
     prices: { regular: 1090, large: 1290 },
-    colour: ['#E8D5BC', '#8B5E34'],
+    image: '/products/brown-sugar-pearl-milk.png',
+    colour: ['#F0E2CE', '#8B5E34'],
     bestseller: true,
     caffeineFree: true,
     defaultToppings: ['brown-sugar-pearls'],
@@ -84,7 +94,8 @@ export const drinks: Drink[] = [
     category: 'signature',
     description: 'Deep-roasted oolong with a toasted, almost smoky finish.',
     prices: { regular: 930, large: 1130 },
-    colour: ['#B98A5E', '#6F4522'],
+    image: '/products/roasted-milk-tea.png',
+    colour: ['#E4CBAA', '#8A5A2B'],
     defaultToppings: ['pearls'],
   },
   {
@@ -93,7 +104,8 @@ export const drinks: Drink[] = [
     category: 'signature',
     description: 'Stone-ground taro, nutty and vanilla-sweet, blended thick.',
     prices: { regular: 990, large: 1190 },
-    colour: ['#D8C6EC', '#9B7BC4'],
+    image: '/products/taro-milk-tea.png',
+    colour: ['#E7DAF3', '#9B7BC4'],
     bestseller: true,
     defaultToppings: ['pearls'],
   },
@@ -105,7 +117,8 @@ export const drinks: Drink[] = [
     category: 'milk-tea',
     description: 'Jasmine-scented green tea, floral against the milk.',
     prices: { regular: 890, large: 1090 },
-    colour: ['#D9E4C4', '#9CB177'],
+    image: '/products/jasmine-green-milk-tea.png',
+    colour: ['#E6EDD6', '#9CB177'],
   },
   {
     slug: 'earl-grey-milk-tea',
@@ -113,7 +126,8 @@ export const drinks: Drink[] = [
     category: 'milk-tea',
     description: 'Bergamot-forward Earl Grey with a citrus lift.',
     prices: { regular: 890, large: 1090 },
-    colour: ['#CBA983', '#8A5F35'],
+    image: '/products/earl-grey-milk-tea.png',
+    colour: ['#E7D2B6', '#8A5F35'],
   },
   {
     slug: 'oolong-milk-tea',
@@ -121,7 +135,8 @@ export const drinks: Drink[] = [
     category: 'milk-tea',
     description: 'Semi-oxidised oolong — orchid on the nose, clean on the finish.',
     prices: { regular: 890, large: 1090 },
-    colour: ['#D3B98D', '#93703C'],
+    image: '/products/oolong-milk-tea.png',
+    colour: ['#E9D6B4', '#93703C'],
   },
   {
     slug: 'matcha-latte',
@@ -129,7 +144,8 @@ export const drinks: Drink[] = [
     category: 'milk-tea',
     description: 'Ceremonial-grade matcha whisked to a fine foam.',
     prices: { regular: 1090, large: 1290 },
-    colour: ['#BFD8A4', '#6E8F4A'],
+    image: '/products/matcha-latte.png',
+    colour: ['#D8E8C2', '#6E8F4A'],
   },
   {
     slug: 'thai-pearl-milk-tea',
@@ -137,7 +153,8 @@ export const drinks: Drink[] = [
     category: 'milk-tea',
     description: 'Spiced Thai tea, sweet and unmistakably orange.',
     prices: { regular: 990, large: 1190 },
-    colour: ['#F0A868', '#C46A24'],
+    image: '/products/thai-pearl-milk-tea.png',
+    colour: ['#FBD9B4', '#C46A24'],
     defaultToppings: ['pearls'],
   },
   {
@@ -146,8 +163,29 @@ export const drinks: Drink[] = [
     category: 'milk-tea',
     description: 'Black tea and coconut — the most Sri Lankan thing on the menu.',
     prices: { regular: 950, large: 1150 },
-    colour: ['#F2E8D8', '#C4A67E'],
+    image: '/products/coconut-milk-tea.png',
+    colour: ['#F5EDE0', '#C4A67E'],
     dairyFree: true,
+  },
+  {
+    slug: 'honeydew-milk-tea',
+    name: 'Honeydew Milk Tea',
+    category: 'milk-tea',
+    description: 'Melon-sweet and pale green, a gentle one.',
+    prices: { regular: 950, large: 1150 },
+    image: '/products/honeydew-milk-tea.png',
+    colour: ['#E4F0D5', '#8FB064'],
+  },
+  {
+    slug: 'cookies-cream',
+    name: 'Cookies & Cream',
+    category: 'milk-tea',
+    description: 'Crushed biscuit blended through cold milk. The dessert of the menu.',
+    prices: { regular: 1150, large: 1350 },
+    image: '/products/cookies-cream.png',
+    colour: ['#EFEAE4', '#6D625A'],
+    caffeineFree: true,
+    bestseller: true,
   },
 
   // ── Fruit Tea ────────────────────────────────────────────────────────────
@@ -157,7 +195,8 @@ export const drinks: Drink[] = [
     category: 'fruit-tea',
     description: 'Sharp passion fruit over cold-steeped green tea.',
     prices: { regular: 850, large: 1050 },
-    colour: ['#FBD46D', '#E08A1E'],
+    image: '/products/passionfruit-green-tea.png',
+    colour: ['#FDE9A9', '#E08A1E'],
     dairyFree: true,
   },
   {
@@ -166,7 +205,8 @@ export const drinks: Drink[] = [
     category: 'fruit-tea',
     description: 'Ripe mango pulp, no syrup shortcuts.',
     prices: { regular: 890, large: 1090 },
-    colour: ['#FFD277', '#EF9A1B'],
+    image: '/products/mango-green-tea.png',
+    colour: ['#FFE3A6', '#EF9A1B'],
     dairyFree: true,
     bestseller: true,
   },
@@ -176,7 +216,8 @@ export const drinks: Drink[] = [
     category: 'fruit-tea',
     description: 'Perfumed lychee cut with a firm black tea base.',
     prices: { regular: 890, large: 1090 },
-    colour: ['#F7DCE2', '#D98BA0'],
+    image: '/products/lychee-black-tea.png',
+    colour: ['#FAE6EA', '#D98BA0'],
     dairyFree: true,
   },
   {
@@ -185,29 +226,41 @@ export const drinks: Drink[] = [
     category: 'fruit-tea',
     description: 'Crushed strawberry, lightly tart.',
     prices: { regular: 950, large: 1150 },
-    colour: ['#F8B4C0', '#D24E6B'],
+    image: '/products/strawberry-fruit-tea.png',
+    colour: ['#FBC7D1', '#D24E6B'],
     dairyFree: true,
   },
   {
-    slug: 'wood-apple-cooler',
-    name: 'Wood Apple Cooler',
+    slug: 'guava-grapefruit-tea',
+    name: 'Guava Grapefruit Green Tea',
     category: 'fruit-tea',
-    description:
-      'A Sri Lanka exclusive — divul pulp shaken with jasmine tea and a squeeze of lime.',
+    description: 'Tropical guava against a bitter grapefruit edge.',
     prices: { regular: 950, large: 1150 },
-    colour: ['#E6C79A', '#A9793F'],
+    image: '/products/guava-cooler.png',
+    colour: ['#FBD9D0', '#D2653F'],
     dairyFree: true,
     isNew: true,
+  },
+  {
+    slug: 'watermelon-tea',
+    name: 'Watermelon Green Tea',
+    category: 'fruit-tea',
+    description: 'Fresh watermelon, barely sweetened. The hot-afternoon order.',
+    prices: { regular: 950, large: 1150 },
+    image: '/products/watermelon-tea.png',
+    colour: ['#FBCBCB', '#DB4B54'],
+    dairyFree: true,
   },
 
   // ── Chocolate ────────────────────────────────────────────────────────────
   {
-    slug: 'milky-hazelnut-chocolate-delight',
+    slug: 'milky-hazelnut-chocolate',
     name: 'Milky Hazelnut Chocolate Delight', // ✅ confirmed on @chatimesrilanka
     category: 'chocolate',
     description: 'Hazelnut and cocoa folded through cold fresh milk.',
     prices: { regular: 1150, large: 1350 },
-    colour: ['#C99B72', '#5B3720'],
+    image: '/products/milky-hazelnut-chocolate.png',
+    colour: ['#E2C6AA', '#5B3720'],
     isNew: true,
     caffeineFree: true,
   },
@@ -217,7 +270,8 @@ export const drinks: Drink[] = [
     category: 'chocolate',
     description: 'Dark cocoa under a thick cap of salted milk mousse.',
     prices: { regular: 1190, large: 1390 },
-    colour: ['#B98A62', '#43220F'],
+    image: '/products/iced-chocolate.png',
+    colour: ['#DCC1AA', '#43220F'],
     isNew: true,
     caffeineFree: true,
     defaultToppings: ['mousse'],
@@ -228,7 +282,8 @@ export const drinks: Drink[] = [
     category: 'chocolate',
     description: 'Steamed, spoon-thick, for the hill-country weather.',
     prices: { regular: 1050 },
-    colour: ['#A8794F', '#3E2110'],
+    image: '/products/chocolate-mousse.png',
+    colour: ['#D8B594', '#3E2110'],
     servedHot: true,
     caffeineFree: true,
   },
@@ -240,7 +295,8 @@ export const drinks: Drink[] = [
     category: 'fresh-tea',
     description: 'Single-origin high-grown Ceylon, brewed and served plain.',
     prices: { regular: 650, large: 800 },
-    colour: ['#D9A05B', '#96501C'],
+    image: '/products/ceylon-black-tea.png',
+    colour: ['#EFCFA4', '#96501C'],
     dairyFree: true,
   },
   {
@@ -249,46 +305,41 @@ export const drinks: Drink[] = [
     category: 'fresh-tea',
     description: 'Green tea scented with fresh jasmine blossom.',
     prices: { regular: 650, large: 800 },
-    colour: ['#DCE8C6', '#A2B87C'],
-    dairyFree: true,
-  },
-  {
-    slug: 'roasted-oolong-tea',
-    name: 'Roasted Oolong Tea',
-    category: 'fresh-tea',
-    description: 'Charcoal-roasted oolong, no sugar needed.',
-    prices: { regular: 650, large: 800 },
-    colour: ['#D2AE79', '#8C5F2C'],
+    image: '/products/jasmine-green-tea.png',
+    colour: ['#E7F0D8', '#A2B87C'],
     dairyFree: true,
   },
 
-  // ── Slush ────────────────────────────────────────────────────────────────
+  // ── Frozen ───────────────────────────────────────────────────────────────
   {
     slug: 'mango-slush',
-    name: 'Mango Slush',
-    category: 'slush',
+    name: 'Mango Frozen',
+    category: 'frozen',
     description: 'Mango blended to a snow with a mousse cap.',
     prices: { regular: 1090, large: 1290 },
-    colour: ['#FFDE95', '#F0A428'],
+    image: '/products/mango-slush.png',
+    colour: ['#FFE7B0', '#F0A428'],
     dairyFree: true,
     bestseller: true,
   },
   {
     slug: 'passionfruit-slush',
-    name: 'Passion Fruit Slush',
-    category: 'slush',
+    name: 'Passion Fruit Frozen',
+    category: 'frozen',
     description: 'Tart, icy and bright yellow.',
     prices: { regular: 1090, large: 1290 },
-    colour: ['#FCE08A', '#E28A12'],
+    image: '/products/passionfruit-slush.png',
+    colour: ['#FDEBA6', '#E28A12'],
     dairyFree: true,
   },
   {
-    slug: 'taro-slush',
-    name: 'Taro Slush',
-    category: 'slush',
-    description: 'Taro blended with ice into something close to soft-serve.',
+    slug: 'matcha-frozen',
+    name: 'Matcha Frozen',
+    category: 'frozen',
+    description: 'Matcha blended with ice into something close to soft-serve.',
     prices: { regular: 1150, large: 1350 },
-    colour: ['#E0D2F0', '#A583CE'],
+    image: '/products/matcha-frozen.png',
+    colour: ['#DCEBC4', '#7C9C52'],
   },
 ];
 
@@ -298,7 +349,12 @@ export type Topping = {
   id: string;
   name: string;
   price: number;
-  /** Rendered as sinking spheres / layers in the cup visual. */
+  /**
+   * How the topping is drawn in the live cup preview. Product photographs
+   * cannot show a cup at 25% sugar with grass jelly, so the customiser keeps a
+   * drawn cup that reacts to the options; the photos do the selling everywhere
+   * else.
+   */
   visual: 'pearl' | 'jelly' | 'foam' | 'pudding';
   colour: string;
 };
@@ -350,8 +406,8 @@ export function drinkBySlug(slug: string): Drink | undefined {
   return drinks.find((d) => d.slug === slug);
 }
 
-export function drinksByCategory(id: CategoryId): Drink[] {
-  return drinks.filter((d) => d.category === id);
+export function categoryById(id: CategoryId): Category | undefined {
+  return categories.find((c) => c.id === id);
 }
 
 export type Selection = {
@@ -363,6 +419,7 @@ export type Selection = {
   toppings: string[];
 };
 
+/** Price for one cup with the given options. */
 export function priceOf(selection: Selection): number {
   const { drink, size, milk, toppings: chosen } = selection;
   const base =
@@ -375,4 +432,20 @@ export function priceOf(selection: Selection): number {
     0,
   );
   return base + milkPrice + toppingsPrice;
+}
+
+/** Human-readable one-line summary of the options, for the cart and the order. */
+export function describeSelection(s: Selection): string {
+  const parts = [
+    s.size === 'large' ? 'Large' : 'Regular',
+    `${s.sugar}% sugar`,
+    iceLevels.find((i) => i.id === s.ice)?.name ?? '',
+  ];
+  const milk = milkOptions.find((m) => m.id === s.milk);
+  if (milk && milk.price > 0) parts.push(milk.name);
+  const tops = s.toppings
+    .map((id) => toppings.find((t) => t.id === id)?.name)
+    .filter(Boolean) as string[];
+  if (tops.length) parts.push(tops.join(', '));
+  return parts.filter(Boolean).join(' · ');
 }

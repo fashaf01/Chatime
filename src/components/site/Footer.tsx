@@ -36,9 +36,9 @@ export function Footer() {
             </h3>
             <ul className="mt-4 space-y-2.5 text-sm">
               {[
-                { href: '/menu', label: t.nav.menu },
-                { href: '/locations', label: t.nav.locations },
-                { href: '/about', label: t.nav.about },
+                { href: '#menu', label: t.nav.menu },
+                { href: '#locations', label: t.nav.locations },
+                { href: '#about', label: t.nav.about },
               ].map((link) => (
                 <li key={link.href}>
                   <Link

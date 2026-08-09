@@ -1,11 +1,10 @@
 'use client';
 
 import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
-import Link from 'next/link';
+import Image from 'next/image';
 import { useRef } from 'react';
 import { RevealWords } from '@/components/motion/Reveal';
 import { MagneticButton } from '@/components/motion/MagneticButton';
-import { CupVisual } from '@/components/menu/CupVisual';
 import { copy as t } from '@/lib/copy';
 import { drinkBySlug } from '@/lib/menu';
 
@@ -23,7 +22,7 @@ const BUBBLES = [
   { left: '89%', size: 12, delay: 4.5, duration: 10.5 },
 ];
 
-export function Hero() {
+export function Hero({ onOrder }: { onOrder?: () => void }) {
   const reduced = useReducedMotion();
   const ref = useRef<HTMLElement>(null);
 
@@ -31,42 +30,40 @@ export function Hero() {
     target: ref,
     offset: ['start start', 'end start'],
   });
-  const cupY = useTransform(scrollYProgress, [0, 1], [0, reduced ? 0 : 170]);
-  const textY = useTransform(scrollYProgress, [0, 1], [0, reduced ? 0 : -60]);
+  const cupY = useTransform(scrollYProgress, [0, 1], [0, reduced ? 0 : 150]);
+  const textY = useTransform(scrollYProgress, [0, 1], [0, reduced ? 0 : -55]);
   const fade = useTransform(scrollYProgress, [0, 0.75], [1, 0]);
 
-  const heroDrink = drinkBySlug('brown-sugar-pearl-milk') ?? undefined;
+  const heroDrink = drinkBySlug('brown-sugar-pearl-milk');
 
   return (
     <section
       ref={ref}
       className="relative flex min-h-[100svh] items-center overflow-hidden bg-purple-800 pt-[78px]"
     >
-      {/* Depth, kept subtle — the brand reads as flat purple, not a gradient mush */}
       <div aria-hidden className="pointer-events-none absolute inset-0">
         <div className="absolute -left-[12%] top-[6%] h-[52vw] w-[52vw] rounded-full bg-purple-600/50 blur-[130px]" />
         <div className="absolute -right-[10%] bottom-[-10%] h-[46vw] w-[46vw] rounded-full bg-magenta/25 blur-[140px]" />
         <div className="absolute inset-0 animate-swirl bg-[conic-gradient(from_0deg_at_50%_50%,transparent,rgba(178,150,200,0.14),transparent_45%)]" />
       </div>
 
-      {/* Rising pearls */}
       <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
-        {BUBBLES.map((bubble, i) => (
+        {BUBBLES.map((b, i) => (
           <span
             key={i}
             className="absolute bottom-0 animate-rise rounded-full bg-white/25"
             style={{
-              left: bubble.left,
-              width: bubble.size,
-              height: bubble.size,
-              animationDelay: `${bubble.delay}s`,
-              animationDuration: `${bubble.duration}s`,
+              left: b.left,
+              width: b.size,
+              height: b.size,
+              animationDelay: `${b.delay}s`,
+              animationDuration: `${b.duration}s`,
             }}
           />
         ))}
       </div>
 
-      <div className="container-page relative grid items-center gap-10 py-16 lg:grid-cols-[1.15fr_0.85fr] lg:py-0">
+      <div className="container-page relative grid items-center gap-10 py-16 lg:grid-cols-[1.1fr_0.9fr] lg:py-0">
         <motion.div style={{ y: textY, opacity: fade }}>
           <motion.p
             className="eyebrow-on-purple"
@@ -81,7 +78,6 @@ export function Hero() {
             <RevealWords text={t.hero.titleLead} delay={0.4} immediate />{' '}
             <span className="relative inline-block">
               <RevealWords text={t.hero.titleAccent} delay={0.55} immediate />
-              {/* Leaf green from the logo, used as the one bright underline */}
               <motion.span
                 aria-hidden
                 className="absolute -bottom-1 left-0 h-[6px] w-full origin-left rounded-full bg-leaf"
@@ -107,45 +103,39 @@ export function Hero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.9, delay: 1.05, ease: EASE }}
           >
-            <MagneticButton>
-              <Link href="/menu" className="btn-invert">
-                {t.hero.ctaMenu}
-              </Link>
+            <MagneticButton onClick={onOrder} className="btn-invert">
+              Start an order
             </MagneticButton>
-            <MagneticButton>
-              <Link href="/locations" className="btn-invert-outline">
-                {t.hero.ctaFind}
-              </Link>
+            <MagneticButton href="#menu" className="btn-invert-outline">
+              See the menu
             </MagneticButton>
           </motion.div>
         </motion.div>
 
-        {/* Hero cup */}
+        {/* Real product photography, not a drawing */}
         <motion.div
           style={{ y: cupY, opacity: fade }}
-          className="relative mx-auto hidden h-[520px] w-[340px] lg:block"
-          initial={reduced ? false : { opacity: 0, scale: 0.86, y: 40 }}
+          className="relative mx-auto hidden h-[520px] w-[440px] lg:block"
+          initial={reduced ? false : { opacity: 0, scale: 0.88, y: 40 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          transition={{ duration: 1.4, delay: 0.45, ease: EASE }}
+          transition={{ duration: 1.3, delay: 0.4, ease: EASE }}
         >
           <div aria-hidden className="absolute inset-0 rounded-full bg-white/10 blur-[90px]" />
           {heroDrink && (
-            <div className="animate-float">
-              <CupVisual
-                drink={heroDrink}
-                size="large"
-                sugar={100}
-                ice="regular"
-                toppings={['brown-sugar-pearls']}
-                onPurple
-                className="relative h-[520px] w-full"
+            <div className="animate-float relative h-full w-full">
+              <Image
+                src={heroDrink.image}
+                alt={heroDrink.name}
+                fill
+                sizes="440px"
+                priority
+                className="object-contain drop-shadow-[0_30px_40px_rgba(0,0,0,0.35)]"
               />
             </div>
           )}
         </motion.div>
       </div>
 
-      {/* Scroll cue */}
       <motion.div
         className="absolute inset-x-0 bottom-7 flex flex-col items-center gap-2"
         style={{ opacity: fade }}
