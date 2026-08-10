@@ -1,6 +1,6 @@
 'use client';
 
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion, useDragControls } from 'framer-motion';
 import { Minus, Plus, ShoppingBag, Store, Trash2, UtensilsCrossed, X } from 'lucide-react';
 import Image from 'next/image';
 import { useEffect, useMemo, useState } from 'react';
@@ -11,6 +11,7 @@ import {
   type OrderType,
 } from '@/lib/cart';
 import { describeSelection, formatLKR, priceOf } from '@/lib/menu';
+import { useHistoryDismiss } from '@/lib/useHistoryDismiss';
 import { useScrollLock } from '@/lib/useScrollLock';
 import { outlets, openState } from '@/lib/outlets';
 
@@ -28,8 +29,10 @@ export function CartDrawer() {
 
   const outlet = outlets[0];
   const state = openState(outlet);
+  const drag = useDragControls();
 
   useScrollLock(open);
+  useHistoryDismiss(open, () => setOpen(false));
 
   useEffect(() => {
     if (!open) return;
@@ -72,15 +75,30 @@ export function CartDrawer() {
             role="dialog"
             aria-modal="true"
             aria-label="Your order"
-            className="fixed inset-x-0 bottom-0 z-[60] flex max-h-[93vh] flex-col overflow-hidden
-                       rounded-t-[28px] bg-white sm:inset-y-0 sm:left-auto sm:right-0 sm:max-h-none
-                       sm:w-[min(520px,100vw)] sm:rounded-l-[32px] sm:rounded-tr-none"
+            className="sheet z-[60] sm:w-[min(520px,100vw)]"
             initial={{ y: '100%' }}
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
             transition={{ duration: 0.55, ease: EASE }}
+            /* Swipe down to dismiss — see the note in Customiser. */
+            drag="y"
+            dragControls={drag}
+            dragListener={false}
+            dragConstraints={{ top: 0, bottom: 0 }}
+            dragElastic={{ top: 0, bottom: 0.5 }}
+            onDragEnd={(_, info) => {
+              if (info.offset.y > 120 || info.velocity.y > 600) setOpen(false);
+            }}
           >
-            <header className="flex shrink-0 items-center justify-between bg-purple-800 px-6 py-5">
+            <div
+              onPointerDown={(e) => drag.start(e)}
+              className="flex h-7 w-full shrink-0 cursor-grab touch-none items-center justify-center
+                         bg-purple-800 pt-2 active:cursor-grabbing sm:hidden"
+            >
+              <span aria-hidden className="h-1.5 w-11 rounded-full bg-white/35" />
+            </div>
+
+            <header className="flex shrink-0 items-center justify-between bg-purple-800 px-6 pb-5 pt-3 sm:pt-5">
               <div>
                 <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-purple-300">
                   {step === 'cart' ? 'Your order' : 'Almost there'}
@@ -270,7 +288,7 @@ export function CartDrawer() {
 
             {/* Footer */}
             {lines.length > 0 && (
-              <div className="shrink-0 border-t border-purple-100 bg-white px-6 pt-4" style={{ paddingBottom: 'calc(1rem + env(safe-area-inset-bottom))' }}>
+              <div className="sheet-foot">
                 <div className="mb-3 flex items-baseline justify-between">
                   <span className="text-xs font-bold uppercase tracking-[0.2em] text-ink/65">
                     Total

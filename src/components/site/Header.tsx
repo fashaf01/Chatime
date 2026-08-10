@@ -34,13 +34,13 @@ export function Header() {
         <div
           className={`transition-colors duration-300 ${
             scrolled
-              ? 'border-b border-purple-100 bg-white shadow-[0_2px_20px_-12px_rgba(80,7,120,0.4)]'
+              ? 'border-b border-purple-100 bg-white/90 shadow-[0_2px_20px_-12px_rgba(80,7,120,0.4)] backdrop-blur-md'
               : 'border-b border-transparent bg-transparent'
           }`}
         >
           <div className="container-page flex h-[78px] items-center justify-between gap-4">
             <Link href="#top" aria-label="Chatime Sri Lanka, home">
-              <Wordmark variant={scrolled ? 'purple' : 'white'} />
+              <Wordmark variant="purple" />
             </Link>
 
             <nav className="hidden items-center gap-1 lg:flex">
@@ -48,12 +48,8 @@ export function Header() {
                 <a
                   key={link.href}
                   href={link.href}
-                  className={`rounded-full px-4 py-2 text-[13px] font-bold uppercase tracking-[0.12em]
-                              transition-colors ${
-                                scrolled
-                                  ? 'text-ink/70 hover:text-purple-800'
-                                  : 'text-white/85 hover:text-white'
-                              }`}
+                  className="rounded-full px-4 py-2 text-[13px] font-bold uppercase
+                             tracking-[0.12em] text-ink/70 transition-colors hover:text-purple-800"
                 >
                   {link.label}
                 </a>
@@ -64,11 +60,8 @@ export function Header() {
               <button
                 type="button"
                 onClick={() => setCartOpen(true)}
-                className={`relative grid h-11 w-11 place-items-center rounded-full border-2 transition ${
-                  scrolled
-                    ? 'border-purple-800 text-purple-800 hover:bg-purple-800 hover:text-white'
-                    : 'border-white/60 text-white hover:bg-white hover:text-purple-800'
-                }`}
+                className="relative grid h-11 w-11 place-items-center rounded-full border-2
+                           border-purple-800 text-purple-800 transition hover:bg-purple-800 hover:text-white"
                 aria-label={`Your order, ${count} ${count === 1 ? 'item' : 'items'}`}
               >
                 <ShoppingBag size={18} />
@@ -91,9 +84,7 @@ export function Header() {
 
               <a
                 href="#menu"
-                className={`hidden !px-6 !py-2.5 !text-[12px] !uppercase !tracking-[0.12em] md:inline-flex ${
-                  scrolled ? 'btn-primary' : 'btn-invert'
-                }`}
+                className="btn-primary hidden !px-6 !py-2.5 !text-[12px] !uppercase !tracking-[0.12em] md:inline-flex"
               >
                 Order Now
               </a>
@@ -102,11 +93,8 @@ export function Header() {
                 type="button"
                 onClick={() => setOpen(true)}
                 aria-label="Open menu"
-                className={`grid h-11 w-11 place-items-center rounded-full border-2 transition lg:hidden ${
-                  scrolled
-                    ? 'border-purple-800 text-purple-800 hover:bg-purple-800 hover:text-white'
-                    : 'border-white/60 text-white hover:bg-white hover:text-purple-800'
-                }`}
+                className="grid h-11 w-11 place-items-center rounded-full border-2 border-purple-800
+                           text-purple-800 transition hover:bg-purple-800 hover:text-white lg:hidden"
               >
                 <Menu size={18} />
               </button>

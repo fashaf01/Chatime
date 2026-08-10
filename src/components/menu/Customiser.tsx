@@ -1,11 +1,12 @@
 'use client';
 
-import { AnimatePresence, motion } from 'framer-motion';
-import { Minus, Plus, X } from 'lucide-react';
+import { AnimatePresence, motion, useDragControls } from 'framer-motion';
+import { ChevronDown, Minus, Plus, X } from 'lucide-react';
 import Image from 'next/image';
 import { useEffect, useMemo, useState } from 'react';
 import { CupVisual } from './CupVisual';
 import { useCart } from '@/lib/cart';
+import { useHistoryDismiss } from '@/lib/useHistoryDismiss';
 import { useScrollLock } from '@/lib/useScrollLock';
 import {
   formatLKR,
@@ -28,6 +29,7 @@ const EASE = [0.16, 1, 0.3, 1] as const;
 
 export function Customiser({ drink, onClose }: Props) {
   const { add, setOpen } = useCart();
+  const drag = useDragControls();
 
   const [size, setSize] = useState<'regular' | 'large'>('regular');
   const [sugar, setSugar] = useState<SugarLevel>(100);
@@ -50,6 +52,7 @@ export function Customiser({ drink, onClose }: Props) {
   }, [drink]);
 
   useScrollLock(!!drink);
+  useHistoryDismiss(!!drink, onClose);
 
   useEffect(() => {
     if (!drink) return;
@@ -97,27 +100,50 @@ export function Customiser({ drink, onClose }: Props) {
             role="dialog"
             aria-modal="true"
             aria-label={`Customise ${drink.name}`}
-            className="fixed inset-x-0 bottom-0 z-50 flex max-h-[93vh] flex-col overflow-hidden
-                       rounded-t-[28px] bg-white sm:inset-y-0 sm:left-auto sm:right-0 sm:max-h-none
-                       sm:w-[min(560px,100vw)] sm:rounded-l-[32px] sm:rounded-tr-none"
+            className="sheet z-50 sm:w-[min(560px,100vw)]"
             initial={{ y: '100%' }}
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
             transition={{ duration: 0.55, ease: EASE }}
+            /*
+             * Swipe-down to dismiss, the gesture a bottom sheet implies. Driven
+             * by controls rather than `dragListener` so only the grab handle
+             * starts it — otherwise every tap on an option would fight the
+             * options list for the same vertical drag. The handle is hidden from
+             * `sm` up, where this is a side drawer and a downward swipe would
+             * mean nothing.
+             */
+            drag="y"
+            dragControls={drag}
+            dragListener={false}
+            dragConstraints={{ top: 0, bottom: 0 }}
+            dragElastic={{ top: 0, bottom: 0.5 }}
+            onDragEnd={(_, info) => {
+              if (info.offset.y > 120 || info.velocity.y > 600) onClose();
+            }}
           >
             {/* Preview header */}
             <div
-              className="relative shrink-0 px-6 pb-5 pt-5"
+              className="relative shrink-0 px-6 pb-5 pt-2"
               style={{ background: `linear-gradient(160deg, ${drink.colour[0]}, #FFFFFF 85%)` }}
             >
+              <div
+                onPointerDown={(e) => drag.start(e)}
+                className="mx-auto mb-1 flex h-7 w-full cursor-grab touch-none items-center
+                           justify-center active:cursor-grabbing sm:hidden"
+              >
+                <span aria-hidden className="h-1.5 w-11 rounded-full bg-purple-800/25" />
+              </div>
+
               <button
                 type="button"
                 onClick={onClose}
                 aria-label="Close"
-                className="absolute right-5 top-5 z-10 grid h-10 w-10 place-items-center rounded-full
-                           bg-white/80 text-purple-800 shadow-card transition hover:bg-white"
+                className="absolute right-5 top-4 z-10 grid h-10 w-10 place-items-center rounded-full
+                           bg-white/85 text-purple-800 shadow-card transition hover:bg-white"
               >
-                <X size={17} />
+                <ChevronDown size={20} className="sm:hidden" />
+                <X size={17} className="hidden sm:block" />
               </button>
 
               <div className="flex items-center gap-4">
@@ -222,7 +248,7 @@ export function Customiser({ drink, onClose }: Props) {
             </div>
 
             {/* Quantity + add */}
-            <div className="shrink-0 border-t border-purple-100 bg-white px-6 py-4">
+            <div className="sheet-foot">
               <div className="flex items-center gap-3">
                 <div className="flex items-center gap-1 rounded-full border-2 border-purple-200 p-1">
                   <button

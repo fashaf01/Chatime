@@ -90,6 +90,36 @@
   .btn-invert-outline {
     @apply btn border-2 border-white/70 text-white hover:bg-white hover:text-purple-800;
   }
+
+  /*
+   * The shared shell for the customiser and the cart: a bottom sheet on phones,
+   * a right-hand drawer from `sm` up.
+   *
+   * The height is the whole reason this is a class. iOS Safari measures `vh`
+   * against the viewport as it would be with the URL bar and toolbar retracted,
+   * so a `93vh` sheet pinned to `bottom-0` is taller than what you can actually
+   * see and pushes its own header — close button included — up behind the URL
+   * bar, with no way back out. `dvh` measures what is visible right now; the
+   * `vh` line above it is the fallback for browsers that lack it.
+   */
+  .sheet {
+    @apply fixed inset-x-0 bottom-0 flex flex-col overflow-hidden rounded-t-[28px] bg-white
+           sm:inset-y-0 sm:left-auto sm:right-0 sm:rounded-l-[32px] sm:rounded-tr-none;
+    max-height: 93vh;
+    max-height: 93dvh;
+  }
+
+  @media (min-width: 640px) {
+    .sheet {
+      max-height: none;
+    }
+  }
+
+  /* Action bar pinned to the bottom of a sheet, clear of the home indicator. */
+  .sheet-foot {
+    @apply shrink-0 border-t border-purple-100 bg-white px-6 pt-4;
+    padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+  }
 }
 
 @layer utilities {
