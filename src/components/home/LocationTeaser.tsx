@@ -18,7 +18,7 @@ export function LocationTeaser() {
   const state = openState(outlet);
 
   return (
-    <section id="locations" className="scroll-mt-24 relative py-24 sm:py-32">
+    <section id="locations" className="defer-paint scroll-mt-24 relative py-24 sm:py-32">
       <div className="container-page">
         <div className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
           <div>

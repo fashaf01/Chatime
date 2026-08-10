@@ -101,6 +101,16 @@
     mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
   }
 
+  /*
+   * Lets the browser skip layout, paint and style for sections that are far
+   * off-screen. On a page this long that is the single biggest scrolling win —
+   * `contain-intrinsic-size` keeps the scrollbar honest so nothing jumps.
+   */
+  .defer-paint {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 700px;
+  }
+
   .no-scrollbar::-webkit-scrollbar {
     display: none;
   }

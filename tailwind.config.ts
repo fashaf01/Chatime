@@ -56,6 +56,12 @@ const config: Config = {
           '0%, 100%': { transform: 'translateY(0) rotate(0deg)' },
           '50%': { transform: 'translateY(-18px) rotate(4deg)' },
         },
+        // Transform-only, so it runs on the compositor and costs the main
+        // thread nothing even with two dozen cards on screen.
+        'float-soft': {
+          '0%, 100%': { transform: 'translate3d(0,0,0)' },
+          '50%': { transform: 'translate3d(0,-7px,0)' },
+        },
         rise: {
           '0%': { transform: 'translateY(120%) scale(0.6)', opacity: '0' },
           '15%': { opacity: '0.55' },
@@ -72,6 +78,7 @@ const config: Config = {
       },
       animation: {
         float: 'float 7s ease-in-out infinite',
+        'float-soft': 'float-soft 5.5s ease-in-out infinite',
         rise: 'rise 9s linear infinite',
         marquee: 'marquee 34s linear infinite',
         swirl: 'swirl 28s linear infinite',

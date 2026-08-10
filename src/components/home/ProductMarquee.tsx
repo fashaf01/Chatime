@@ -18,7 +18,7 @@ export function ProductMarquee({ onSelect }: { onSelect: (d: Drink) => void }) {
   const row = drinks.slice(0, 12);
 
   return (
-    <section className="relative overflow-hidden bg-purple-800 py-10 sm:py-14">
+    <section className="defer-paint relative overflow-hidden bg-purple-800 py-10 sm:py-14">
       <div aria-hidden className="pointer-events-none absolute inset-0">
         <div className="absolute inset-0" style={{ background: 'radial-gradient(60% 60% at 50% 50%, rgba(129,41,144,0.35) 0%, transparent 70%)' }} />
       </div>

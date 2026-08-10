@@ -63,7 +63,7 @@ export function SignatureCarousel({ drinks, onSelect }: Props) {
 
   return (
     <section
-      className="relative overflow-hidden bg-white py-16 sm:py-24"
+      className="defer-paint relative overflow-hidden bg-white py-16 sm:py-24"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       aria-roledescription="carousel"
@@ -154,7 +154,7 @@ export function SignatureCarousel({ drinks, onSelect }: Props) {
 
         {/* Name, price, CTA */}
         <div className="relative mt-6 text-center">
-          <AnimatePresence mode="wait">
+          <AnimatePresence mode="wait" initial={false}>
             <motion.div
               key={active.slug}
               initial={{ opacity: 0, y: 16 }}

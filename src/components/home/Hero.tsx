@@ -87,7 +87,7 @@ export function Hero({ onOrder }: { onOrder?: () => void }) {
               transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
             />
 
-            <AnimatePresence mode="wait">
+            <AnimatePresence mode="wait" initial={false}>
               <motion.button
                 key={drink.slug}
                 type="button"
@@ -115,7 +115,7 @@ export function Hero({ onOrder }: { onOrder?: () => void }) {
 
           {/* Name, price, progress */}
           <div className="mt-1 flex w-full flex-col items-center gap-2">
-            <AnimatePresence mode="wait">
+            <AnimatePresence mode="wait" initial={false}>
               <motion.div
                 key={drink.slug}
                 className="flex items-baseline gap-2.5"

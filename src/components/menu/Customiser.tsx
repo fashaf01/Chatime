@@ -85,7 +85,7 @@ export function Customiser({ drink, onClose }: Props) {
       {drink && (
         <>
           <motion.div
-            className="fixed inset-0 z-50 bg-purple-900/50 backdrop-blur-sm"
+            className="fixed inset-0 z-50 bg-purple-950/55"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
