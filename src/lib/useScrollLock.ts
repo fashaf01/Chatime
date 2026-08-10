@@ -3,46 +3,69 @@
 import { useEffect } from 'react';
 
 /**
- * Locks the page behind an open drawer.
+ * Page scroll lock for open drawers, reference-counted across every caller.
  *
- * `overflow: hidden` on <body> does not hold on iOS Safari — the page keeps
- * scrolling under your finger while the drawer's own list refuses to move,
- * which is exactly the "background scrolls, front doesn't" bug. Pinning the
- * body with `position: fixed` at its current offset is the technique that
- * actually works there; the scroll position is restored on unlock so closing a
- * drawer doesn't jump you back to the top.
+ * Why a shared counter rather than each drawer saving and restoring the body
+ * itself: adding a drink closes the customiser and opens the cart in the same
+ * tick, so for one moment two locks are live. When each one snapshots
+ * `body.style` on mount and writes it back on unmount, the second lock captures
+ * the *locked* state as its "previous" value — and restores the body to
+ * `position: fixed; top: -NNNpx` after the last drawer closes. The page is then
+ * pinned at an offset for good: it looks frozen, and every click lands on
+ * whatever has shifted under the cursor, which is the "buttons stop working
+ * everywhere" bug.
+ *
+ * With a counter there is exactly one owner of the body style. The first lock
+ * captures the real scroll position, the last unlock restores it, and anything
+ * in between is a no-op.
  */
+let depth = 0;
+let savedY = 0;
+
+function applyLock() {
+  savedY = window.scrollY;
+  const body = document.body;
+  body.style.position = 'fixed';
+  body.style.top = `-${savedY}px`;
+  body.style.left = '0';
+  body.style.right = '0';
+  body.style.width = '100%';
+  // iOS Safari ignores `overflow: hidden` on the body, which is why the page
+  // used to keep scrolling under an open drawer. Pinning it is what holds.
+  body.style.overflow = 'hidden';
+}
+
+function releaseLock() {
+  const body = document.body;
+  body.style.position = '';
+  body.style.top = '';
+  body.style.left = '';
+  body.style.right = '';
+  body.style.width = '';
+  body.style.overflow = '';
+  window.scrollTo({ top: savedY, behavior: 'auto' });
+}
+
 export function useScrollLock(active: boolean) {
   useEffect(() => {
     if (!active) return;
 
-    const y = window.scrollY;
-    const body = document.body;
-    const prev = {
-      position: body.style.position,
-      top: body.style.top,
-      left: body.style.left,
-      right: body.style.right,
-      width: body.style.width,
-      overflow: body.style.overflow,
-    };
-
-    body.style.position = 'fixed';
-    body.style.top = `-${y}px`;
-    body.style.left = '0';
-    body.style.right = '0';
-    body.style.width = '100%';
-    body.style.overflow = 'hidden';
+    depth += 1;
+    if (depth === 1) applyLock();
 
     return () => {
-      body.style.position = prev.position;
-      body.style.top = prev.top;
-      body.style.left = prev.left;
-      body.style.right = prev.right;
-      body.style.width = prev.width;
-      body.style.overflow = prev.overflow;
-      // `auto` so restoring never animates back down the page.
-      window.scrollTo({ top: y, behavior: 'auto' });
+      depth = Math.max(0, depth - 1);
+      if (depth === 0) releaseLock();
     };
   }, [active]);
+}
+
+/**
+ * Belt and braces: if a render ever throws while a drawer is open, the cleanup
+ * never runs and the body stays pinned. This clears a stuck lock so the page
+ * can never end up permanently unclickable.
+ */
+export function forceReleaseScrollLock() {
+  depth = 0;
+  releaseLock();
 }

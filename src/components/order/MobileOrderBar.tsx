@@ -24,7 +24,7 @@ export function MobileOrderBar() {
     <AnimatePresence>
       {show && (
         <motion.div
-          className="fixed inset-x-0 bottom-0 z-40 p-3 lg:hidden"
+          className="pointer-events-none fixed inset-x-0 bottom-0 z-40 p-3 lg:hidden"
           initial={{ y: 90, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 90, opacity: 0 }}
@@ -34,7 +34,7 @@ export function MobileOrderBar() {
           <button
             type="button"
             onClick={() => setOpen(true)}
-            className="flex w-full items-center justify-between gap-3 rounded-full bg-purple-800 px-5 py-3.5
+            className="pointer-events-auto flex w-full items-center justify-between gap-3 rounded-full bg-purple-800 px-5 py-3.5
                        text-white shadow-[0_10px_30px_-8px_rgba(80,7,120,0.7)] active:scale-[0.99]"
           >
             <span className="flex items-center gap-2.5">

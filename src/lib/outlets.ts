@@ -51,7 +51,13 @@ export const outlets: Outlet[] = [
   },
 ];
 
-export const WHATSAPP_NUMBER = ''; // e.g. '94771234567' — enables the WhatsApp order handoff
+/**
+ * The store's WhatsApp, in the international form wa.me needs: country code, no
+ * leading zero, no punctuation. Local 078 301 1543 becomes 9478301 1543.
+ * Setting this is what switches online ordering on — checkout falls back to a
+ * "not switched on yet" notice while it is empty.
+ */
+export const WHATSAPP_NUMBER = '94783011543';
 export const INSTAGRAM_URL = 'https://www.instagram.com/chatimesrilanka/';
 
 function minutesSinceMidnight(time: string): number {

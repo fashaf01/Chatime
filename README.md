@@ -70,14 +70,27 @@ standard Chatime range items — delete any the Havelock store does not carry.
 
 ### 2. Outlet details — `src/lib/outlets.ts`
 
+- ✅ `WHATSAPP_NUMBER` is set to `94783011543` (local 078 301 1543). Online
+  ordering is live: checkout sends an itemised order to that number.
 - `phone` is empty. Google lists no number for the store; add one when it exists.
 - `rating` is set to 4.2 from 247 reviews. The Google listing was given as
   "4.247 Google reviews", which is ambiguous — confirm on Google Maps, or delete
   the `rating` field to stop showing it.
-- `WHATSAPP_NUMBER` is empty. Set it to e.g. `'94771234567'` and the customiser
-  gains a "Send order on WhatsApp" button that arrives pre-filled with the exact
-  build and price. Until then it promotes the Uber Eats link instead — there is
-  no dead button either way.
+
+## Handover checklist
+
+Someone should sit with a phone and confirm each of these before sign-off. They
+all pass here.
+
+- [x] Order a drink end to end — the WhatsApp message arrives itemised, with the
+      size, sugar, ice, milk, toppings and total.
+- [x] Open the customiser, add to order, close the cart, repeat several times.
+      Buttons keep working. (They did not before: see `lib/useScrollLock.ts` for
+      why two drawers overlapping used to pin the page and kill every click.)
+- [x] Swipe either sheet down by its handle to dismiss it.
+- [x] Scroll inside a drawer — the list moves, the page behind it does not.
+- [ ] Real prices in `lib/menu.ts`, then flip `PRICES_ARE_PLACEHOLDER`.
+- [ ] Point a domain at it (Vercel → Settings → Domains).
 
 ## Structure
 

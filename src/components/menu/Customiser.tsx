@@ -91,7 +91,7 @@ export function Customiser({ drink, onClose }: Props) {
             className="fixed inset-0 z-50 bg-purple-950/55"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            exit={{ opacity: 0, pointerEvents: 'none' }}
             transition={{ duration: 0.35 }}
             onClick={onClose}
           />
@@ -103,7 +103,7 @@ export function Customiser({ drink, onClose }: Props) {
             className="sheet z-50 sm:w-[min(560px,100vw)]"
             initial={{ y: '100%' }}
             animate={{ y: 0 }}
-            exit={{ y: '100%' }}
+            exit={{ y: '100%', pointerEvents: 'none' }}
             transition={{ duration: 0.55, ease: EASE }}
             /*
              * Swipe-down to dismiss, the gesture a bottom sheet implies. Driven

@@ -66,7 +66,7 @@ export function CartDrawer() {
             className="fixed inset-0 z-[60] bg-purple-950/55"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            exit={{ opacity: 0, pointerEvents: 'none' }}
             transition={{ duration: 0.35 }}
             onClick={() => setOpen(false)}
           />
@@ -78,7 +78,7 @@ export function CartDrawer() {
             className="sheet z-[60] sm:w-[min(520px,100vw)]"
             initial={{ y: '100%' }}
             animate={{ y: 0 }}
-            exit={{ y: '100%' }}
+            exit={{ y: '100%', pointerEvents: 'none' }}
             transition={{ duration: 0.55, ease: EASE }}
             /* Swipe down to dismiss — see the note in Customiser. */
             drag="y"

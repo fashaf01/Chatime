@@ -138,7 +138,9 @@ export function composeOrderMessage(
     ``,
     `*Total: ${formatLKR(subtotal)}*`,
     ``,
-    `Sent from chatime.lk`,
+    // Deliberately not a domain — chatime.lk is not registered, and a message
+    // claiming to come from it would be a lie the moment anyone checked.
+    `Sent from the Chatime Sri Lanka website`,
   ]
     .filter((l) => l !== '')
     .join('\n');
