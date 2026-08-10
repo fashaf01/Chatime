@@ -1,6 +1,7 @@
 'use client';
 
 import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
+import Image from 'next/image';
 import { useRef } from 'react';
 import { Reveal, RevealWords } from '@/components/motion/Reveal';
 import { copy as t } from '@/lib/copy';
@@ -13,17 +14,26 @@ export function Story() {
     target: ref,
     offset: ['start end', 'end start'],
   });
-  // Leaf art drifts in the opposite direction to the copy as you scroll past.
-  const leafY = useTransform(scrollYProgress, [0, 1], [reduced ? 0 : 80, reduced ? 0 : -80]);
-  const rotate = useTransform(scrollYProgress, [0, 1], [reduced ? 0 : -12, reduced ? 0 : 12]);
+  // The photograph drifts against the copy as you scroll past it.
+  const artY = useTransform(scrollYProgress, [0, 1], [reduced ? 0 : 60, reduced ? 0 : -60]);
 
   return (
-    <section id="about" ref={ref} className="defer-paint scroll-mt-24 relative overflow-hidden py-24 sm:py-32">
+    <section
+      id="about"
+      ref={ref}
+      className="defer-paint relative scroll-mt-24 overflow-hidden py-24 sm:py-32"
+    >
       <div aria-hidden className="pointer-events-none absolute inset-0">
-        <div className="absolute inset-0" style={{ background: 'radial-gradient(45% 45% at 92% 30%, rgba(178,150,200,0.30) 0%, transparent 70%)' }} />
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              'radial-gradient(45% 45% at 92% 30%, rgba(178,150,200,0.30) 0%, transparent 70%)',
+          }}
+        />
       </div>
 
-      <div className="container-page relative grid gap-14 lg:grid-cols-2 lg:items-center">
+      <div className="container-page relative grid gap-12 lg:grid-cols-2 lg:items-center">
         <div>
           <Reveal>
             <p className="eyebrow">{t.story.eyebrow}</p>
@@ -39,67 +49,36 @@ export function Story() {
           </Reveal>
         </div>
 
-        {/* Concentric brew rings with a drifting tea leaf */}
-        <motion.div style={{ y: leafY }} className="relative mx-auto h-[380px] w-full max-w-[420px]">
-          {[0, 1, 2].map((ring) => (
+        {/*
+         * Chatime's own tea-garden photograph, already cut to the organic blob
+         * their global About pages use. A drawn leaf was standing in for this
+         * and looked exactly like what it was.
+         */}
+        <motion.div
+          style={{ y: artY }}
+          className="relative mx-auto w-full max-w-[460px] lg:order-last"
+        >
+          <div className="relative aspect-square w-full">
             <motion.div
-              key={ring}
-              className="absolute left-1/2 top-1/2 rounded-full border border-purple-100"
-              style={{
-                width: `${55 + ring * 22}%`,
-                height: `${55 + ring * 22}%`,
-                x: '-50%',
-                y: '-50%',
-              }}
-              animate={
-                reduced
-                  ? undefined
-                  : { scale: [1, 1.045, 1], opacity: [0.35, 0.7, 0.35] }
-              }
-              transition={{
-                duration: 6 + ring * 1.4,
-                repeat: Infinity,
-                ease: 'easeInOut',
-                delay: ring * 0.5,
-              }}
+              aria-hidden
+              className="absolute inset-[2%] rounded-full border border-purple-200"
+              animate={reduced ? undefined : { scale: [1, 1.03, 1], opacity: [0.4, 0.8, 0.4] }}
+              transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
             />
-          ))}
+            <Image
+              src="/brand/tea-picking.png"
+              alt="Hands holding freshly picked tea leaves in a tea garden"
+              fill
+              sizes="(max-width: 1024px) 90vw, 460px"
+              className="object-contain drop-shadow-[0_20px_28px_rgba(80,7,120,0.18)]"
+            />
+          </div>
 
-          <motion.svg
-            viewBox="0 0 200 200"
-            className="absolute left-1/2 top-1/2 h-[46%] w-[46%] -translate-x-1/2 -translate-y-1/2"
-            style={{ rotate }}
-          >
-            <defs>
-              <linearGradient id="leaf" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stopColor="#F2D48A" />
-                <stop offset="100%" stopColor="#B57F1E" />
-              </linearGradient>
-            </defs>
-            <path
-              d="M100 18 C 152 48 168 108 138 154 C 120 180 82 184 60 162 C 30 132 40 62 100 18 Z"
-              fill="url(#leaf)"
-              opacity="0.9"
-            />
-            <path
-              d="M100 26 C 96 78 92 126 78 168"
-              stroke="#150720"
-              strokeWidth="3"
-              fill="none"
-              opacity="0.35"
-              strokeLinecap="round"
-            />
-            {[52, 80, 108, 136].map((y, i) => (
-              <path
-                key={y}
-                d={`M ${96 - i * 2} ${y} L ${132 - i * 5} ${y - 16}`}
-                stroke="#150720"
-                strokeWidth="2.4"
-                opacity="0.28"
-                strokeLinecap="round"
-              />
-            ))}
-          </motion.svg>
+          <Reveal delay={0.2}>
+            <p className="mt-4 text-center text-[11px] font-bold uppercase tracking-[0.2em] text-ink/65">
+              Loose leaf · brewed fresh · never powdered
+            </p>
+          </Reveal>
         </motion.div>
       </div>
     </section>
