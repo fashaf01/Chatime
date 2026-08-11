@@ -5,45 +5,43 @@ import { useEffect } from 'react';
 /**
  * Page scroll lock for open drawers, reference-counted across every caller.
  *
- * Why a shared counter rather than each drawer saving and restoring the body
- * itself: adding a drink closes the customiser and opens the cart in the same
- * tick, so for one moment two locks are live. When each one snapshots
- * `body.style` on mount and writes it back on unmount, the second lock captures
- * the *locked* state as its "previous" value — and restores the body to
- * `position: fixed; top: -NNNpx` after the last drawer closes. The page is then
- * pinned at an offset for good: it looks frozen, and every click lands on
- * whatever has shifted under the cursor, which is the "buttons stop working
- * everywhere" bug.
+ * Reference counting, because adding a drink closes the customiser and opens
+ * the cart in the same tick. If each drawer snapshotted `body.style` on mount
+ * and wrote it back on unmount, the second lock would capture the *locked* body
+ * as its "previous" state and restore the page to `position: fixed` with a
+ * stale offset after the last drawer closed — pinning the page for good and
+ * making every click land on whatever had shifted underneath. One counter, one
+ * owner of the body style.
  *
- * With a counter there is exactly one owner of the body style. The first lock
- * captures the real scroll position, the last unlock restores it, and anything
- * in between is a no-op.
+ * `overflow: hidden` on <html> rather than pinning the body with
+ * `position: fixed`. Pinning works, but it takes the body out of flow: the
+ * document collapses from its real height to one viewport (measured: 13,266px
+ * to 450px), every `content-visibility` section below loses its resolved size,
+ * and the restored scroll position lands somewhere else entirely — which is the
+ * "background jumps to the top" bug. Clipping the scroll container instead
+ * leaves the document exactly as it is, so there is no position to save and
+ * nothing to restore.
+ *
+ * iOS needs the belt and braces: `overflow: hidden` on <html> alone still lets
+ * the page rubber-band, so the dimmer carries `touch-action: none` and each
+ * drawer's scroller carries `overscroll-contain` to stop the gesture chaining
+ * out to the page.
  */
 let depth = 0;
-let savedY = 0;
 
 function applyLock() {
-  savedY = window.scrollY;
-  const body = document.body;
-  body.style.position = 'fixed';
-  body.style.top = `-${savedY}px`;
-  body.style.left = '0';
-  body.style.right = '0';
-  body.style.width = '100%';
-  // iOS Safari ignores `overflow: hidden` on the body, which is why the page
-  // used to keep scrolling under an open drawer. Pinning it is what holds.
-  body.style.overflow = 'hidden';
+  const root = document.documentElement;
+  // Compensate for the scrollbar so the page does not shift sideways on
+  // desktop when the scrollbar disappears.
+  const gutter = window.innerWidth - root.clientWidth;
+  root.style.overflow = 'hidden';
+  if (gutter > 0) root.style.paddingRight = `${gutter}px`;
 }
 
 function releaseLock() {
-  const body = document.body;
-  body.style.position = '';
-  body.style.top = '';
-  body.style.left = '';
-  body.style.right = '';
-  body.style.width = '';
-  body.style.overflow = '';
-  window.scrollTo({ top: savedY, behavior: 'auto' });
+  const root = document.documentElement;
+  root.style.overflow = '';
+  root.style.paddingRight = '';
 }
 
 export function useScrollLock(active: boolean) {
@@ -61,9 +59,8 @@ export function useScrollLock(active: boolean) {
 }
 
 /**
- * Belt and braces: if a render ever throws while a drawer is open, the cleanup
- * never runs and the body stays pinned. This clears a stuck lock so the page
- * can never end up permanently unclickable.
+ * If a render ever throws while a drawer is open its cleanup never runs and the
+ * page stays locked. This clears a stuck lock outright.
  */
 export function forceReleaseScrollLock() {
   depth = 0;

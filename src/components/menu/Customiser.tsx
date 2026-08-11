@@ -84,14 +84,16 @@ export function Customiser({ drink, onClose }: Props) {
   const showMilk = !drink?.dairyFree && drink?.category !== 'fresh-tea';
 
   return (
-    <AnimatePresence>
-      {drink && (
+    <div style={{ pointerEvents: !!drink ? 'auto' : 'none' }}>
+      <AnimatePresence>
+        {drink && (
         <>
           <motion.div
-            className="fixed inset-0 z-50 bg-purple-950/55"
+            className="fixed inset-0 z-50 touch-none bg-purple-950/55"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            exit={{ opacity: 0, pointerEvents: 'none' }}
+            exit={{ opacity: 0 }}
+
             transition={{ duration: 0.35 }}
             onClick={onClose}
           />
@@ -103,7 +105,8 @@ export function Customiser({ drink, onClose }: Props) {
             className="sheet z-50 sm:w-[min(560px,100vw)]"
             initial={{ y: '100%' }}
             animate={{ y: 0 }}
-            exit={{ y: '100%', pointerEvents: 'none' }}
+            exit={{ y: '100%' }}
+
             transition={{ duration: 0.55, ease: EASE }}
             /*
              * Swipe-down to dismiss, the gesture a bottom sheet implies. Driven
@@ -288,7 +291,8 @@ export function Customiser({ drink, onClose }: Props) {
           </motion.aside>
         </>
       )}
-    </AnimatePresence>
+      </AnimatePresence>
+    </div>
   );
 }
 

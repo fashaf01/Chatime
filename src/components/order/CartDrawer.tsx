@@ -59,14 +59,16 @@ export function CartDrawer() {
   const waUrl = orderWhatsappUrl(message);
 
   return (
-    <AnimatePresence>
-      {open && (
+    <div style={{ pointerEvents: open ? 'auto' : 'none' }}>
+      <AnimatePresence>
+        {open && (
         <>
           <motion.div
-            className="fixed inset-0 z-[60] bg-purple-950/55"
+            className="fixed inset-0 z-[60] touch-none bg-purple-950/55"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            exit={{ opacity: 0, pointerEvents: 'none' }}
+            exit={{ opacity: 0 }}
+
             transition={{ duration: 0.35 }}
             onClick={() => setOpen(false)}
           />
@@ -78,7 +80,8 @@ export function CartDrawer() {
             className="sheet z-[60] sm:w-[min(520px,100vw)]"
             initial={{ y: '100%' }}
             animate={{ y: 0 }}
-            exit={{ y: '100%', pointerEvents: 'none' }}
+            exit={{ y: '100%' }}
+
             transition={{ duration: 0.55, ease: EASE }}
             /* Swipe down to dismiss — see the note in Customiser. */
             drag="y"
@@ -347,7 +350,8 @@ export function CartDrawer() {
           </motion.aside>
         </>
       )}
-    </AnimatePresence>
+      </AnimatePresence>
+    </div>
   );
 }
 
