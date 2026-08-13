@@ -1,126 +1,90 @@
 import DrinkArt from "./DrinkArt";
-import { drinks, toppingOptions } from "@/lib/drinks";
-
-// Fixed values rather than Math.random(), so the server and client markup match.
-const PEARLS = [
-  { left: 6, size: 14, delay: 0, dur: 17 },
-  { left: 14, size: 9, delay: 5.5, dur: 21 },
-  { left: 23, size: 18, delay: 2.2, dur: 15 },
-  { left: 33, size: 11, delay: 8.1, dur: 19 },
-  { left: 44, size: 15, delay: 1.1, dur: 23 },
-  { left: 55, size: 8, delay: 6.4, dur: 16 },
-  { left: 64, size: 17, delay: 3.7, dur: 20 },
-  { left: 74, size: 12, delay: 9.3, dur: 18 },
-  { left: 83, size: 10, delay: 4.6, dur: 22 },
-  { left: 92, size: 16, delay: 7.2, dur: 16 },
-];
+import { drinks } from "@/lib/drinks";
 
 const featured = drinks.find((d) => d.id === "brown-sugar-milk-tea")!;
 
 export default function Hero() {
   return (
-    <section
-      id="top"
-      className="grain relative isolate overflow-hidden bg-plum pt-[var(--nav-h)]"
-    >
-      {/* depth wash */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 -z-10"
-        style={{
-          background:
-            "radial-gradient(120% 90% at 78% 8%, #8b3a9e 0%, transparent 55%), radial-gradient(90% 80% at 8% 95%, #7a2d8d 0%, transparent 58%), linear-gradient(165deg, #4c1d51 0%, #35143a 100%)",
-        }}
-      />
-
-      {/* rising pearls */}
+    <section id="top" className="relative isolate overflow-hidden bg-mist pt-[var(--nav-h)]">
+      {/* colour blocking */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10">
-        {PEARLS.map((p, i) => (
-          <span
-            key={i}
-            className="pearl-rise absolute bottom-0 rounded-full bg-caramel/45"
-            style={{
-              left: `${p.left}%`,
-              width: p.size,
-              height: p.size,
-              animationDelay: `${p.delay}s`,
-              animationDuration: `${p.dur}s`,
-            }}
-          />
-        ))}
+        <div className="blob absolute -right-24 -top-16 h-[560px] w-[560px] bg-violet/25" />
+        <div className="blob spin-slow absolute -bottom-40 -left-32 h-[440px] w-[440px] bg-magenta/12" />
+        <div className="absolute right-1/4 top-24 h-24 w-24 rounded-full bg-mango/30" />
       </div>
 
-      <div className="mx-auto grid max-w-7xl items-center gap-10 px-5 pb-20 pt-14 sm:px-8 lg:grid-cols-[1.05fr_0.95fr] lg:gap-6 lg:pb-28 lg:pt-20">
-        {/* copy */}
-        <div className="max-w-xl">
-          <p className="inline-flex items-center gap-2 rounded-full border border-cream/25 bg-cream/10 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-cream/90 backdrop-blur-sm">
-            <span className="h-1.5 w-1.5 rounded-full bg-caramel" />
+      <div className="mx-auto grid max-w-7xl items-center gap-8 px-5 pb-16 pt-10 sm:px-8 lg:grid-cols-[1.05fr_0.95fr] lg:pb-24 lg:pt-16">
+        <div>
+          <p className="inline-flex items-center gap-2 rounded-full bg-lime/20 px-4 py-2 text-[12px] font-extrabold uppercase tracking-[0.12em] text-lime">
+            <span className="h-2 w-2 rounded-full bg-lime" />
             Now open · Havelock City Mall
           </p>
 
-          <h1 className="mt-6 font-display text-[clamp(2.6rem,7.5vw,4.9rem)] font-bold leading-[1.02] text-cream text-balance">
-            Freshly brewed,
-            <span className="block text-caramel">shaken to order.</span>
+          <h1 className="h-xl mt-6 text-[clamp(2.9rem,8.5vw,5.4rem)] text-grape text-balance">
+            Bubble tea,
+            <br />
+            <span className="text-magenta">brewed fresh</span>
+            <br />
+            in Colombo.
           </h1>
 
-          <p className="mt-6 max-w-md text-[17px] leading-relaxed text-cream/75 text-pretty">
-            The world&apos;s bubble tea, finally in Colombo — and a Ceylon series
-            you will not find in any other Chatime on earth. Tea leaf from up the
-            hill, pearls cooked fresh every four hours.
+          <p className="mt-6 max-w-md text-[17px] font-medium leading-relaxed text-ink/62 text-pretty">
+            31 drinks, 7 toppings, 5 sugar levels — every cup shaken the moment
+            you order it. Plus a Ceylon series you will not find in any other
+            Chatime on earth.
           </p>
 
-          <div className="mt-9 flex flex-wrap items-center gap-3">
+          <div className="mt-8 flex flex-wrap items-center gap-3">
             <a
-              href="#menu"
-              className="rounded-full bg-cream px-7 py-3.5 text-sm font-semibold text-plum transition-all hover:-translate-y-0.5 hover:bg-white hover:shadow-xl hover:shadow-black/25"
+              href="#order"
+              className="rounded-full bg-magenta px-8 py-4 text-[15px] font-extrabold text-white transition-all hover:-translate-y-0.5 hover:bg-punch hover:shadow-xl hover:shadow-magenta/35"
             >
-              See the menu
+              Order now
             </a>
             <a
-              href="#find-us"
-              className="rounded-full border border-cream/35 px-7 py-3.5 text-sm font-semibold text-cream transition-all hover:-translate-y-0.5 hover:border-cream/70 hover:bg-cream/10"
+              href="#drinks"
+              className="rounded-full border-2 border-grape/20 bg-white px-8 py-4 text-[15px] font-extrabold text-grape transition-all hover:-translate-y-0.5 hover:border-grape/40 hover:shadow-lg"
             >
-              Find the store
+              See all drinks
             </a>
           </div>
 
-          <dl className="mt-12 grid max-w-md grid-cols-3 gap-4 border-t border-cream/15 pt-7">
-            {[
-              { n: String(drinks.length), l: "Drinks on menu" },
-              { n: String(toppingOptions.length), l: "Fresh toppings" },
-              { n: "4hr", l: "Pearl batches" },
-            ].map((s) => (
-              <div key={s.l}>
-                <dt className="font-display text-3xl font-bold text-caramel">
-                  {s.n}
-                </dt>
-                <dd className="mt-1 text-[11px] uppercase tracking-wider text-cream/55">
-                  {s.l}
-                </dd>
-              </div>
-            ))}
-          </dl>
+          <p className="mt-6 text-[13px] font-bold text-ink/40">
+            Earn 10 Loyal-Tea points for every Rs 100 you spend.
+          </p>
         </div>
 
-        {/* hero cup */}
-        <div className="relative flex justify-center lg:justify-end">
+        {/* Product. A square stage keeps the disc, the cup and the two chips
+            in one composition instead of letting the disc bleed off-canvas. */}
+        <div className="relative mx-auto aspect-square w-full max-w-[400px] sm:max-w-[440px]">
           <div
             aria-hidden="true"
-            className="absolute left-1/2 top-1/2 h-[min(78vw,420px)] w-[min(78vw,420px)] -translate-x-1/2 -translate-y-1/2 rounded-full bg-caramel/18 blur-3xl"
+            className="absolute inset-[6%] rounded-full bg-gradient-to-br from-violet to-magenta"
           />
-          <DrinkArt
-            drink={featured}
-            priority
-            className="float-soft relative w-[min(70vw,360px)] drop-shadow-2xl"
-          />
-        </div>
-      </div>
+          <div className="absolute inset-0 flex items-center justify-center">
+            <DrinkArt
+              drink={featured}
+              priority
+              className="bob h-[86%] w-auto drop-shadow-[0_24px_40px_rgba(27,16,34,0.3)]"
+            />
+          </div>
 
-      {/* curve into the next section */}
-      <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0">
-        <svg viewBox="0 0 1440 80" className="block w-full" preserveAspectRatio="none">
-          <path d="M0 80V34c240 32 480 46 720 40s480-26 720-56v62Z" fill="#fbf7f2" />
-        </svg>
+          <span className="pop-in absolute -left-1 top-[12%] rounded-2xl bg-white px-4 py-3 text-[13px] font-extrabold text-grape shadow-xl sm:left-0">
+            50% off
+            <span className="block text-[11px] font-bold text-ink/45">
+              your first order
+            </span>
+          </span>
+          <span
+            className="pop-in absolute -right-1 bottom-[12%] rounded-2xl bg-white px-4 py-3 text-[13px] font-extrabold text-grape shadow-xl sm:right-0"
+            style={{ animationDelay: "180ms" }}
+          >
+            Free tea
+            <span className="block text-[11px] font-bold text-ink/45">
+              on your birthday
+            </span>
+          </span>
+        </div>
       </div>
     </section>
   );

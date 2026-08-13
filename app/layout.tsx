@@ -38,7 +38,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#4c1d51",
+  themeColor: "#5c2d91",
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
@@ -83,10 +83,10 @@ export default function RootLayout({
     <html lang="en-LK">
       <body>
         <a
-          href="#menu"
-          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-plum focus:px-5 focus:py-3 focus:text-sm focus:font-semibold focus:text-cream"
+          href="#drinks"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-grape focus:px-5 focus:py-3 focus:text-sm focus:font-extrabold focus:text-white"
         >
-          Skip to menu
+          Skip to drinks
         </a>
         {children}
         <script

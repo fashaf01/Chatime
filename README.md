@@ -3,6 +3,24 @@
 A rebuilt marketing site for Chatime Sri Lanka — Next.js 15, React 19, Tailwind 4,
 fully static, zero third-party requests.
 
+## Design direction
+
+Modelled on the Australian site's approach: bright and commercial, browse-first,
+with the loyalty scheme and ordering routes given real estate rather than buried.
+Bold sans typography, white ground, saturated purple/magenta blocking.
+
+It deliberately fixes the things a published UX teardown of the Australian site
+called out:
+
+| chatime.com.au | Here |
+| --- | --- |
+| 13 items in the global header | 4 plus one action |
+| No prices on the site | Regular and large price on every card |
+| No dietary information | Dairy-free / caffeine / strong tags |
+| Toppings buried inside "All Flavours" | Their own section, with prices |
+| No bestsellers category | A best-sellers filter |
+| No search | Search across names and descriptions |
+
 ## Running it
 
 ```bash

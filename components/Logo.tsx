@@ -1,49 +1,55 @@
 export default function Logo({
   className = "",
-  tone = "plum",
+  tone = "grape",
 }: {
   className?: string;
-  tone?: "plum" | "cream";
+  tone?: "grape" | "paper";
 }) {
-  const main = tone === "cream" ? "#FBF7F2" : "#4C1D51";
-  const accent = tone === "cream" ? "#F4B6C8" : "#B5347F";
+  const text = tone === "paper" ? "#FFFFFF" : "#5C2D91";
+  const badge = tone === "paper" ? "#FFFFFF" : "#5C2D91";
+  const mark = tone === "paper" ? "#5C2D91" : "#FFFFFF";
 
   return (
     <span className={`inline-flex items-center gap-2.5 ${className}`}>
       <svg
-        viewBox="0 0 40 40"
-        className="h-9 w-9 shrink-0"
+        viewBox="0 0 44 44"
+        className="h-10 w-10 shrink-0"
         aria-hidden="true"
         xmlns="http://www.w3.org/2000/svg"
       >
-        <circle cx="20" cy="20" r="19" fill={main} />
-        {/* tea leaf */}
+        <rect x="0" y="0" width="44" height="44" rx="14" fill={badge} />
+        {/* cup */}
         <path
-          d="M20 9c6.5 2.4 9.6 7 9.6 12.2 0 4.4-3.4 8.2-9.6 9.8-6.2-1.6-9.6-5.4-9.6-9.8C10.4 16 13.5 11.4 20 9Z"
-          fill={accent}
-          opacity="0.9"
+          d="M13 14h18l-2.2 17.4A2.6 2.6 0 0 1 26.2 34h-8.4a2.6 2.6 0 0 1-2.6-2.6L13 14Z"
+          fill={mark}
         />
-        <path
-          d="M20 11.5v18"
-          stroke={main}
-          strokeWidth="1.6"
-          strokeLinecap="round"
+        {/* lid */}
+        <rect x="11" y="10.5" width="22" height="4.6" rx="2.3" fill={mark} />
+        {/* straw */}
+        <rect
+          x="24.5"
+          y="4"
+          width="3.4"
+          height="10"
+          rx="1.7"
+          fill={mark}
+          transform="rotate(14 26 9)"
         />
         {/* pearls */}
-        <circle cx="15.4" cy="25.6" r="2.1" fill={main} />
-        <circle cx="24.6" cy="25.6" r="2.1" fill={main} />
-        <circle cx="20" cy="27.4" r="2.1" fill={main} />
+        <circle cx="19" cy="29" r="2.05" fill={badge} />
+        <circle cx="25" cy="29" r="2.05" fill={badge} />
+        <circle cx="22" cy="25.4" r="2.05" fill={badge} />
       </svg>
       <span className="flex flex-col leading-none">
         <span
-          className="font-display text-[19px] font-bold tracking-tight"
-          style={{ color: main }}
+          className="text-[21px] font-extrabold tracking-tight"
+          style={{ color: text }}
         >
           Chatime
         </span>
         <span
-          className="mt-0.5 text-[9px] font-semibold uppercase tracking-[0.22em]"
-          style={{ color: accent }}
+          className="mt-1 text-[9.5px] font-extrabold uppercase tracking-[0.2em]"
+          style={{ color: tone === "paper" ? "#FF4DA6" : "#E5187E" }}
         >
           Sri Lanka
         </span>

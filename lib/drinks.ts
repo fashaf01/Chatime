@@ -58,6 +58,10 @@ export type Category = {
   id: CategoryId;
   label: string;
   tagline: string;
+  /** Card background for the category tiles. */
+  accent: string;
+  /** Drink shown on the category card. */
+  heroId: string;
 };
 
 export const categories: Category[] = [
@@ -65,31 +69,43 @@ export const categories: Category[] = [
     id: "signature",
     label: "Signature Milk Tea",
     tagline: "The originals. Shaken to order, every single cup.",
+    accent: "#5C2D91",
+    heroId: "chatime-milk-tea",
   },
   {
     id: "brown-sugar",
     label: "Brown Sugar",
     tagline: "Hand-cooked pearls, caramel streaked down the glass.",
+    accent: "#8A5321",
+    heroId: "brown-sugar-pearl",
   },
   {
     id: "ceylon",
     label: "Ceylon Series",
     tagline: "Made only in Sri Lanka, from tea grown up the road.",
+    accent: "#4C6B3C",
+    heroId: "king-coconut",
   },
   {
     id: "fruity",
     label: "Fruity Tea",
     tagline: "Real fruit, cold-shaken, no syrup shortcuts.",
+    accent: "#E5751B",
+    heroId: "mango-green-tea",
   },
   {
     id: "mousse",
     label: "Mousse & Crema",
     tagline: "A salted cheese cloud on top. Drink it lid-off.",
+    accent: "#3F7A55",
+    heroId: "matcha-crema",
   },
   {
     id: "fresh-tea",
     label: "Fresh Tea",
     tagline: "Just leaf and water. Brewed in small batches all day.",
+    accent: "#35A0C0",
+    heroId: "jasmine-green",
   },
 ];
 

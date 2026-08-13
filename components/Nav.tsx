@@ -3,11 +3,13 @@
 import { useEffect, useState } from "react";
 import Logo from "./Logo";
 
+/* Five items, deliberately. The published teardown of the Australian site
+   flagged a 13-item global header as its worst navigation problem. */
 const LINKS = [
-  { href: "#menu", label: "Menu" },
-  { href: "#customise", label: "Make It Yours" },
-  { href: "#story", label: "Our Story" },
-  { href: "#find-us", label: "Find Us" },
+  { href: "#drinks", label: "Drinks" },
+  { href: "#rewards", label: "Loyal-Tea" },
+  { href: "#order", label: "Order" },
+  { href: "#find-us", label: "Stores" },
 ];
 
 export default function Nav() {
@@ -15,28 +17,22 @@ export default function Nav() {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    // Passive listener + a cheap boolean flip. No layout reads on scroll.
     const onScroll = () => setScrolled(window.scrollY > 12);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Lock the page behind the mobile sheet, and restore the exact scroll
-  // position on close — `position: fixed` alone would jump the user to the top.
+  // Lock the page behind the sheet and restore the exact scroll offset after,
+  // which `position: fixed` alone would throw away.
   useEffect(() => {
     if (!open) return;
     const y = window.scrollY;
     const { body } = document;
-    const prev = {
-      position: body.style.position,
-      top: body.style.top,
-      width: body.style.width,
-    };
+    const prev = { position: body.style.position, top: body.style.top, width: body.style.width };
     body.style.position = "fixed";
     body.style.top = `-${y}px`;
     body.style.width = "100%";
-
     return () => {
       body.style.position = prev.position;
       body.style.top = prev.top;
@@ -45,26 +41,17 @@ export default function Nav() {
     };
   }, [open]);
 
-  // Escape closes the sheet.
   useEffect(() => {
     if (!open) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(false);
-    };
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [open]);
 
-  // At the very top the bar floats over the dark plum hero, so every mark in
-  // it has to invert. Once the cream page scrolls under it, it flips back.
-  const solid = scrolled || open;
-
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
-        solid
-          ? "border-b border-clay/60 bg-cream/85 backdrop-blur-xl"
-          : "border-b border-transparent"
+      className={`fixed inset-x-0 top-0 z-50 transition-shadow duration-300 ${
+        scrolled || open ? "bg-paper shadow-[0_2px_20px_rgba(27,16,34,0.08)]" : "bg-paper"
       }`}
       style={{ height: "var(--nav-h)" }}
     >
@@ -73,7 +60,7 @@ export default function Nav() {
         aria-label="Primary"
       >
         <a href="#top" className="shrink-0" aria-label="Chatime Sri Lanka, home">
-          <Logo tone={solid ? "plum" : "cream"} />
+          <Logo />
         </a>
 
         <div className="hidden items-center gap-1 md:flex">
@@ -81,33 +68,23 @@ export default function Nav() {
             <a
               key={l.href}
               href={l.href}
-              className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${
-                solid
-                  ? "text-ink/70 hover:bg-sand hover:text-plum"
-                  : "text-cream/80 hover:bg-cream/10 hover:text-cream"
-              }`}
+              className="rounded-full px-4 py-2.5 text-[15px] font-bold text-ink/70 transition-colors hover:bg-mist hover:text-grape"
             >
               {l.label}
             </a>
           ))}
           <a
-            href="#find-us"
-            className={`ml-3 rounded-full px-5 py-2.5 text-sm font-semibold transition-all ${
-              solid
-                ? "bg-plum text-cream hover:bg-grape hover:shadow-lg hover:shadow-plum/25"
-                : "bg-cream text-plum hover:bg-white hover:shadow-lg hover:shadow-black/25"
-            }`}
+            href="#order"
+            className="ml-3 rounded-full bg-magenta px-6 py-3 text-[15px] font-extrabold text-white transition-all hover:-translate-y-0.5 hover:bg-punch hover:shadow-lg hover:shadow-magenta/35"
           >
-            Visit Us
+            Order now
           </a>
         </div>
 
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
-          className={`-mr-2 flex h-11 w-11 items-center justify-center rounded-full transition-colors md:hidden ${
-            solid ? "text-plum hover:bg-sand" : "text-cream hover:bg-cream/10"
-          }`}
+          className="-mr-2 flex h-12 w-12 items-center justify-center rounded-full text-grape transition-colors hover:bg-mist md:hidden"
           aria-expanded={open}
           aria-controls="mobile-menu"
           aria-label={open ? "Close menu" : "Open menu"}
@@ -116,38 +93,33 @@ export default function Nav() {
             <path
               d={open ? "M6 6l12 12M18 6L6 18" : "M4 7h16M4 12h16M4 17h16"}
               stroke="currentColor"
-              strokeWidth="2"
+              strokeWidth="2.4"
               strokeLinecap="round"
             />
           </svg>
         </button>
       </nav>
 
-      {/* mobile sheet */}
-      <div
-        id="mobile-menu"
-        hidden={!open}
-        className="border-t border-clay/60 bg-cream/97 backdrop-blur-xl md:hidden"
-      >
-        <ul className="mx-auto max-w-7xl px-5 py-3">
+      <div id="mobile-menu" hidden={!open} className="bg-paper md:hidden">
+        <ul className="mx-auto max-w-7xl px-5 pb-4">
           {LINKS.map((l) => (
             <li key={l.href}>
               <a
                 href={l.href}
                 onClick={() => setOpen(false)}
-                className="block border-b border-clay/40 py-3.5 font-display text-lg text-plum"
+                className="block border-b border-lilac py-4 text-xl font-extrabold tracking-tight text-grape"
               >
                 {l.label}
               </a>
             </li>
           ))}
-          <li className="pt-4 pb-2">
+          <li className="pt-4">
             <a
-              href="#find-us"
+              href="#order"
               onClick={() => setOpen(false)}
-              className="block rounded-full bg-plum px-5 py-3.5 text-center text-sm font-semibold text-cream"
+              className="block rounded-full bg-magenta px-5 py-4 text-center font-extrabold text-white"
             >
-              Visit Us
+              Order now
             </a>
           </li>
         </ul>

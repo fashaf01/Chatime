@@ -4,16 +4,17 @@ const COLUMNS = [
   {
     title: "Drink",
     links: [
-      { label: "Full menu", href: "#menu" },
+      { label: "All drinks", href: "#drinks" },
+      { label: "Toppings", href: "#toppings" },
       { label: "Build your cup", href: "#customise" },
-      { label: "Ceylon series", href: "#menu" },
     ],
   },
   {
-    title: "Company",
+    title: "Chatime",
     links: [
-      { label: "Our story", href: "#story" },
-      { label: "Find a store", href: "#find-us" },
+      { label: "Loyal-Tea Club", href: "#rewards" },
+      { label: "Order", href: "#order" },
+      { label: "Stores", href: "#find-us" },
       { label: "Franchise", href: "#franchise" },
     ],
   },
@@ -39,21 +40,17 @@ const SOCIALS = [
 
 export default function Footer() {
   return (
-    <footer className="grain relative overflow-hidden bg-plum text-cream">
-      <div
+    <footer className="relative overflow-hidden bg-grape text-white">
+      <span
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0"
-        style={{
-          background:
-            "radial-gradient(90% 70% at 15% 0%, #7a2d8d 0%, transparent 60%)",
-        }}
+        className="blob absolute -left-24 -top-24 h-80 w-80 bg-white/6"
       />
 
-      <div className="relative mx-auto max-w-7xl px-5 py-16 sm:px-8 sm:py-20">
-        <div className="grid gap-12 md:grid-cols-[1.4fr_1fr_1fr_1.2fr]">
+      <div className="relative mx-auto max-w-7xl px-5 py-14 sm:px-8 sm:py-18">
+        <div className="grid gap-10 md:grid-cols-[1.4fr_1fr_1fr_1.2fr]">
           <div>
-            <Logo tone="cream" />
-            <p className="mt-5 max-w-xs text-[14px] leading-relaxed text-cream/60 text-pretty">
+            <Logo tone="paper" />
+            <p className="mt-5 max-w-xs text-[14px] font-medium leading-relaxed text-white/60 text-pretty">
               Freshly brewed bubble tea in Colombo. Every cup shaken to order,
               on Ceylon leaf.
             </p>
@@ -65,7 +62,7 @@ export default function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={`${s.label} (opens in a new tab)`}
-                  className="flex h-10 w-10 items-center justify-center rounded-full border border-cream/20 text-cream/70 transition-all hover:border-cream/50 hover:bg-cream/10 hover:text-cream"
+                  className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/10 text-white/75 transition-all hover:bg-white hover:text-grape"
                 >
                   <svg viewBox="0 0 24 24" className="h-[18px] w-[18px]" aria-hidden="true">
                     <path d={s.path} fill="currentColor" />
@@ -77,17 +74,16 @@ export default function Footer() {
 
           {COLUMNS.map((col) => (
             <div key={col.title}>
-              <h3 className="text-[11px] font-bold uppercase tracking-[0.2em] text-caramel">
+              <h3 className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-punch">
                 {col.title}
               </h3>
-              {/* py-2 on the anchor keeps every footer link a >=32px tap
-                  target on phones without opening the list up visually. */}
-              <ul className="mt-3 space-y-0">
+              {/* py-2 keeps each link a >=32px tap target on phones. */}
+              <ul className="mt-3">
                 {col.links.map((l) => (
                   <li key={l.label}>
                     <a
                       href={l.href}
-                      className="inline-block py-2 text-[14px] text-cream/65 transition-colors hover:text-cream"
+                      className="inline-block py-2 text-[14px] font-semibold text-white/65 transition-colors hover:text-white"
                     >
                       {l.label}
                     </a>
@@ -98,10 +94,10 @@ export default function Footer() {
           ))}
 
           <div>
-            <h3 className="text-[11px] font-bold uppercase tracking-[0.2em] text-caramel">
+            <h3 className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-punch">
               Visit
             </h3>
-            <address className="mt-5 text-[14px] not-italic leading-relaxed text-cream/65">
+            <address className="mt-3 text-[14px] font-medium not-italic leading-relaxed text-white/65">
               <p className="mb-2">
                 Level 2, Havelock City Mall
                 <br />
@@ -110,7 +106,7 @@ export default function Footer() {
               <p>
                 <a
                   href="tel:+94760000000"
-                  className="inline-block py-2 transition-colors hover:text-cream"
+                  className="inline-block py-2 transition-colors hover:text-white"
                 >
                   +94 76 000 0000
                 </a>
@@ -118,7 +114,7 @@ export default function Footer() {
               <p>
                 <a
                   href="mailto:hello@chatime.lk"
-                  className="inline-block py-2 transition-colors hover:text-cream"
+                  className="inline-block py-2 transition-colors hover:text-white"
                 >
                   hello@chatime.lk
                 </a>
@@ -127,7 +123,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-14 flex flex-col gap-4 border-t border-cream/15 pt-8 text-[13px] text-cream/45 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-12 flex flex-col gap-3 border-t border-white/15 pt-7 text-[12.5px] font-medium text-white/45 sm:flex-row sm:items-center sm:justify-between">
           <p>© {new Date().getFullYear()} Chatime Sri Lanka. All rights reserved.</p>
           <p>Chatime® is a registered trademark of La Kaffa International Co., Ltd.</p>
         </div>

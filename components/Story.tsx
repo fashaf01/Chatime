@@ -2,77 +2,57 @@ import Reveal from "./Reveal";
 
 const PILLARS = [
   {
-    k: "01",
+    n: "01",
     title: "Ceylon leaf, not imported dust",
-    body: "Our black tea base is single-estate Dimbula, bought at the Colombo auction like everyone else in this country has done for 150 years. It is the only Chatime in the world brewing on home-grown leaf.",
+    body: "Our black tea base is single-estate Dimbula, bought at the Colombo auction. The only Chatime on earth brewing on home-grown leaf.",
+    accent: "text-lime",
   },
   {
-    k: "02",
-    title: "Pearls cooked every four hours",
-    body: "Tapioca has a 4-hour window before it turns. We bin what is past it. That is why the counter sometimes makes you wait ninety seconds — the batch is still in the pot.",
+    n: "02",
+    title: "Pearls cooked every 4 hours",
+    body: "Tapioca has a four-hour window before it turns. We bin what is past it — which is why the counter sometimes makes you wait.",
+    accent: "text-mango",
   },
   {
-    k: "03",
-    title: "Your cup, your rules",
-    body: "Five sugar levels, four ice levels, seven toppings, three milks. Roughly 1,600 combinations before you have even picked a tea. Zero sugar is a real option and it is not an afterthought.",
+    n: "03",
+    title: "1,600 combinations",
+    body: "Five sugar levels, four ice levels, seven toppings, three milks. Zero sugar is a real option, not an afterthought.",
+    accent: "text-sky",
   },
 ];
 
 export default function Story() {
   return (
-    <section id="story" className="relative bg-cream py-24 sm:py-32">
+    <section id="story" className="scroll-mt-24 bg-paper py-20 sm:py-28">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
-        <div className="grid gap-14 lg:grid-cols-[0.85fr_1.15fr] lg:gap-20">
+        <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16">
           <Reveal>
-            <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-magenta">
-              Our Story
-            </p>
-            <h2 className="mt-4 font-display text-[clamp(2rem,4.4vw,3.2rem)] font-bold leading-[1.08] text-plum text-balance">
-              A global tea brand, brewed on Sri Lankan leaf.
+            <p className="eyebrow text-magenta">Why us</p>
+            <h2 className="h-lg mt-3 text-[clamp(2.1rem,5vw,3.4rem)] text-grape text-balance">
+              A global brand, brewed on Sri Lankan leaf.
             </h2>
-            <p className="mt-6 text-[16px] leading-relaxed text-ink/65 text-pretty">
-              Chatime has poured more than a billion cups across 60 countries
-              since 2005. When it came to Colombo we did something none of the
-              other markets could: we swapped the base.
+            <p className="mt-5 text-[16px] font-medium leading-relaxed text-ink/60 text-pretty">
+              Chatime has poured over a billion cups across 60 countries since
+              2005. When it came to Colombo we did what no other market could:
+              we swapped the base.
             </p>
-            <p className="mt-4 text-[16px] leading-relaxed text-ink/65 text-pretty">
-              The tea in your cup was grown a few hours up the A5. That is not a
-              marketing line — it is the reason our milk tea tastes brisker than
-              the one you had in Melbourne or Singapore.
-            </p>
-
-            <div className="mt-10 rounded-2xl border border-clay bg-sand/60 p-6">
-              <p className="font-display text-lg italic leading-snug text-plum">
-                &ldquo;We are the only market allowed to run a local tea
-                series. We did not waste it.&rdquo;
-              </p>
-              <p className="mt-3 text-[13px] font-semibold uppercase tracking-wider text-ink/45">
-                Store Team · Havelock City
-              </p>
-            </div>
           </Reveal>
 
-          <div className="space-y-5">
+          <ul className="grid gap-4 sm:grid-cols-3">
             {PILLARS.map((p, i) => (
-              <Reveal key={p.k} delay={i * 110}>
-                <article className="group rounded-2xl border border-clay bg-white/70 p-7 transition-all duration-300 hover:-translate-y-1 hover:border-magenta/35 hover:shadow-xl hover:shadow-plum/8 sm:p-9">
-                  <div className="flex items-start gap-5">
-                    <span className="font-display text-3xl font-bold text-clay transition-colors duration-300 group-hover:text-magenta">
-                      {p.k}
-                    </span>
-                    <div>
-                      <h3 className="font-display text-xl font-bold text-plum sm:text-2xl">
-                        {p.title}
-                      </h3>
-                      <p className="mt-3 text-[15px] leading-relaxed text-ink/62 text-pretty">
-                        {p.body}
-                      </p>
-                    </div>
-                  </div>
-                </article>
+              <Reveal as="li" key={p.n} delay={i * 90}>
+                <div className="h-full rounded-3xl bg-mist p-6 transition-all duration-300 hover:-translate-y-1 hover:bg-lilac sm:p-7">
+                  <span className={`text-3xl font-extrabold ${p.accent}`}>{p.n}</span>
+                  <h3 className="mt-3 text-[17px] font-extrabold leading-tight tracking-tight text-grape">
+                    {p.title}
+                  </h3>
+                  <p className="mt-2.5 text-[13.5px] font-medium leading-relaxed text-ink/55 text-pretty">
+                    {p.body}
+                  </p>
+                </div>
               </Reveal>
             ))}
-          </div>
+          </ul>
         </div>
       </div>
     </section>

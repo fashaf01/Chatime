@@ -1,30 +1,35 @@
 @import "tailwindcss";
 
 @theme {
-  /* Brand palette. Deep plum from the Chatime mark, warmed with Ceylon
-     caramel and a tea-leaf green for the Sri Lanka series. */
-  --color-ink: #191016;
-  --color-plum: #4c1d51;
-  --color-grape: #7a2d8d;
-  --color-magenta: #b5347f;
-  --color-caramel: #c2853c;
-  --color-leaf: #4c6b3c;
-  --color-cream: #fbf7f2;
-  --color-sand: #f1e7da;
-  --color-clay: #e0d2c2;
+  /* Bright, saturated, commercial — the opposite of an editorial palette.
+     White ground, vivid purple structure, hot magenta for anything you are
+     meant to press. */
+  --color-ink: #1b1022;
+  --color-grape: #5c2d91;
+  --color-violet: #7b3fbf;
+  --color-lilac: #efe6fa;
+  --color-mist: #f7f3fc;
+  --color-magenta: #e5187e;
+  --color-punch: #ff4da6;
+  --color-mango: #ffb627;
+  --color-lime: #7ac943;
+  --color-sky: #35c3e0;
+  --color-paper: #ffffff;
 
-  --font-display: "Georgia", "Iowan Old Style", "Palatino Linotype", "Times New Roman", serif;
-  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
-    "Helvetica Neue", Arial, sans-serif;
+  /* One heavy geometric sans across the whole page. No serif anywhere. */
+  --font-sans: ui-rounded, "SF Pro Rounded", "Segoe UI Variable Display",
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-display: var(--font-sans);
 
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-pop: cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 /* ---------------------------------------------------------------- base ---- */
 
 :root {
   color-scheme: light;
-  --nav-h: 68px;
+  --nav-h: 72px;
 }
 
 * {
@@ -33,18 +38,19 @@
 
 html {
   scroll-behavior: smooth;
-  /* Anchor targets clear the fixed header instead of hiding under it. */
   scroll-padding-top: calc(var(--nav-h) + 16px);
   -webkit-text-size-adjust: 100%;
+  /* Set on both html and body rather than relying on body's overflow
+     propagating to the viewport, which varies between engines. Decorative
+     blobs and the marquee track deliberately extend past the fold. */
+  overflow-x: clip;
 }
 
 body {
-  background: var(--color-cream);
+  background: var(--color-paper);
   color: var(--color-ink);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
-  /* Nothing on this page is meant to scroll sideways. */
   overflow-x: clip;
 }
 
@@ -54,28 +60,31 @@ body {
 }
 
 :focus-visible {
-  outline: 2px solid var(--color-magenta);
+  outline: 3px solid var(--color-magenta);
   outline-offset: 3px;
-  border-radius: 4px;
+  border-radius: 8px;
 }
 
 /* ------------------------------------------------------------ utilities ---- */
 
-.font-display {
-  font-family: var(--font-display);
-  letter-spacing: -0.02em;
+/* Headlines are heavy and tight — the loud end of the type scale. */
+.h-xl {
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 0.98;
 }
 
-/* Paper grain. A single inline SVG turned into a data URI — no request, and it
-   stops the large flat cream areas from banding on wide screens. */
-.grain::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0.28;
-  mix-blend-mode: multiply;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.35'/%3E%3C/svg%3E");
+.h-lg {
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.04;
+}
+
+.eyebrow {
+  font-weight: 800;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
 }
 
 .text-balance {
@@ -86,12 +95,17 @@ body {
   text-wrap: pretty;
 }
 
+/* Soft colour blob behind a product shot. */
+.blob {
+  border-radius: 48% 52% 43% 57% / 54% 46% 54% 46%;
+}
+
 /* ------------------------------------------------------------ animation ---- */
 
 @keyframes reveal-up {
   from {
     opacity: 0;
-    transform: translate3d(0, 22px, 0);
+    transform: translate3d(0, 20px, 0);
   }
   to {
     opacity: 1;
@@ -104,7 +118,7 @@ body {
 }
 
 .reveal.is-in {
-  animation: reveal-up 0.75s var(--ease-out-expo) forwards;
+  animation: reveal-up 0.6s var(--ease-out-expo) forwards;
 }
 
 @keyframes marquee-scroll {
@@ -117,48 +131,50 @@ body {
 }
 
 .marquee-track {
-  animation: marquee-scroll 38s linear infinite;
+  animation: marquee-scroll 30s linear infinite;
   will-change: transform;
 }
 
-@keyframes float-soft {
+@keyframes bob {
   0%,
   100% {
-    transform: translate3d(0, 0, 0) rotate(-2deg);
+    transform: translate3d(0, 0, 0) rotate(-3deg);
   }
   50% {
-    transform: translate3d(0, -16px, 0) rotate(2deg);
+    transform: translate3d(0, -18px, 0) rotate(3deg);
   }
 }
 
-.float-soft {
-  animation: float-soft 7s ease-in-out infinite;
+.bob {
+  animation: bob 6s ease-in-out infinite;
   will-change: transform;
 }
 
-@keyframes rise {
-  0% {
-    transform: translate3d(0, 12vh, 0) scale(0.9);
-    opacity: 0;
-  }
-  12% {
-    opacity: 0.5;
-  }
-  88% {
-    opacity: 0.5;
-  }
-  100% {
-    transform: translate3d(0, -88vh, 0) scale(1.1);
-    opacity: 0;
+@keyframes spin-slow {
+  to {
+    transform: rotate(360deg);
   }
 }
 
-.pearl-rise {
-  animation: rise linear infinite;
-  will-change: transform, opacity;
+.spin-slow {
+  animation: spin-slow 26s linear infinite;
 }
 
-/* One switch turns off every non-essential motion on the page. */
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.pop-in {
+  animation: pop-in 0.45s var(--ease-pop) forwards;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -175,9 +191,5 @@ body {
   .reveal {
     opacity: 1;
     animation: none;
-  }
-
-  .pearl-rise {
-    display: none;
   }
 }
