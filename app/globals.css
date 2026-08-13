@@ -1,0 +1,183 @@
+@import "tailwindcss";
+
+@theme {
+  /* Brand palette. Deep plum from the Chatime mark, warmed with Ceylon
+     caramel and a tea-leaf green for the Sri Lanka series. */
+  --color-ink: #191016;
+  --color-plum: #4c1d51;
+  --color-grape: #7a2d8d;
+  --color-magenta: #b5347f;
+  --color-caramel: #c2853c;
+  --color-leaf: #4c6b3c;
+  --color-cream: #fbf7f2;
+  --color-sand: #f1e7da;
+  --color-clay: #e0d2c2;
+
+  --font-display: "Georgia", "Iowan Old Style", "Palatino Linotype", "Times New Roman", serif;
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ---------------------------------------------------------------- base ---- */
+
+:root {
+  color-scheme: light;
+  --nav-h: 68px;
+}
+
+* {
+  min-width: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  /* Anchor targets clear the fixed header instead of hiding under it. */
+  scroll-padding-top: calc(var(--nav-h) + 16px);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--color-cream);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  /* Nothing on this page is meant to scroll sideways. */
+  overflow-x: clip;
+}
+
+::selection {
+  background: var(--color-magenta);
+  color: #fff;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-magenta);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ------------------------------------------------------------ utilities ---- */
+
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+}
+
+/* Paper grain. A single inline SVG turned into a data URI — no request, and it
+   stops the large flat cream areas from banding on wide screens. */
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.28;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.35'/%3E%3C/svg%3E");
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+
+.text-pretty {
+  text-wrap: pretty;
+}
+
+/* ------------------------------------------------------------ animation ---- */
+
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 22px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.reveal {
+  opacity: 0;
+}
+
+.reveal.is-in {
+  animation: reveal-up 0.75s var(--ease-out-expo) forwards;
+}
+
+@keyframes marquee-scroll {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.marquee-track {
+  animation: marquee-scroll 38s linear infinite;
+  will-change: transform;
+}
+
+@keyframes float-soft {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(-2deg);
+  }
+  50% {
+    transform: translate3d(0, -16px, 0) rotate(2deg);
+  }
+}
+
+.float-soft {
+  animation: float-soft 7s ease-in-out infinite;
+  will-change: transform;
+}
+
+@keyframes rise {
+  0% {
+    transform: translate3d(0, 12vh, 0) scale(0.9);
+    opacity: 0;
+  }
+  12% {
+    opacity: 0.5;
+  }
+  88% {
+    opacity: 0.5;
+  }
+  100% {
+    transform: translate3d(0, -88vh, 0) scale(1.1);
+    opacity: 0;
+  }
+}
+
+.pearl-rise {
+  animation: rise linear infinite;
+  will-change: transform, opacity;
+}
+
+/* One switch turns off every non-essential motion on the page. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+
+  .reveal {
+    opacity: 1;
+    animation: none;
+  }
+
+  .pearl-rise {
+    display: none;
+  }
+}
