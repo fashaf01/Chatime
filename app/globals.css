@@ -1,35 +1,51 @@
 @import "tailwindcss";
 
 @theme {
-  /* Bright, saturated, commercial — the opposite of an editorial palette.
-     White ground, vivid purple structure, hot magenta for anything you are
-     meant to press. */
-  --color-ink: #1b1022;
-  --color-grape: #5c2d91;
-  --color-violet: #7b3fbf;
-  --color-lilac: #efe6fa;
-  --color-mist: #f7f3fc;
-  --color-magenta: #e5187e;
-  --color-punch: #ff4da6;
-  --color-mango: #ffb627;
-  --color-lime: #7ac943;
-  --color-sky: #35c3e0;
-  --color-paper: #ffffff;
+  /* ------------------------------------------------------------- palette --
+     Chatime's purple and magenta stay in charge, but the ground is warm paper
+     rather than clinical white and there is now a deep plum for the dark
+     sections and an antique gold for the premium moments. */
+  --color-ink: #180C20;
+  --color-plum: #2A0F3D;
+  --color-grape: #5C2D91;
+  --color-violet: #7B3FBF;
+  --color-orchid: #A46BE0;
+  --color-lilac: #EDE2FA;
+  --color-mist: #F8F4FC;
+  --color-cream: #FBF7F2;
+  --color-magenta: #E5187E;
+  --color-punch: #FF4DA6;
+  --color-blush: #FFE3F0;
+  --color-mango: #FFB627;
+  --color-gold: #D9A441;
+  --color-lime: #6FBE3C;
+  --color-sky: #35C3E0;
+  --color-paper: #FFFFFF;
 
-  /* One heavy geometric sans across the whole page. No serif anywhere. */
-  --font-sans: ui-rounded, "SF Pro Rounded", "Segoe UI Variable Display",
-    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  --font-display: var(--font-sans);
+  /* ----------------------------------------------------------- typography */
+  --font-sans: var(--font-sans-src), ui-sans-serif, system-ui, "Segoe UI",
+    Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-display: var(--font-display-src), var(--font-sans);
+  --font-editorial: var(--font-editorial-src), Georgia, "Times New Roman", serif;
 
+  /* ---------------------------------------------------------------- easing */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-pop: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-swift: cubic-bezier(0.22, 0.61, 0.36, 1);
+
+  /* --------------------------------------------------------------- shadow */
+  --shadow-lift: 0 24px 60px -18px rgba(24, 12, 32, 0.28);
+  --shadow-glow: 0 30px 70px -20px rgba(229, 24, 126, 0.5);
+  --shadow-card: 0 2px 4px rgba(24, 12, 32, 0.04),
+    0 12px 32px -12px rgba(24, 12, 32, 0.12);
 }
 
 /* ---------------------------------------------------------------- base ---- */
 
 :root {
   color-scheme: light;
-  --nav-h: 72px;
+  --nav-h: 76px;
+  --bar-h: 40px;
 }
 
 * {
@@ -38,7 +54,7 @@
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: calc(var(--nav-h) + 16px);
+  scroll-padding-top: calc(var(--nav-h) + 24px);
   -webkit-text-size-adjust: 100%;
   /* Set on both html and body rather than relying on body's overflow
      propagating to the viewport, which varies between engines. Decorative
@@ -50,7 +66,9 @@ body {
   background: var(--color-paper);
   color: var(--color-ink);
   font-family: var(--font-sans);
+  font-feature-settings: "ss01", "cv01";
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   overflow-x: clip;
 }
 
@@ -62,28 +80,54 @@ body {
 :focus-visible {
   outline: 3px solid var(--color-magenta);
   outline-offset: 3px;
-  border-radius: 8px;
+  border-radius: 10px;
+}
+
+/* Scrollbars on the horizontal rails are noise; the rails have their own
+   affordances (edge fade, arrows, snap points). */
+.no-bar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.no-bar::-webkit-scrollbar {
+  display: none;
 }
 
 /* ------------------------------------------------------------ utilities ---- */
 
-/* Headlines are heavy and tight — the loud end of the type scale. */
+/* Headlines are set in the display face, heavy and optically tight. */
 .h-xl {
+  font-family: var(--font-display);
   font-weight: 800;
-  letter-spacing: -0.035em;
-  line-height: 0.98;
+  letter-spacing: -0.04em;
+  line-height: 0.94;
 }
 
 .h-lg {
+  font-family: var(--font-display);
   font-weight: 800;
-  letter-spacing: -0.03em;
-  line-height: 1.04;
+  letter-spacing: -0.035em;
+  line-height: 1.02;
+}
+
+.h-md {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+}
+
+.editorial {
+  font-family: var(--font-editorial);
+  font-weight: 400;
+  letter-spacing: -0.01em;
 }
 
 .eyebrow {
   font-weight: 800;
-  font-size: 12px;
-  letter-spacing: 0.14em;
+  font-size: 11.5px;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
 }
 
@@ -95,9 +139,74 @@ body {
   text-wrap: pretty;
 }
 
+/* Gradient-filled type for the one or two words that carry a headline. */
+.text-gradient {
+  background: linear-gradient(
+    100deg,
+    var(--color-magenta) 0%,
+    var(--color-punch) 42%,
+    var(--color-violet) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
 /* Soft colour blob behind a product shot. */
 .blob {
   border-radius: 48% 52% 43% 57% / 54% 46% 54% 46%;
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+}
+
+/* A light sweep that crosses a card on hover. The pseudo-element is skewed so
+   the highlight reads as a reflection rather than a wipe. */
+.sheen {
+  position: relative;
+  overflow: hidden;
+}
+
+.sheen::after {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 -60%;
+  width: 40%;
+  transform: skewX(-18deg);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.42),
+    transparent
+  );
+  opacity: 0;
+  pointer-events: none;
+}
+
+.sheen:hover::after,
+.sheen:focus-visible::after {
+  animation: sheen-sweep 0.85s var(--ease-swift) forwards;
+}
+
+/* Fade the ends of a horizontal rail so cards look like they continue. */
+.rail-fade {
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent 0,
+    #000 28px,
+    #000 calc(100% - 28px),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    90deg,
+    transparent 0,
+    #000 28px,
+    #000 calc(100% - 28px),
+    transparent 100%
+  );
 }
 
 /* ------------------------------------------------------------ animation ---- */
@@ -105,7 +214,40 @@ body {
 @keyframes reveal-up {
   from {
     opacity: 0;
-    transform: translate3d(0, 20px, 0);
+    transform: translate3d(0, 26px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes reveal-left {
+  from {
+    opacity: 0;
+    transform: translate3d(-28px, 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes reveal-right {
+  from {
+    opacity: 0;
+    transform: translate3d(28px, 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes reveal-scale {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
   }
   to {
     opacity: 1;
@@ -118,7 +260,19 @@ body {
 }
 
 .reveal.is-in {
-  animation: reveal-up 0.6s var(--ease-out-expo) forwards;
+  animation: reveal-up 0.72s var(--ease-out-expo) forwards;
+}
+
+.reveal[data-dir="left"].is-in {
+  animation-name: reveal-left;
+}
+
+.reveal[data-dir="right"].is-in {
+  animation-name: reveal-right;
+}
+
+.reveal[data-dir="scale"].is-in {
+  animation-name: reveal-scale;
 }
 
 @keyframes marquee-scroll {
@@ -131,22 +285,27 @@ body {
 }
 
 .marquee-track {
-  animation: marquee-scroll 30s linear infinite;
+  animation: marquee-scroll 34s linear infinite;
   will-change: transform;
 }
 
-@keyframes bob {
+/* Pausing on hover lets someone actually read a claim they caught. */
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+@keyframes float-y {
   0%,
   100% {
-    transform: translate3d(0, 0, 0) rotate(-3deg);
+    transform: translate3d(0, 0, 0) rotate(-1.5deg);
   }
   50% {
-    transform: translate3d(0, -18px, 0) rotate(3deg);
+    transform: translate3d(0, -20px, 0) rotate(1.5deg);
   }
 }
 
-.bob {
-  animation: bob 6s ease-in-out infinite;
+.float-y {
+  animation: float-y 7s ease-in-out infinite;
   will-change: transform;
 }
 
@@ -157,22 +316,125 @@ body {
 }
 
 .spin-slow {
-  animation: spin-slow 26s linear infinite;
+  animation: spin-slow 30s linear infinite;
 }
 
 @keyframes pop-in {
   from {
     opacity: 0;
-    transform: scale(0.9);
+    transform: scale(0.86) translate3d(0, 10px, 0);
   }
   to {
     opacity: 1;
-    transform: scale(1);
+    transform: none;
   }
 }
 
 .pop-in {
-  animation: pop-in 0.45s var(--ease-pop) forwards;
+  opacity: 0;
+  animation: pop-in 0.6s var(--ease-pop) forwards;
+}
+
+@keyframes sheen-sweep {
+  from {
+    left: -60%;
+    opacity: 1;
+  }
+  to {
+    left: 130%;
+    opacity: 0;
+  }
+}
+
+/* Tapioca drifting up behind the hero. */
+@keyframes bubble-rise {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0) scale(0.7);
+  }
+  12% {
+    opacity: var(--bubble-opacity, 0.5);
+  }
+  85% {
+    opacity: var(--bubble-opacity, 0.5);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(var(--bubble-drift, 20px), -120vh, 0) scale(1);
+  }
+}
+
+.bubble {
+  animation: bubble-rise var(--bubble-duration, 18s) linear infinite;
+  animation-delay: var(--bubble-delay, 0s);
+  will-change: transform, opacity;
+}
+
+/* Slow drift across an oversized gradient, so dark panels never sit still. */
+@keyframes gradient-pan {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.gradient-pan {
+  background-size: 200% 200%;
+  animation: gradient-pan 18s ease-in-out infinite;
+}
+
+@keyframes pulse-ring {
+  0% {
+    opacity: 0.5;
+    transform: scale(0.9);
+  }
+  70% {
+    opacity: 0;
+    transform: scale(1.5);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.5);
+  }
+}
+
+.pulse-ring {
+  animation: pulse-ring 2.6s var(--ease-out-expo) infinite;
+}
+
+/* The active slide's progress bar in the hero showcase. */
+@keyframes bar-fill {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.bar-fill {
+  transform-origin: left;
+  animation: bar-fill var(--bar-duration, 6s) linear forwards;
+}
+
+/* 3D tilt on product cards. The wrapper owns the perspective so the card can
+   rotate without dragging its shadow along. */
+.tilt-stage {
+  perspective: 1000px;
+}
+
+.tilt {
+  transform: rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg))
+    translate3d(0, var(--tilt-lift, 0), 0);
+  transition: transform 0.4s var(--ease-swift);
+  transform-style: preserve-3d;
+}
+
+.tilt.is-tilting {
+  transition: transform 0.12s linear;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -188,8 +450,17 @@ body {
     transition-duration: 0.001ms !important;
   }
 
-  .reveal {
+  .reveal,
+  .pop-in {
     opacity: 1;
     animation: none;
+  }
+
+  .tilt {
+    transform: none !important;
+  }
+
+  .bubble {
+    display: none;
   }
 }

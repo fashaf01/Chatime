@@ -42,13 +42,13 @@ export default function Logo({
       </svg>
       <span className="flex flex-col leading-none">
         <span
-          className="text-[21px] font-extrabold tracking-tight"
+          className="font-display text-[22px] font-extrabold tracking-[-0.03em]"
           style={{ color: text }}
         >
           Chatime
         </span>
         <span
-          className="mt-1 text-[9.5px] font-extrabold uppercase tracking-[0.2em]"
+          className="mt-0.5 text-[9.5px] font-extrabold uppercase tracking-[0.22em]"
           style={{ color: tone === "paper" ? "#FF4DA6" : "#E5187E" }}
         >
           Sri Lanka

@@ -2,10 +2,14 @@ import Reveal from "./Reveal";
 
 export default function Franchise() {
   return (
-    <section id="franchise" className="scroll-mt-24 bg-paper py-16 sm:py-24">
+    <section id="franchise" className="scroll-mt-28 bg-cream py-16 sm:py-24">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <Reveal>
-          <div className="relative overflow-hidden rounded-[32px] bg-magenta px-7 py-12 sm:px-14 sm:py-16">
+          <div className="relative isolate overflow-hidden rounded-[32px] px-7 py-12 sm:px-14 sm:py-16">
+            <span
+              aria-hidden="true"
+              className="gradient-pan absolute inset-0 -z-10 bg-[linear-gradient(120deg,#B01560_0%,#E5187E_45%,#FF4DA6_100%)]"
+            />
             <span
               aria-hidden="true"
               className="blob absolute -right-20 -top-24 h-72 w-72 bg-white/12"

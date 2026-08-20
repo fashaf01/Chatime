@@ -40,7 +40,7 @@ const SOCIALS = [
 
 export default function Footer() {
   return (
-    <footer className="relative overflow-hidden bg-grape text-white">
+    <footer className="relative overflow-hidden bg-plum text-white">
       <span
         aria-hidden="true"
         className="blob absolute -left-24 -top-24 h-80 w-80 bg-white/6"
