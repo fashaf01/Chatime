@@ -97,7 +97,7 @@ export default function Hero() {
       <div className="mx-auto grid max-w-7xl items-center gap-10 px-5 pb-14 pt-8 sm:px-8 sm:pb-16 sm:pt-12 lg:grid-cols-[1.02fr_0.98fr] lg:gap-6 lg:pb-24 lg:pt-16">
         {/* ------------------------------------------------------------ copy */}
         <div className="relative z-10">
-          <p className="inline-flex items-center gap-2.5 rounded-full bg-white/10 px-4 py-2 text-[11.5px] font-extrabold uppercase tracking-[0.16em] text-white ring-1 ring-white/15 backdrop-blur-sm">
+          <p className="enter inline-flex items-center gap-2.5 rounded-full bg-white/10 px-4 py-2 text-[11.5px] font-extrabold uppercase tracking-[0.16em] text-white ring-1 ring-white/15 backdrop-blur-sm">
             <span className="relative flex h-2 w-2">
               <span className="pulse-ring absolute inline-flex h-full w-full rounded-full bg-lime" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-lime" />
@@ -105,7 +105,8 @@ export default function Hero() {
             Now open · Havelock City Mall
           </p>
 
-          <h1 className="h-xl mt-5 text-[clamp(2.6rem,8.4vw,5.6rem)] text-white text-balance sm:mt-6">
+          <h1 className="enter h-xl mt-5 text-[clamp(2.6rem,8.4vw,5.6rem)] text-white text-balance sm:mt-6"
+            style={{ animationDelay: "90ms" }}>
             Bubble tea,
             <br />
             <span className="text-gradient">brewed fresh</span>
@@ -113,13 +114,19 @@ export default function Hero() {
             in Colombo.
           </h1>
 
-          <p className="mt-5 max-w-md text-[16px] font-medium leading-relaxed text-white/65 text-pretty sm:mt-6 sm:text-[17px]">
+          <p
+            className="enter mt-5 max-w-md text-[16px] font-medium leading-relaxed text-white/65 text-pretty sm:mt-6 sm:text-[17px]"
+            style={{ animationDelay: "180ms" }}
+          >
             Every cup shaken the moment you order it — real leaf, hand-cooked
             pearls, and a Ceylon series you will not find in any other Chatime
             on earth.
           </p>
 
-          <div className="mt-7 flex flex-wrap items-center gap-3 sm:mt-9">
+          <div
+            className="enter mt-7 flex flex-wrap items-center gap-3 sm:mt-9"
+            style={{ animationDelay: "270ms" }}
+          >
             <a
               href="#order"
               className="group inline-flex items-center gap-2 rounded-full bg-magenta px-8 py-4 text-[15px] font-extrabold text-white shadow-glow transition-all duration-300 hover:-translate-y-1 hover:bg-punch"
@@ -138,7 +145,10 @@ export default function Hero() {
           </div>
 
           {/* Counters, so the range lands as a fact rather than a claim. */}
-          <dl className="mt-8 grid max-w-md grid-cols-3 gap-4 border-t border-white/12 pt-6 sm:mt-11 sm:pt-7">
+          <dl
+            className="enter mt-8 grid max-w-md grid-cols-3 gap-4 border-t border-white/12 pt-6 sm:mt-11 sm:pt-7"
+            style={{ animationDelay: "360ms" }}
+          >
             <Stat value={drinks.length} label="Drinks" />
             <Stat value={7} label="Toppings" />
             <Stat value={1600} label="Combinations" />
@@ -151,7 +161,10 @@ export default function Hero() {
           onMouseEnter={() => setPaused(true)}
           onMouseLeave={() => setPaused(false)}
         >
-          <div className="relative mx-auto aspect-[4/4.9] w-full max-w-[460px]">
+          <div
+            className="enter relative mx-auto aspect-[4/4.9] w-full max-w-[460px]"
+            style={{ animationDelay: "150ms" }}
+          >
             {/* halo */}
             <div
               aria-hidden="true"

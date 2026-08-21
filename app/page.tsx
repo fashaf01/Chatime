@@ -9,6 +9,7 @@ import Marquee from "@/components/Marquee";
 import Nav from "@/components/Nav";
 import Newsletter from "@/components/Newsletter";
 import Order from "@/components/Order";
+import Process from "@/components/Process";
 import Reviews from "@/components/Reviews";
 import Rewards from "@/components/Rewards";
 import Story from "@/components/Story";
@@ -25,6 +26,7 @@ export default function Home() {
             ranges first, then the shortlist, then the full grid. */}
         <DrinksSection />
         <Toppings />
+        <Process />
         <Customiser />
         <Rewards />
         <Story />

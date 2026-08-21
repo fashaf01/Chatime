@@ -188,3 +188,56 @@ export function useAutoAdvance(
 
   return [index, setIndex] as const;
 }
+
+/**
+ * Scroll progress through a tall, pinned section.
+ *
+ * Returns the ref to put on the outer (tall) element and the active step. The
+ * continuous 0..1 value is written straight to a CSS custom property rather
+ * than to React state — a progress bar that re-rendered on every scroll frame
+ * would cost a render per frame for no benefit. Only the integer step, which
+ * actually changes what is on screen, goes through state.
+ */
+export function useScrollSteps<T extends HTMLElement>(count: number) {
+  const ref = useRef<T>(null);
+  const [step, setStep] = useState(0);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    let frame = 0;
+    let last = -1;
+
+    const apply = () => {
+      frame = 0;
+      const rect = el.getBoundingClientRect();
+      const travel = rect.height - window.innerHeight;
+      const p = travel <= 0 ? 0 : Math.min(1, Math.max(0, -rect.top / travel));
+
+      el.style.setProperty("--progress", p.toFixed(4));
+
+      // Bias slightly into each band so a step lands as you arrive at it.
+      const next = Math.min(count - 1, Math.floor(p * count + 0.08));
+      if (next !== last) {
+        last = next;
+        setStep(next);
+      }
+    };
+
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(apply);
+    };
+
+    apply();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (frame) cancelAnimationFrame(frame);
+    };
+  }, [count]);
+
+  return { ref, step };
+}

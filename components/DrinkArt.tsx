@@ -118,8 +118,8 @@ export default function DrinkArt({
   const photo = drink.photo ?? photos[drink.id];
 
   const scene = useMemo(
-    () => buildScene(drink.id, art, detail),
-    [drink.id, art, detail]
+    () => buildScene(drink.id, art, detail, drink.category),
+    [drink.id, art, detail, drink.category]
   );
 
   if (photo) {
@@ -147,12 +147,18 @@ export default function DrinkArt({
     toppings,
     ice,
     droplets,
+    pulp,
+    leaves,
+    foamPeaks,
     topping,
     style,
   } = scene;
 
   const surfaceRx = rxAt(liquidTopY);
   const surfaceRy = ryAt(liquidTopY);
+  // Resolved out here so the foam peaks below do not depend on TypeScript
+  // narrowing surviving into a map callback.
+  const foamLight = art.crema ? lighten(art.crema, 0.5) : "#ffffff";
 
   const id = (name: string) => `${name}-${uid}`;
   const url = (name: string) => `url(#${id(name)})`;
@@ -288,6 +294,20 @@ export default function DrinkArt({
           fill={url("liq")}
         />
 
+        {/* Fruit pulp hanging in the pour. Real fruit does not filter out. */}
+        {pulp.map((p, i) => (
+          <ellipse
+            key={`pulp-${i}`}
+            cx={p.x}
+            cy={p.y}
+            rx={p.rx}
+            ry={p.ry}
+            fill={lighten(art.liquidTop, 0.5)}
+            opacity={p.o}
+            transform={`rotate(${p.rot} ${p.x} ${p.y})`}
+          />
+        ))}
+
         {/* Brown sugar clinging to the inside of the glass. Tapered ribbons —
             syrup runs thick at the bottom and thins as it climbs, which an
             even-width stroke cannot show. */}
@@ -396,16 +416,43 @@ export default function DrinkArt({
               ry={ryAt(cremaTopY)}
               fill={lighten(art.crema, 0.4)}
             />
+            {/* Whipped, not poured: the cap breaks the flat ellipse. */}
+            {foamPeaks.map((p, i) => (
+              <ellipse
+                key={`foam-${i}`}
+                cx={p.x}
+                cy={cremaTopY - p.h * 0.45}
+                rx={p.r}
+                ry={p.h}
+                fill={foamLight}
+                opacity="0.8"
+              />
+            ))}
             <ellipse
               cx={CX - 16}
               cy={cremaTopY - 1}
               rx="34"
               ry="5"
               fill="#ffffff"
-              opacity="0.45"
+              opacity="0.4"
             />
           </>
         )}
+
+        {/* Brewed leaf settled in the base — small-batch tea is never filtered
+            perfectly clear. */}
+        {leaves.map((l, i) => (
+          <ellipse
+            key={`leaf-${i}`}
+            cx={l.x}
+            cy={l.y}
+            rx={l.s}
+            ry={l.s * 0.34}
+            fill={darken(art.liquidBottom, 0.45)}
+            opacity="0.5"
+            transform={`rotate(${l.rot} ${l.x} ${l.y})`}
+          />
+        ))}
 
         {/* The submerged length of the straw. Drawn before the pile so the
             toppings sit in front of it, and knocked well back — liquid this
@@ -635,8 +682,16 @@ export default function DrinkArt({
 type Placed = { x: number; y: number; r: number; rot: number; back: boolean };
 type Cube = { x: number; y: number; s: number; rot: number };
 type Drop = { x: number; y: number; r: number; o: number };
+type Speck = { x: number; y: number; rx: number; ry: number; rot: number; o: number };
+type Leaf = { x: number; y: number; rot: number; s: number };
+type Peak = { x: number; r: number; h: number };
 
-function buildScene(seed: string, art: Drink["art"], detail: Detail) {
+function buildScene(
+  seed: string,
+  art: Drink["art"],
+  detail: Detail,
+  category: Drink["category"]
+) {
   const rand = seeded(seed);
   const hasCrema = Boolean(art.crema);
 
@@ -712,5 +767,64 @@ function buildScene(seed: string, art: Drink["art"], detail: Detail) {
     });
   }
 
-  return { liquidTopY, cremaTopY, toppings, ice, droplets, topping, style };
+  /* Per-family detail. Colour and topping alone leave 31 cups reading as one
+     cup in 31 shades; pulp, leaf and a whipped cap are what make a fruit tea
+     look like a fruit tea at card size. */
+
+  const pulp: Speck[] = [];
+  if (category === "fruity") {
+    const count = detail === "hero" ? 26 : 16;
+    for (let i = 0; i < count; i += 1) {
+      const y = liquidTopY + 8 + rand() * (248 - liquidTopY);
+      const halfWidth = rxAt(y) - 10;
+      pulp.push({
+        x: CX + (rand() * 2 - 1) * halfWidth,
+        y,
+        rx: 1.4 + rand() * 2.3,
+        ry: 0.9 + rand() * 1.4,
+        rot: rand() * 180,
+        o: 0.3 + rand() * 0.38,
+      });
+    }
+  }
+
+  const leaves: Leaf[] = [];
+  if (category === "fresh-tea") {
+    for (let i = 0; i < 7; i += 1) {
+      const y = 234 + rand() * 20;
+      const halfWidth = rxAt(y) - 12;
+      leaves.push({
+        x: CX + (rand() * 2 - 1) * halfWidth,
+        y,
+        rot: rand() * 180,
+        s: 4 + rand() * 3.4,
+      });
+    }
+  }
+
+  const foamPeaks: Peak[] = [];
+  if (hasCrema) {
+    const rx = rxAt(cremaTopY);
+    for (let i = 0; i < 7; i += 1) {
+      const t = (i + 0.5) / 7;
+      foamPeaks.push({
+        x: CX - rx + t * rx * 2,
+        r: 7 + rand() * 6,
+        h: 3 + rand() * 4,
+      });
+    }
+  }
+
+  return {
+    liquidTopY,
+    cremaTopY,
+    toppings,
+    ice,
+    droplets,
+    pulp,
+    leaves,
+    foamPeaks,
+    topping,
+    style,
+  };
 }
