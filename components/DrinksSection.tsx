@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Bestsellers from "./Bestsellers";
 import Categories from "./Categories";
 import Menu, { type Filter } from "./Menu";
 
@@ -24,6 +25,7 @@ export default function DrinksSection() {
   return (
     <>
       <Categories onPick={pick} />
+      <Bestsellers />
       <Menu filter={filter} setFilter={setFilter} />
     </>
   );

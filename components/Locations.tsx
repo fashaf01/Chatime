@@ -28,7 +28,7 @@ const STORES = [
 
 export default function Locations() {
   return (
-    <section id="find-us" className="scroll-mt-24 bg-mist py-20 sm:py-28">
+    <section id="find-us" className="scroll-mt-28 bg-paper py-20 sm:py-28">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <header className="max-w-2xl">
           <p className="eyebrow text-magenta">Stores</p>
@@ -41,14 +41,14 @@ export default function Locations() {
           {STORES.map((s, i) => (
             <Reveal as="li" key={s.name} delay={i * 90}>
               <article
-                className={`flex h-full flex-col rounded-3xl p-6 transition-all duration-300 sm:p-8 ${
+                className={`flex h-full flex-col rounded-[26px] p-6 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1.5 sm:p-8 ${
                   s.status === "open"
-                    ? "bg-white shadow-xl shadow-grape/8"
-                    : "bg-white/55"
+                    ? "bg-white shadow-lift ring-1 ring-lilac"
+                    : "bg-mist"
                 }`}
               >
                 <div className="flex items-start justify-between gap-3">
-                  <h3 className="text-[22px] font-extrabold leading-tight tracking-tight text-grape">
+                  <h3 className="h-md text-[22px] text-grape">
                     {s.name}
                   </h3>
                   <span

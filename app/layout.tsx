@@ -1,5 +1,33 @@
 import type { Metadata, Viewport } from "next";
+import { Instrument_Serif, Outfit, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
+
+/* Three faces, each with one job. Outfit carries the headlines, Jakarta does
+   every piece of UI text, and Instrument Serif appears only where the page
+   wants an editorial voice — pull quotes and section marks. All three are
+   self-hosted by next/font, so there is no render-blocking request to Google. */
+
+const display = Outfit({
+  subsets: ["latin"],
+  weight: ["500", "600", "700", "800", "900"],
+  variable: "--font-display-src",
+  display: "swap",
+});
+
+const body = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-sans-src",
+  display: "swap",
+});
+
+const editorial = Instrument_Serif({
+  subsets: ["latin"],
+  weight: "400",
+  style: ["normal", "italic"],
+  variable: "--font-editorial-src",
+  display: "swap",
+});
 
 const SITE = "https://chatime-sri-lanka.vercel.app";
 
@@ -80,7 +108,10 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en-LK">
+    <html
+      lang="en-LK"
+      className={`${display.variable} ${body.variable} ${editorial.variable}`}
+    >
       <body>
         <a
           href="#drinks"

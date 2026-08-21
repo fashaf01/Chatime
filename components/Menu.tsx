@@ -1,30 +1,10 @@
 "use client";
 
 import { useDeferredValue, useMemo, useState } from "react";
-import DrinkArt from "./DrinkArt";
-import {
-  categories,
-  drinks,
-  formatLKR,
-  type CategoryId,
-  type Drink,
-} from "@/lib/drinks";
+import DrinkCard from "./DrinkCard";
+import { categories, drinks, type CategoryId } from "@/lib/drinks";
 
 export type Filter = CategoryId | "all" | "bestsellers";
-
-const BADGE_STYLE: Record<string, string> = {
-  signature: "bg-grape text-white",
-  bestseller: "bg-magenta text-white",
-  new: "bg-mango text-ink",
-  ceylon: "bg-lime text-white",
-};
-
-const BADGE_LABEL: Record<string, string> = {
-  signature: "Signature",
-  bestseller: "Best seller",
-  new: "New",
-  ceylon: "Sri Lanka only",
-};
 
 export default function Menu({
   filter,
@@ -54,7 +34,7 @@ export default function Menu({
   const bestsellerCount = drinks.filter((d) => d.badge === "bestseller").length;
 
   return (
-    <section id="menu" className="scroll-mt-24 bg-mist py-20 sm:py-28">
+    <section id="menu" className="scroll-mt-28 bg-mist pb-20 pt-16 sm:pb-28 sm:pt-20">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="flex flex-wrap items-end justify-between gap-6">
           <div>
@@ -84,43 +64,49 @@ export default function Menu({
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search taro, mango, oat…"
-              className="w-full rounded-full border-2 border-transparent bg-white py-3.5 pl-11 pr-4 text-[15px] font-semibold text-ink shadow-sm outline-none transition-colors placeholder:font-medium placeholder:text-ink/35 focus:border-magenta"
+              className="w-full rounded-full border-2 border-transparent bg-white py-3.5 pl-11 pr-4 text-[15px] font-semibold text-ink shadow-card outline-none transition-colors placeholder:font-medium placeholder:text-ink/35 focus:border-magenta"
             />
           </div>
         </div>
+      </div>
 
-        {/* filters */}
-        <div
-          className="mt-8 -mx-5 overflow-x-auto px-5 pb-2 sm:mx-0 sm:px-0"
-          role="group"
-          aria-label="Filter drinks"
-        >
-          <div className="flex w-max gap-2 sm:w-auto sm:flex-wrap">
-            <Chip active={filter === "all"} onClick={() => setFilter("all")}>
-              All {drinks.length}
-            </Chip>
-            <Chip
-              active={filter === "bestsellers"}
-              onClick={() => setFilter("bestsellers")}
-            >
-              ★ Best sellers {bestsellerCount}
-            </Chip>
-            {categories.map((c) => (
-              <Chip
-                key={c.id}
-                active={filter === c.id}
-                onClick={() => setFilter(c.id)}
-              >
-                {c.label}
+      {/* Filters stay reachable while you scroll a 31-card grid, which is the
+          whole point of having them. */}
+      <div className="sticky top-[var(--nav-h)] z-30 mt-8 bg-mist/85 py-3 backdrop-blur-lg">
+        <div className="mx-auto max-w-7xl px-5 sm:px-8">
+          <div
+            className="no-bar -mx-5 overflow-x-auto px-5 sm:mx-0 sm:px-0"
+            role="group"
+            aria-label="Filter drinks"
+          >
+            <div className="flex w-max gap-2 sm:w-auto sm:flex-wrap">
+              <Chip active={filter === "all"} onClick={() => setFilter("all")}>
+                All {drinks.length}
               </Chip>
-            ))}
+              <Chip
+                active={filter === "bestsellers"}
+                onClick={() => setFilter("bestsellers")}
+              >
+                ★ Best sellers {bestsellerCount}
+              </Chip>
+              {categories.map((c) => (
+                <Chip
+                  key={c.id}
+                  active={filter === c.id}
+                  onClick={() => setFilter(c.id)}
+                >
+                  {c.label}
+                </Chip>
+              ))}
+            </div>
           </div>
         </div>
+      </div>
 
-        {/* grid */}
+      <div className="mx-auto max-w-7xl px-5 sm:px-8">
         {shown.length > 0 ? (
           <ul
-            className="mt-8 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4"
+            className="mt-6 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4"
             aria-live="polite"
           >
             {shown.map((d) => (
@@ -128,8 +114,8 @@ export default function Menu({
             ))}
           </ul>
         ) : (
-          <div className="mt-8 rounded-3xl bg-white py-16 text-center">
-            <p className="text-lg font-extrabold text-grape">
+          <div className="mt-6 rounded-[26px] bg-white py-16 text-center shadow-card">
+            <p className="h-md text-lg text-grape">
               Nothing matches &ldquo;{query}&rdquo;
             </p>
             <p className="mt-2 text-[15px] font-medium text-ink/50">
@@ -148,7 +134,7 @@ export default function Menu({
           </div>
         )}
 
-        <p className="mt-8 text-center text-[13px] font-medium text-ink/45">
+        <p className="mt-10 text-center text-[13px] font-medium text-ink/45">
           Milk, soy and tapioca are present in most drinks. Full allergen sheet
           at the till.
         </p>
@@ -174,65 +160,10 @@ function Chip({
       className={`shrink-0 whitespace-nowrap rounded-full px-4 py-2.5 text-[13.5px] font-extrabold transition-all duration-200 ${
         active
           ? "bg-grape text-white shadow-md shadow-grape/25"
-          : "bg-white text-ink/60 hover:text-grape hover:shadow-sm"
+          : "bg-white text-ink/55 shadow-card hover:text-grape"
       }`}
     >
       {children}
     </button>
-  );
-}
-
-function DrinkCard({ drink }: { drink: Drink }) {
-  return (
-    <li className="group relative flex flex-col overflow-hidden rounded-3xl bg-white transition-all duration-300 hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-grape/10">
-      {drink.badge && (
-        <span
-          className={`absolute left-3 top-3 z-10 rounded-full px-2.5 py-1 text-[9.5px] font-extrabold uppercase tracking-wider sm:left-4 sm:top-4 sm:text-[10px] ${
-            BADGE_STYLE[drink.badge]
-          }`}
-        >
-          {BADGE_LABEL[drink.badge]}
-        </span>
-      )}
-
-      <div className="relative flex h-40 items-center justify-center bg-lilac/45 sm:h-48">
-        <DrinkArt
-          drink={drink}
-          className="h-full w-auto py-3 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-105"
-        />
-      </div>
-
-      <div className="flex flex-1 flex-col p-4 sm:p-5">
-        <h3 className="text-[15px] font-extrabold leading-tight tracking-tight text-grape sm:text-[17px]">
-          {drink.name}
-        </h3>
-        <p className="mt-1.5 hidden flex-1 text-[13px] font-medium leading-relaxed text-ink/50 sm:block text-pretty">
-          {drink.blurb}
-        </p>
-
-        <div className="mt-3 flex flex-wrap gap-1.5">
-          {!drink.dairy && <Tag>Dairy-free</Tag>}
-          {drink.caffeine === "none" && <Tag>No caffeine</Tag>}
-          {drink.caffeine === "high" && <Tag>Strong</Tag>}
-        </div>
-
-        <div className="mt-3 flex items-baseline gap-2 border-t border-lilac pt-3">
-          <p className="text-lg font-extrabold text-grape">
-            {formatLKR(drink.price)}
-          </p>
-          <p className="text-[11px] font-bold text-ink/35">
-            L {formatLKR(drink.priceLarge)}
-          </p>
-        </div>
-      </div>
-    </li>
-  );
-}
-
-function Tag({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="rounded-full bg-mist px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wide text-ink/50">
-      {children}
-    </span>
   );
 }

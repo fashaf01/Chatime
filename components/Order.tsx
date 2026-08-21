@@ -35,7 +35,7 @@ const ROUTES = [
 
 export default function Order() {
   return (
-    <section id="order" className="scroll-mt-24 bg-paper py-20 sm:py-28">
+    <section id="order" className="scroll-mt-28 bg-mist py-20 sm:py-28">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <header className="max-w-2xl">
           <p className="eyebrow text-magenta">Order</p>
@@ -47,13 +47,13 @@ export default function Order() {
         <ul className="mt-10 grid gap-4 md:grid-cols-3">
           {ROUTES.map((r, i) => (
             <Reveal as="li" key={r.title} delay={i * 90}>
-              <div className="flex h-full flex-col rounded-3xl bg-mist p-6 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl sm:p-8">
+              <div className="flex h-full flex-col rounded-[26px] bg-white p-6 shadow-card transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-2 hover:shadow-lift sm:p-8">
                 <span
                   className={`inline-flex w-fit rounded-full ${r.accent} px-3 py-1.5 text-[11px] font-extrabold uppercase tracking-wider text-white`}
                 >
                   {r.note}
                 </span>
-                <h3 className="mt-4 text-[22px] font-extrabold leading-tight tracking-tight text-grape">
+                <h3 className="h-md mt-4 text-[22px] text-grape">
                   {r.title}
                 </h3>
                 <p className="mt-1 text-[13px] font-extrabold uppercase tracking-wider text-ink/40">

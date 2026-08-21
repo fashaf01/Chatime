@@ -32,7 +32,16 @@ const PERKS = [
 
 export default function Rewards() {
   return (
-    <section id="rewards" className="scroll-mt-24 overflow-hidden bg-grape py-20 sm:py-28">
+    <section
+      id="rewards"
+      className="relative isolate scroll-mt-28 overflow-hidden bg-grape py-20 sm:py-28"
+    >
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10">
+        <div className="gradient-pan absolute inset-0 bg-[linear-gradient(135deg,#3A1A5E_0%,#5C2D91_48%,#7B3FBF_100%)]" />
+        <div className="blob spin-slow absolute -right-32 -top-32 h-[420px] w-[420px] bg-white/7" />
+        <div className="absolute -left-20 bottom-0 h-72 w-72 rounded-full bg-magenta/25 blur-3xl" />
+      </div>
+
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="grid gap-12 lg:grid-cols-[0.95fr_1.05fr] lg:gap-16">
           <div>
@@ -81,7 +90,7 @@ export default function Rewards() {
                       <path d={p.icon} fill="#fff" />
                     </svg>
                   </span>
-                  <h3 className="mt-4 text-[17px] font-extrabold leading-tight tracking-tight text-white">
+                  <h3 className="h-md mt-4 text-[17px] text-white">
                     {p.title}
                   </h3>
                   <p className="mt-2 text-[13.5px] font-medium leading-relaxed text-white/60 text-pretty">

@@ -77,12 +77,12 @@ export default function Customiser() {
   );
 
   return (
-    <section id="customise" className="scroll-mt-24 bg-mist py-20 sm:py-28">
+    <section id="customise" className="scroll-mt-28 bg-mist py-20 sm:py-28">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <header className="max-w-2xl">
           <p className="eyebrow text-magenta">Make it yours</p>
           <h2 className="h-lg mt-3 text-[clamp(2.1rem,5vw,3.4rem)] text-grape text-balance">
-            Build it before you queue.
+            Build it <span className="editorial italic">before</span> you queue.
           </h2>
           <p className="mt-4 text-[16px] font-medium leading-relaxed text-ink/60 text-pretty">
             Every combination here is one we actually make. Set it up, then read
@@ -93,14 +93,29 @@ export default function Customiser() {
         <div className="mt-10 grid gap-6 lg:grid-cols-[0.85fr_1.15fr] lg:gap-12">
           {/* preview */}
           <div className="lg:sticky lg:top-28 lg:self-start">
-            <div className="relative overflow-hidden rounded-[32px] bg-grape p-7 text-center">
+            <div className="relative isolate overflow-hidden rounded-[32px] p-7 text-center">
               <span
                 aria-hidden="true"
-                className="blob absolute -right-16 -top-16 h-56 w-56 bg-white/10"
+                className="gradient-pan absolute inset-0 -z-10 bg-[linear-gradient(150deg,#3A1A5E_0%,#5C2D91_50%,#7B3FBF_100%)]"
+              />
+              <span
+                aria-hidden="true"
+                className="blob spin-slow absolute -right-16 -top-16 -z-10 h-56 w-56 bg-white/10"
+              />
+              {/* The glow takes its colour from whatever is currently being
+                  built, so the panel shifts as you change the base. */}
+              <span
+                aria-hidden="true"
+                className="absolute left-1/2 top-[26%] -z-10 h-52 w-52 -translate-x-1/2 rounded-full opacity-60 blur-[46px] transition-colors duration-700"
+                style={{ backgroundColor: preview.art.liquidTop }}
               />
               <div className="relative">
-                <DrinkArt drink={preview} className="mx-auto h-60 w-auto" />
-                <h3 className="mt-5 text-[22px] font-extrabold leading-tight tracking-tight text-white">
+                <DrinkArt
+                  drink={preview}
+                  detail="hero"
+                  className="mx-auto h-64 w-auto drop-shadow-[0_22px_36px_rgba(10,3,16,0.45)]"
+                />
+                <h3 className="h-md mt-5 text-[22px] text-white">
                   {base.name}
                 </h3>
                 <p className="mt-2 text-[13px] font-medium text-white/60">
@@ -115,7 +130,7 @@ export default function Customiser() {
                   <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-white/50">
                     Your total
                   </p>
-                  <p className="mt-1 text-4xl font-extrabold tracking-tight text-white">
+                  <p className="h-md mt-1 text-4xl text-white">
                     {formatLKR(total)}
                   </p>
                   <p className="mt-2 text-[12px] font-bold text-punch">

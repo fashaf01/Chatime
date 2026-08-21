@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
 
+type Direction = "up" | "left" | "right" | "scale";
+
 /**
  * Scroll-in animation wrapper.
  *
@@ -13,12 +15,15 @@ export default function Reveal({
   children,
   delay = 0,
   className = "",
+  dir = "up",
   as: Tag = "div",
 }: {
   children: ReactNode;
   delay?: number;
   className?: string;
-  as?: "div" | "section" | "li" | "article" | "header";
+  /** Which way the element travels in from. */
+  dir?: Direction;
+  as?: "div" | "section" | "li" | "article" | "header" | "figure";
 }) {
   const ref = useRef<HTMLElement>(null);
   const [shown, setShown] = useState(false);
@@ -49,6 +54,7 @@ export default function Reveal({
     <Tag
       // @ts-expect-error -- one ref type across the allowed tag union
       ref={ref}
+      data-dir={dir}
       className={`reveal ${shown ? "is-in" : ""} ${className}`}
       style={delay ? { animationDelay: `${delay}ms` } : undefined}
     >
