@@ -2,6 +2,7 @@
 
 import { useId, useMemo } from "react";
 import { darken, lighten } from "@/lib/color";
+import { photos } from "@/lib/photos";
 import type { Drink, ToppingKind } from "@/lib/drinks";
 
 /**
@@ -110,8 +111,11 @@ export default function DrinkArt({
   const uid = rawId.replace(/[^a-zA-Z0-9]/g, "");
   const { art } = drink;
 
-  // If real photography is supplied later, it wins over the generated art.
-  const photo = drink.photo;
+  // Photography wins over the generated art whenever it exists: an explicit
+  // `photo` on the drink first, otherwise whatever scripts/sync-photos.mjs
+  // found in public/drinks/. Drinks with neither keep their vector render, so
+  // the menu still works while a shoot is only half done.
+  const photo = drink.photo ?? photos[drink.id];
 
   const scene = useMemo(
     () => buildScene(drink.id, art, detail),
@@ -126,9 +130,13 @@ export default function DrinkArt({
         alt={drink.name}
         className={className}
         loading={priority ? "eager" : "lazy"}
+        fetchPriority={priority ? "high" : "auto"}
         decoding="async"
-        width={220}
-        height={320}
+        // Same 11:16 as the vector viewBox, so the layout reserves the right
+        // box before the file lands and nothing shifts on load.
+        width={660}
+        height={960}
+        style={{ objectFit: "contain" }}
       />
     );
   }
