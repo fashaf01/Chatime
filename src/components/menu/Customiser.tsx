@@ -8,6 +8,7 @@ import { CupVisual } from './CupVisual';
 import { useCart } from '@/lib/cart';
 import { useHistoryDismiss } from '@/lib/useHistoryDismiss';
 import { useScrollLock } from '@/lib/useScrollLock';
+import { SM_UP, useMediaQuery } from '@/lib/useMediaQuery';
 import {
   formatLKR,
   iceLevels,
@@ -52,6 +53,18 @@ export function Customiser({ drink, onClose }: Props) {
   }, [drink]);
 
   useScrollLock(!!drink);
+
+  /*
+   * The sheet is a bottom sheet on phones and a right-hand drawer from `sm` up,
+   * so it has to travel on the matching axis. It animated on `y` at every size,
+   * which meant that on desktop the side panel rose up from below the fold and
+   * dropped back out through the floor — a bottom-sheet motion played on
+   * something that is not a bottom sheet.
+   */
+  const wide = useMediaQuery(SM_UP);
+  const hidden = wide ? { x: '100%', y: 0 } : { y: '100%', x: 0 };
+  const shown = { x: 0, y: 0 };
+
   useHistoryDismiss(!!drink, onClose);
 
   useEffect(() => {
@@ -103,9 +116,9 @@ export function Customiser({ drink, onClose }: Props) {
             aria-modal="true"
             aria-label={`Customise ${drink.name}`}
             className="sheet z-50 sm:w-[min(560px,100vw)]"
-            initial={{ y: '100%' }}
-            animate={{ y: 0 }}
-            exit={{ y: '100%' }}
+            initial={hidden}
+            animate={shown}
+            exit={hidden}
 
             transition={{ duration: 0.55, ease: EASE }}
             /*

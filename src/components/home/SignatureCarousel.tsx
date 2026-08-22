@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import Image from 'next/image';
+import { ProductImage } from '@/components/motion/Skeleton';
 import { useCallback, useEffect, useState } from 'react';
 import { formatLKR, type Drink } from '@/lib/menu';
 
@@ -63,7 +63,8 @@ export function SignatureCarousel({ drinks, onSelect }: Props) {
 
   return (
     <section
-      className="defer-paint relative overflow-hidden bg-white py-16 sm:py-24"
+      className="defer-paint relative overflow-hidden bg-[#F0EAF4] pb-16 pt-6 sm:pb-24"
+      style={{ ["--defer-h" as string]: "940px" }}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       aria-roledescription="carousel"
@@ -138,11 +139,12 @@ export function SignatureCarousel({ drinks, onSelect }: Props) {
                       }}
                     />
                   )}
-                  <Image
+                  <ProductImage
                     src={d.image}
                     alt={d.name}
                     fill
                     sizes="(max-width: 640px) 62vw, 300px"
+                    skeletonRounded="rounded-[40px]"
                     className="pointer-events-none object-contain drop-shadow-[0_22px_28px_rgba(80,7,120,0.24)]"
                     draggable={false}
                   />

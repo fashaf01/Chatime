@@ -1,6 +1,7 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
+import { ProductImage } from '@/components/motion/Skeleton';
 import { Clock, Instagram, MapPin, Star } from 'lucide-react';
 import { Reveal, RevealWords } from '@/components/motion/Reveal';
 import { MagneticButton } from '@/components/motion/MagneticButton';
@@ -14,11 +15,13 @@ import {
 } from '@/lib/outlets';
 
 export function LocationTeaser() {
+  const reduced = useReducedMotion();
   const outlet = outlets[0];
   const state = openState(outlet);
 
   return (
-    <section id="locations" className="defer-paint scroll-mt-24 relative py-24 sm:py-32">
+    <section id="locations" className="defer-paint scroll-mt-24 relative py-24 sm:py-32"
+      style={{ ["--defer-h" as string]: "1140px" }}>
       <div className="container-page">
         <div className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
           <div>
@@ -30,6 +33,29 @@ export function LocationTeaser() {
             </h2>
             <Reveal delay={0.15}>
               <p className="body-lg mt-5 max-w-sm">{t.locations.body}</p>
+            </Reveal>
+
+            {/*
+             * Chatime's own store photograph, already cut to the lilac disc
+             * their location pages use. The column was three lines of copy over
+             * a large empty block, which is what left this section feeling
+             * unfinished next to the card beside it.
+             */}
+            <Reveal delay={0.22}>
+              <div className="relative mx-auto mt-10 aspect-square w-full max-w-[300px] lg:mx-0">
+                <ProductImage
+                  src="/brand/hand-cup.png"
+                  alt="A hand holding a Chatime pearl milk tea"
+                  fill
+                  sizes="(max-width: 1024px) 60vw, 300px"
+                  skeletonRounded="rounded-full"
+                  className={
+                    reduced
+                      ? 'object-contain'
+                      : 'animate-float-soft object-contain'
+                  }
+                />
+              </div>
             </Reveal>
           </div>
 
@@ -87,7 +113,7 @@ export function LocationTeaser() {
 
                   {outlet.rating && (
                     <span className="inline-flex items-center gap-1.5 text-xs text-ink/70">
-                      <Star size={13} className="fill-tangerine text-purple-800" />
+                      <Star size={13} className="fill-tangerine text-tangerine" />
                       {outlet.rating.score} · {outlet.rating.count} Google reviews
                     </span>
                   )}

@@ -13,6 +13,7 @@ import {
 import { describeSelection, formatLKR, priceOf } from '@/lib/menu';
 import { useHistoryDismiss } from '@/lib/useHistoryDismiss';
 import { useScrollLock } from '@/lib/useScrollLock';
+import { SM_UP, useMediaQuery } from '@/lib/useMediaQuery';
 import { outlets, openState } from '@/lib/outlets';
 
 const EASE = [0.16, 1, 0.3, 1] as const;
@@ -32,6 +33,18 @@ export function CartDrawer() {
   const drag = useDragControls();
 
   useScrollLock(open);
+
+  /*
+   * The sheet is a bottom sheet on phones and a right-hand drawer from `sm` up,
+   * so it has to travel on the matching axis. It animated on `y` at every size,
+   * which meant that on desktop the side panel rose up from below the fold and
+   * dropped back out through the floor — a bottom-sheet motion played on
+   * something that is not a bottom sheet.
+   */
+  const wide = useMediaQuery(SM_UP);
+  const hidden = wide ? { x: '100%', y: 0 } : { y: '100%', x: 0 };
+  const shown = { x: 0, y: 0 };
+
   useHistoryDismiss(open, () => setOpen(false));
 
   useEffect(() => {
@@ -78,9 +91,9 @@ export function CartDrawer() {
             aria-modal="true"
             aria-label="Your order"
             className="sheet z-[60] sm:w-[min(520px,100vw)]"
-            initial={{ y: '100%' }}
-            animate={{ y: 0 }}
-            exit={{ y: '100%' }}
+            initial={hidden}
+            animate={shown}
+            exit={hidden}
 
             transition={{ duration: 0.55, ease: EASE }}
             /* Swipe down to dismiss — see the note in Customiser. */

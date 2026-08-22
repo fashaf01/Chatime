@@ -1,14 +1,18 @@
 'use client';
 
 import { AnimatePresence, motion } from 'framer-motion';
+import { ProductImage } from '@/components/motion/Skeleton';
 import { useMemo, useState } from 'react';
 import { Hero } from './Hero';
 import { ProductMarquee } from './ProductMarquee';
 import { SignatureCarousel } from './SignatureCarousel';
 import { Stats } from './Stats';
 import { Story } from './Story';
+import { TrendingRail } from './TrendingRail';
 import { LocationTeaser } from './LocationTeaser';
+import { Wave } from '@/components/site/Wave';
 import { Customiser } from '@/components/menu/Customiser';
+import { CategoryIcon, type IconName } from '@/components/menu/CategoryIcon';
 import { ProductCard } from '@/components/menu/ProductCard';
 import { Reveal, RevealWords } from '@/components/motion/Reveal';
 import {
@@ -51,14 +55,47 @@ export function LandingPage() {
 
   return (
     <>
-      <Hero onOrder={() => setSelected(featured[0] ?? drinks[0])} />
+      {/* The hero hands back whichever cup it is showing, so "Start an order"
+          opens that one rather than a fixed default. */}
+      <Hero onOrder={(d) => setSelected(d)} />
+
+      {/*
+       * The colour rhythm below is chatime.com's: white, then a deep purple
+       * block, then the lilac tint, waving from one to the next rather than
+       * butting up against a hard edge. The page used to run white all the way
+       * down with two purple strips in it, which is what made it read flat.
+       */}
+      <TrendingRail onSelect={setSelected} />
       <Stats />
       <SignatureCarousel drinks={featured} onSelect={setSelected} />
-      <ProductMarquee onSelect={setSelected} />
+      <Wave colour="#FFFFFF" from="#F0EAF4" height={72} />
+      <Story />
+      <Wave colour="#F0EAF4" from="#FFFFFF" height={72} />
 
       {/* ── Menu ─────────────────────────────────────────────────────────── */}
-      <section id="menu" className="scroll-mt-24 bg-purple-50/60 py-20 sm:py-28">
-        <div className="container-page">
+      <section id="menu" className="relative scroll-mt-24 overflow-hidden bg-[#F0EAF4] pb-20 pt-6 sm:pb-28">
+        {/*
+         * Chatime's fruit-tea key art, floated beside the heading. Their
+         * section headers always carry a cut-out; ours was type alone on a flat
+         * tint, which is the moment the page stopped looking like theirs.
+         */}
+        <div
+          aria-hidden
+          /* top-24 clears the fixed header — at top-0 the art sits behind it. */
+          className="pointer-events-none absolute right-[-3%] top-24 hidden aspect-square w-[260px]
+                     lg:block xl:right-[1%] xl:w-[310px]"
+        >
+          <ProductImage
+            src="/brand/mango-splash.png"
+            alt=""
+            fill
+            sizes="330px"
+            skeletonRounded="rounded-full"
+            className="animate-float-soft object-contain"
+          />
+        </div>
+
+        <div className="container-page relative">
           <Reveal>
             <p className="eyebrow">The menu</p>
           </Reveal>
@@ -87,6 +124,7 @@ export function LandingPage() {
               <Chip
                 active={category === 'all'}
                 accent="#500778"
+                icon="all"
                 onClick={() => setCategory('all')}
                 label="All drinks"
               />
@@ -95,6 +133,7 @@ export function LandingPage() {
                   key={c.id}
                   active={category === c.id}
                   accent={c.accent}
+                  icon={c.icon}
                   onClick={() => setCategory(c.id)}
                   label={c.name}
                 />
@@ -146,13 +185,7 @@ export function LandingPage() {
               className="mt-10 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3 xl:grid-cols-4"
             >
               {visible.map((d, i) => (
-                <ProductCard
-                  key={d.slug}
-                  drink={d}
-                  index={i}
-                  onSelect={setSelected}
-                  priority={i < 4}
-                />
+                <ProductCard key={d.slug} drink={d} index={i} onSelect={setSelected} />
               ))}
             </motion.div>
           </AnimatePresence>
@@ -163,7 +196,8 @@ export function LandingPage() {
         </div>
       </section>
 
-      <Story />
+      <Wave colour="#500778" from="#F0EAF4" height={72} />
+      <ProductMarquee onSelect={setSelected} />
       <LocationTeaser />
 
       <Customiser drink={selected} onClose={() => setSelected(null)} />
@@ -171,28 +205,38 @@ export function LandingPage() {
   );
 }
 
+/**
+ * Chip fronted by Chatime's own category glyph — the same pairing their menu
+ * filter uses. The icon inherits `currentColor`, so it flips white on the
+ * accent fill without a second asset.
+ */
 function Chip({
   active,
   onClick,
   label,
   accent,
+  icon,
 }: {
   active: boolean;
   onClick: () => void;
   label: string;
   accent: string;
+  icon: IconName;
 }) {
   return (
     <button
       type="button"
       onClick={onClick}
       aria-pressed={active}
-      className={`relative shrink-0 whitespace-nowrap rounded-full border-2 px-5 py-2.5 text-sm
-                  font-bold transition-colors duration-300 ${
-                    active ? 'text-white' : 'border-purple-200 text-ink/70 hover:text-purple-800'
+      className={`relative flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full border-2
+                  px-5 py-2.5 text-sm font-bold transition-colors duration-300 ${
+                    active
+                      ? 'text-white'
+                      : 'border-purple-200 bg-white text-ink/70 hover:text-purple-800'
                   }`}
       style={active ? { background: accent, borderColor: accent } : undefined}
     >
+      <CategoryIcon name={icon} size={19} className="shrink-0" />
       {label}
     </button>
   );

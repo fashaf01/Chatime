@@ -1,7 +1,9 @@
 'use client';
 
 import { motion, useReducedMotion } from 'framer-motion';
-import Image from 'next/image';
+import { ProductImage } from '@/components/motion/Skeleton';
+import { RotatingBadge } from '@/components/motion/RotatingBadge';
+import { Wave } from '@/components/site/Wave';
 import { drinks, type Drink } from '@/lib/menu';
 
 /**
@@ -18,7 +20,16 @@ export function ProductMarquee({ onSelect }: { onSelect: (d: Drink) => void }) {
   const row = drinks.slice(0, 12);
 
   return (
-    <section className="defer-paint relative overflow-hidden bg-purple-800 py-10 sm:py-14">
+/*
+     * Neither `overflow-hidden` nor `defer-paint` can live here, because the
+     * seal hangs below this section and both of them clip it off at the border
+     * box — `content-visibility: auto` turns on paint containment permanently,
+     * not just while the section is off-screen. The overflow was redundant
+     * anyway: the marquee row does its own clipping, and so does the wave. The
+     * section is only ~440px tall, so skipping its paint bought very little.
+     * `z-10` keeps the overhang above the block that follows.
+     */
+    <section className="relative z-10 bg-purple-800 pb-0 pt-10 sm:pt-14">
       <div aria-hidden className="pointer-events-none absolute inset-0">
         <div className="absolute inset-0" style={{ background: 'radial-gradient(60% 60% at 50% 50%, rgba(129,41,144,0.35) 0%, transparent 70%)' }} />
       </div>
@@ -29,6 +40,17 @@ export function ProductMarquee({ onSelect }: { onSelect: (d: Drink) => void }) {
       </div>
 
       <Row items={row} reduced={reduced} onSelect={onSelect} duration={52} />
+
+      {/* Wave back out to the white the locations block sits on */}
+      <div className="relative mt-8">
+        <Wave colour="#FFFFFF" height={72} />
+        <RotatingBadge
+          label="Twenty-six cups"
+          size={108}
+          colour="#75B743"
+          className="absolute -top-[18px] left-4 sm:left-12 lg:left-24"
+        />
+      </div>
     </section>
   );
 }
@@ -70,11 +92,13 @@ function Row({
               background: `linear-gradient(180deg, ${d.colour[1]} 0%, ${d.colour[0]} 100%)`,
             }}
           >
-            <Image
+            <ProductImage
               src={d.image}
               alt=""
               fill
               sizes="110px"
+              skeletonTone="dark"
+              skeletonRounded="rounded-2xl"
               className="object-contain object-bottom p-1.5 drop-shadow-[0_8px_10px_rgba(0,0,0,0.2)]"
             />
           </button>

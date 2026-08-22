@@ -44,7 +44,7 @@ export function Stats() {
   ];
 
   return (
-    <section className="relative border-y border-purple-100 py-14">
+    <section className="relative bg-[#F0EAF4] pb-14 pt-10">
       <div className="container-page">
         <div className="grid grid-cols-2 gap-y-10 lg:grid-cols-4">
           {items.map((item, i) => (

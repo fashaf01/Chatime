@@ -1,7 +1,7 @@
 'use client';
 
 import { motion, useReducedMotion } from 'framer-motion';
-import Image from 'next/image';
+import { ProductImage } from '@/components/motion/Skeleton';
 import { formatLKR, type Drink } from '@/lib/menu';
 
 type Props = {
@@ -83,12 +83,14 @@ export function ProductCard({ drink, onSelect, index = 0, priority = false }: Pr
               className={reduced ? 'relative h-full w-full' : 'animate-float-soft relative h-full w-full'}
               style={{ animationDelay: `${(index % 6) * 0.45}s` }}
             >
-              <Image
+              <ProductImage
                 src={drink.image}
                 alt={drink.name}
                 fill
                 sizes="(max-width: 640px) 60vw, (max-width: 1024px) 38vw, 300px"
                 priority={priority}
+                skeletonTone="dark"
+                skeletonRounded="rounded-[18px]"
                 className="object-contain object-center drop-shadow-[0_12px_16px_rgba(0,0,0,0.2)]
                            transition-transform duration-500 group-hover:scale-[1.06]"
               />

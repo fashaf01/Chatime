@@ -6,12 +6,31 @@
   html {
     -webkit-font-smoothing: antialiased;
     scroll-behavior: smooth;
+    /*
+     * Framer's `useScroll({ target })` measures the target against a scroll
+     * container, and with no container given it defaults to <html> — which is
+     * `static` out of the box. It cannot work out a reliable relative offset
+     * against a static container, so it warns once per load and the Next dev
+     * overlay counts that as an issue. Making the root positioned is the fix
+     * the warning itself asks for, and it changes nothing on the page: <html>
+     * has no offset or padding, so its padding box already sits exactly where
+     * the initial containing block does.
+     */
+    position: relative;
   }
 
   /* Chatime's sites are white-first with purple as the brand act. */
   body {
     @apply bg-white font-body text-ink antialiased;
-    overflow-x: hidden;
+    /*
+     * `clip`, not `hidden`. On <body> with a `visible` <html>, `overflow-x:
+     * hidden` propagates to the viewport and drags `overflow-y` from `visible`
+     * to `auto` with it — which is what turns a plain page into a scroll
+     * container and gives iOS the sticky, rubber-banding scroll this had.
+     * `clip` trims the marquee overhang without creating a scroll container at
+     * all, so the page scrolls natively again.
+     */
+    overflow-x: clip;
   }
 
   ::selection {
@@ -82,6 +101,16 @@
     @apply btn border-2 border-purple-800 text-purple-800 hover:bg-purple-800 hover:text-white;
   }
 
+  /*
+   * The green pill chatime.com uses for its one "go and look" action per
+   * section. It is deliberately not the same button as .btn-primary — theirs
+   * reads as an invitation next to the purple, which is doing the branding.
+   */
+  .btn-leaf {
+    @apply btn bg-leaf text-white hover:bg-jade;
+    box-shadow: 0 6px 18px -6px rgba(117, 183, 67, 0.55);
+  }
+
   /* For use on purple backgrounds. */
   .btn-invert {
     @apply btn bg-white text-purple-800 hover:bg-purple-100;
@@ -127,18 +156,30 @@
     text-wrap: balance;
   }
 
+  /*
+   * The -webkit- line is not redundant: Safari only dropped the prefix in 15.4,
+   * and without it the fade is ignored and both marquees end in a hard cut
+   * against the section edge.
+   */
   .mask-fade-x {
+    -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
     mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
   }
 
   /*
    * Lets the browser skip layout, paint and style for sections that are far
-   * off-screen. On a page this long that is the single biggest scrolling win —
-   * `contain-intrinsic-size` keeps the scrollbar honest so nothing jumps.
+   * off-screen. On a page this long that is the biggest scrolling win there is.
+   *
+   * `contain-intrinsic-size` is the placeholder height used while a section is
+   * skipped, and it has to be close or the win turns into a bug: every section
+   * here shared one 700px guess against real heights of 370px to 1160px, so as
+   * you scrolled the page kept discovering it was wrong and yanked the scrollbar
+   * and your position with it. Each section now declares its own estimate
+   * through `--defer-h`; 700px stays as the fallback for any that forgets.
    */
   .defer-paint {
     content-visibility: auto;
-    contain-intrinsic-size: auto 700px;
+    contain-intrinsic-size: auto var(--defer-h, 700px);
   }
 
   .no-scrollbar::-webkit-scrollbar {

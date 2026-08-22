@@ -16,6 +16,8 @@
  * drink here has a real photo of that drink — no placeholders, no stand-ins.
  */
 
+import type { IconName } from '@/components/menu/CategoryIcon';
+
 export const PRICES_ARE_PLACEHOLDER = true;
 
 export type CategoryId =
@@ -32,15 +34,17 @@ export type Category = {
   tagline: string;
   /** Brand accent used for this category's chip and card wash. */
   accent: string;
+  /** Which of Chatime's own category glyphs fronts the chip. */
+  icon: IconName;
 };
 
 export const categories: Category[] = [
-  { id: 'signature', name: 'Signatures', tagline: 'The ones we are known for', accent: '#500778' },
-  { id: 'milk-tea', name: 'Milk Tea', tagline: 'Brewed, shaken, softened with milk', accent: '#812990' },
-  { id: 'fruit-tea', name: 'Fruit Tea', tagline: 'Real fruit, cold and bright', accent: '#F47929' },
-  { id: 'chocolate', name: 'Chocolate', tagline: 'Rich, cocoa-forward, indulgent', accent: '#8B5E34' },
-  { id: 'fresh-tea', name: 'Fresh Tea', tagline: 'Pure leaf, nothing hiding', accent: '#00A664' },
-  { id: 'frozen', name: 'Frozen', tagline: 'Blended with ice, built for 30°C', accent: '#19BECF' },
+  { id: 'signature', name: 'Signatures', tagline: 'The ones we are known for', accent: '#500778', icon: 'all' },
+  { id: 'milk-tea', name: 'Milk Tea', tagline: 'Brewed, shaken, softened with milk', accent: '#812990', icon: 'milky' },
+  { id: 'fruit-tea', name: 'Fruit Tea', tagline: 'Real fruit, cold and bright', accent: '#F47929', icon: 'fruity' },
+  { id: 'chocolate', name: 'Chocolate', tagline: 'Rich, cocoa-forward, indulgent', accent: '#8B5E34', icon: 'milky' },
+  { id: 'fresh-tea', name: 'Fresh Tea', tagline: 'Pure leaf, nothing hiding', accent: '#00A664', icon: 'fresh' },
+  { id: 'frozen', name: 'Frozen', tagline: 'Blended with ice, built for 30°C', accent: '#19BECF', icon: 'frozen' },
 ];
 
 export type Drink = {

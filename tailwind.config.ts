@@ -75,13 +75,31 @@ const config: Config = {
           '0%': { transform: 'rotate(0deg)' },
           '100%': { transform: 'rotate(360deg)' },
         },
+        // Skeleton sweep. Transform-only so a grid of two dozen placeholders
+        // still runs entirely on the compositor.
+        shimmer: {
+          '100%': { transform: 'translateX(100%)' },
+        },
+        /*
+         * Hero pearls. A CSS keyframe rather than a framer loop on purpose:
+         * framer drives its infinite animations from rAF on the main thread, so
+         * six orbiting pearls meant six per-frame JS callbacks competing with
+         * scrolling on a mid-range phone. Transform and opacity in a keyframe
+         * are handed to the compositor and cost the main thread nothing.
+         */
+        drift: {
+          '0%, 100%': { transform: 'translate3d(0,0,0)', opacity: '0.4' },
+          '50%': { transform: 'translate3d(0,-15px,0)', opacity: '0.85' },
+        },
       },
       animation: {
         float: 'float 7s ease-in-out infinite',
         'float-soft': 'float-soft 5.5s ease-in-out infinite',
         rise: 'rise 9s linear infinite',
         marquee: 'marquee 34s linear infinite',
-        swirl: 'swirl 28s linear infinite',
+        swirl: 'swirl 18s linear infinite',
+        shimmer: 'shimmer 1.6s infinite',
+        drift: 'drift 7s ease-in-out infinite',
       },
     },
   },
