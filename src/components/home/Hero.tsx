@@ -295,7 +295,7 @@ export function Hero({ onOrder }: { onOrder?: (drink: Drink) => void }) {
              * politely inside a circle is the version that looks like a stock
              * template.
              */
-            className="relative mx-auto aspect-[4/5] w-[88vw] max-w-[380px] sm:max-w-[440px] lg:mx-0 lg:w-full lg:max-w-[580px]"
+            className="relative mx-auto aspect-square w-[86vw] max-w-[340px] sm:aspect-[4/5] sm:max-w-[440px] lg:mx-0 lg:w-full lg:max-w-[580px]"
             initial={reduced ? false : { opacity: 0, scale: 0.94, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             transition={{ duration: 1, ease: EASE }}
@@ -337,7 +337,7 @@ export function Hero({ onOrder }: { onOrder?: (drink: Drink) => void }) {
               {SHOWCASE.map((s, i) => (
                 <span
                   key={s.key}
-                  className="absolute left-[48%] top-0 block aspect-square h-full -translate-x-1/2"
+                  className="absolute left-1/2 top-0 block aspect-square h-full -translate-x-1/2 sm:left-[48%]"
                 >
                   <motion.span
                     className="block h-full w-full"
@@ -366,7 +366,7 @@ export function Hero({ onOrder }: { onOrder?: (drink: Drink) => void }) {
                          * browser size for a box far larger than the one it ends
                          * up in and pull a heavier file than the phone can use.
                          */
-                        sizes="(max-width: 640px) 380px, (max-width: 1024px) 440px, 580px"
+                        sizes="(max-width: 640px) 340px, (max-width: 1024px) 550px, 725px"
                         priority={i === 0}
                         loading={i === 0 ? undefined : warm ? 'eager' : 'lazy'}
                         className="object-contain"
