@@ -312,7 +312,14 @@ export function Hero({ onOrder }: { onOrder?: (drink: Drink) => void }) {
               <motion.span
                 key={s.key}
                 aria-hidden
-                className="absolute left-[18%] top-[10%] aspect-square h-auto w-[104%] rounded-full"
+                /*
+                 * Sized per breakpoint, because the container is not the same
+                 * shape at both. At 104% wide from 10% down it fits a 4:5 box
+                 * with room to spare, but on the square phone container it ran
+                 * 45px past the bottom and sat under the open/closed badge.
+                 */
+                className="absolute left-[20%] top-[4%] aspect-square h-auto w-[92%] rounded-full
+                           sm:left-[18%] sm:top-[10%] sm:w-[104%]"
                 style={{ background: s.field }}
                 initial={false}
                 animate={{ opacity: i === active ? 1 : 0 }}
