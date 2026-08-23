@@ -12,7 +12,9 @@ type Props = {
 };
 
 const EASE = [0.16, 1, 0.3, 1] as const;
-const HOLD = 5000;
+const HOLD = 3400;
+/** Length of a slide move. 0.7s read as sluggish next to the hero's 0.45. */
+const SLIDE = 0.42;
 
 /** Decorative background circles, fixed so SSR and client agree. */
 const BLOBS = [
@@ -73,18 +75,24 @@ export function SignatureCarousel({ drinks, onSelect }: Props) {
       {/* Floating decorative circles */}
       <div aria-hidden className="pointer-events-none absolute inset-0">
         {BLOBS.map((b, n) => (
-          <motion.span
+          /*
+           * CSS keyframe, not a framer loop. Five blobs on framer meant five
+           * per-frame JS callbacks on the main thread, competing with the slide
+           * transition happening right next to them. A transform keyframe is
+           * handed to the compositor and costs the main thread nothing.
+           */
+          <span
             key={n}
-            className="absolute rounded-full"
+            className={`absolute rounded-full ${reduced ? '' : 'animate-float-soft'}`}
             style={{
               left: b.left,
               top: b.top,
               width: b.size,
               height: b.size,
               background: b.colour,
+              animationDuration: `${9 + n * 2}s`,
+              animationDelay: `${n * 0.7}s`,
             }}
-            animate={reduced ? undefined : { y: [0, -16, 0], x: [0, 8, 0] }}
-            transition={{ duration: 9 + n * 2, repeat: Infinity, ease: 'easeInOut' }}
           />
         ))}
       </div>
@@ -105,20 +113,39 @@ export function SignatureCarousel({ drinks, onSelect }: Props) {
               <motion.div
                 key={d.slug}
                 className="absolute left-1/2 top-0 h-full"
-                style={{ width: 'min(62vw, 300px)', marginLeft: 'calc(min(62vw, 300px) / -2)' }}
-                animate={{
-                  x: s * (typeof window !== 'undefined' && window.innerWidth < 640 ? 150 : 250),
-                  scale: isActive ? 1 : 0.62,
-                  opacity: isActive ? 1 : 0.45,
+                /*
+                 * z-index is set, never animated. Framer tweens it as a number,
+                 * so mid-slide the cards held fractional z-indexes and the
+                 * stacking flipped a beat early — the neighbour would jump in
+                 * front of the active cup and back again.
+                 */
+                style={{
+                  width: 'min(62vw, 300px)',
+                  marginLeft: 'calc(min(62vw, 300px) / -2)',
                   zIndex: isActive ? 10 : 1,
                 }}
-                transition={{ duration: 0.7, ease: EASE }}
+                animate={{
+                  /*
+                   * A percentage of the card's own width, not a pixel constant
+                   * chosen from `window.innerWidth` at render time. That read
+                   * never updated on resize, so rotating a phone left the cards
+                   * spaced for the old width — and it differed between server
+                   * and client, which is a hydration mismatch on first paint.
+                   */
+                  x: `${s * 78}%`,
+                  scale: isActive ? 1 : 0.62,
+                  opacity: isActive ? 1 : 0.45,
+                }}
+                transition={{ duration: SLIDE, ease: EASE }}
                 drag={isActive ? 'x' : false}
                 dragConstraints={{ left: 0, right: 0 }}
                 dragElastic={0.16}
                 onDragEnd={(_, info) => {
-                  if (info.offset.x < -60) go(i + 1);
-                  else if (info.offset.x > 60) go(i - 1);
+                  // Velocity as well as distance, so a quick flick counts even
+                  // when the finger barely travels.
+                  const flick = Math.abs(info.velocity.x) > 400;
+                  if (info.offset.x < -55 || (flick && info.velocity.x < 0)) go(i + 1);
+                  else if (info.offset.x > 55 || (flick && info.velocity.x > 0)) go(i - 1);
                 }}
               >
                 <button
@@ -145,7 +172,13 @@ export function SignatureCarousel({ drinks, onSelect }: Props) {
                     fill
                     sizes="(max-width: 640px) 62vw, 300px"
                     skeletonRounded="rounded-[40px]"
-                    className="pointer-events-none object-contain drop-shadow-[0_22px_28px_rgba(80,7,120,0.24)]"
+                    /*
+                     * No drop-shadow. It is a filter, and these cards scale and
+                     * translate on every slide, so it had to be re-rasterised
+                     * each frame on all three at once — the single biggest cost
+                     * in this section. The halo behind the cup carries the depth.
+                     */
+                    className="pointer-events-none object-contain"
                     draggable={false}
                   />
                 </button>
