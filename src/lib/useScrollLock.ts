@@ -29,6 +29,23 @@ import { useEffect } from 'react';
  */
 let depth = 0;
 
+/**
+ * iOS Safari ignores `overflow: hidden` on the scroll container for *touch*
+ * scrolling — the page keeps moving under an open sheet no matter what the
+ * element says. The only thing it reliably honours is a cancelled `touchmove`.
+ *
+ * So anything that is genuinely meant to scroll while locked marks itself with
+ * `data-lock-scrollable`, and every other touch drag is cancelled outright.
+ * Multi-touch is left alone so pinch-zoom still works, which matters for
+ * anyone reading the menu at a larger size.
+ */
+function onTouchMove(e: TouchEvent) {
+  if (e.touches.length > 1) return;
+  const target = e.target as Element | null;
+  if (target?.closest?.('[data-lock-scrollable]')) return;
+  if (e.cancelable) e.preventDefault();
+}
+
 function applyLock() {
   const root = document.documentElement;
   // Compensate for the scrollbar so the page does not shift sideways on
@@ -36,12 +53,15 @@ function applyLock() {
   const gutter = window.innerWidth - root.clientWidth;
   root.style.overflow = 'hidden';
   if (gutter > 0) root.style.paddingRight = `${gutter}px`;
+  // `passive: false` is the whole point — a passive listener cannot cancel.
+  document.addEventListener('touchmove', onTouchMove, { passive: false });
 }
 
 function releaseLock() {
   const root = document.documentElement;
   root.style.overflow = '';
   root.style.paddingRight = '';
+  document.removeEventListener('touchmove', onTouchMove);
 }
 
 export function useScrollLock(active: boolean) {

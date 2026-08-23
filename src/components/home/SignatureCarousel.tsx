@@ -148,13 +148,27 @@ export function SignatureCarousel({ drinks, onSelect }: Props) {
                   else if (info.offset.x > 55 || (flick && info.velocity.x > 0)) go(i - 1);
                 }}
               >
+                {/*
+                  * The centre cup is deliberately not clickable.
+                  *
+                  * It is the one you drag, and a drag ends in a click — so every
+                  * swipe threw the order drawer open on top of the carousel. The
+                  * drawer belongs to "Build this cup" below, which is already
+                  * sitting right there saying so. The side cups stay clickable,
+                  * because they are not draggable and tapping one to bring it to
+                  * the centre is exactly what you expect.
+                  */}
                 <button
                   type="button"
-                  onClick={() => (isActive ? onSelect(d) : go(n))}
-                  aria-label={isActive ? `Build ${d.name}` : `Show ${d.name}`}
-                  aria-hidden={!isActive}
-                  tabIndex={isActive ? 0 : -1}
-                  className="relative h-full w-full cursor-pointer"
+                  onClick={() => {
+                    if (!isActive) go(n);
+                  }}
+                  aria-label={isActive ? undefined : `Show ${d.name}`}
+                  aria-hidden={isActive}
+                  tabIndex={isActive ? -1 : 0}
+                  className={`relative h-full w-full ${
+                    isActive ? 'cursor-grab active:cursor-grabbing' : 'cursor-pointer'
+                  }`}
                 >
                   {/* Soft halo behind the active cup */}
                   {isActive && (

@@ -133,7 +133,9 @@ export function CartDrawer() {
               </button>
             </header>
 
-            <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 py-5 [-webkit-overflow-scrolling:touch]">
+            <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 py-5 [-webkit-overflow-scrolling:touch]"
+              data-lock-scrollable
+            >
               {lines.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-20 text-center">
                   <ShoppingBag size={38} className="text-purple-300" />

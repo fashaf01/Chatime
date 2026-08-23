@@ -215,7 +215,9 @@ export function Customiser({ drink, onClose }: Props) {
             </div>
 
             {/* Options */}
-            <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 pb-6 [-webkit-overflow-scrolling:touch]">
+            <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 pb-6 [-webkit-overflow-scrolling:touch]"
+              data-lock-scrollable
+            >
               <Group label="Size">
                 <Choice active={size === 'regular'} onClick={() => setSize('regular')} label="Regular" />
                 <Choice active={size === 'large'} onClick={() => setSize('large')} label="Large" />
