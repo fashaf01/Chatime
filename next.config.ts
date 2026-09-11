@@ -9,7 +9,9 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
   compress: true,
-  ...(isExport ? { output: "export" as const } : {}),
+  // Relative asset paths so the exported bundle works from any sub-path or
+  // static host, not just a domain root.
+  ...(isExport ? { output: "export" as const, assetPrefix: "./assets" } : {}),
   // Every visual on this site is inline SVG or CSS, so there is no image
   // optimisation pipeline to configure and no external host to allow-list.
   ...(isExport
